@@ -58,8 +58,8 @@ public class Bullet : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Enemy")) // collision의 게임 오브젝트가 "Enemy"라는 태그를 가지는지 확인하는 함수
         {                                             // .tag == "Enemy"는 매우 비효율적
-            Destroy(collision.gameObject);
-            /*GameObject obj =*/ Instantiate(HitEffectPrefeb,transform.position,Quaternion.identity); // hit 이펙트 생성
+           
+            /*GameObject obj =*/ Instantiate(HitEffectPrefeb,transform.position,Quaternion.Euler(0,0,Random.value*360f)); // hit 이펙트 생성
             // Destroy(obj, obj.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
             Destroy(this.gameObject);
         } 

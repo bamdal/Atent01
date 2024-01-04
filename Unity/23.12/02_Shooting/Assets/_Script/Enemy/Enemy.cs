@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections.LowLevel.Unsafe;
@@ -24,6 +25,34 @@ public class Enemy : MonoBehaviour
 
     float spawnY = 0.0f; // 적이 스폰된 높이
     float elapsedTime = 0.0f; // 전체 경과시간 frequency로 증폭함
+    float maxHP =3.0f;
+    float hp = 3.0f;
+
+
+    public GameObject enemyExplosion;
+
+    public float Hp 
+    { 
+        get => hp;
+        private set
+        {
+            if (hp != value)
+            {
+                Debug.Log("맞음");
+            }
+
+            hp = value;
+            hp = Math.Clamp(value, 0.0f, MaxHP);
+            if(hp <=0.0f) 
+            {
+                Die();
+            }
+        }
+        
+    }
+
+    public float MaxHP { get => maxHP; set => maxHP = value; }
+
     private void Awake()
     {
 /*        VectorY = transform.position.y;
@@ -63,4 +92,21 @@ public class Enemy : MonoBehaviour
             0.0f);
 
     }
+
+    private void Die()
+    {
+        Instantiate(enemyExplosion,transform.position, Quaternion.Euler(0, 0, UnityEngine.Random.value * 360f));
+        Destroy(this.gameObject);
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Bullet"))
+        {
+            Hp -= 1.0f;
+        }
+    }
+    // 실습 
+    // 1. 적에게 HP 추가 (3대 맞으면 폭발)
+    // 2. 적이 폭발할 때 explosionEffect 생성
 }

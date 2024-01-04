@@ -103,6 +103,7 @@ MonoBehaviour:
   speed: 1
   amplitude: 3
   frequency: 2
+  enemyExplosion: {fileID: 3479997054554681196, guid: 40fb1c29c11370b48bc6dc901a05d584, type: 3}
 --- !u!95 &6949909654150653826
 Animator:
   serializedVersion: 5

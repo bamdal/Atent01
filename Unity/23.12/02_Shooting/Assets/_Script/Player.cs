@@ -32,7 +32,11 @@ public class Player : MonoBehaviour
     //[Range(0.0f,0.5f)] // 스크롤바로 값 조절가능
     public float moveSpeed = 5.0f; // 플레이어 이동속도
     public GameObject bulletPrefeb;
+    public GameObject shootPrefeb;
     Transform fireTransform;
+    Transform shoottransform;
+    bool shooting=true;
+    public float interval = 0.3f;
     //[SerializeField] // public이 아닌 경우에도 인스펙터 창에서 확인이 가능
 
     // 이 스크립트가 포함된 게임오브젝트가 생성완료되면 호출
@@ -50,6 +54,7 @@ public class Player : MonoBehaviour
         // GameObject.FindGameObjectWithTag("Player"); // 게임 오브젝트의 태그를 기준으로 찾는 함수
         // GameObject.FindGameObjectsWithTag("Player"); // 특정 태그를 가진 모든 오브젝트들을 배열에 담음
         fireTransform = transform.GetChild(0);
+        shoottransform = transform.GetChild(1);
         // transform.childCount; // 이 게임오브젝트의 자식숫자
 
 
@@ -92,14 +97,25 @@ public class Player : MonoBehaviour
         {
             Debug.Log("OnFire : 눌러짐");
             //Instantiate(bulletPrefeb, transform); 총알이 자식으로 들어감
-            GameObject obj = Instantiate(bulletPrefeb, fireTransform.position ,Quaternion.identity);
-            
+            shooting = true;
+            StartCoroutine(ShootCoroutine());
         }
         if(context.canceled) 
         {
             Debug.Log("OnFire : 떨어짐");
-
+            shooting = false;
         }
+    }
+
+    IEnumerator ShootCoroutine()
+    {
+        while(shooting) 
+        {
+            yield return new WaitForSeconds(interval);
+            GameObject obj = Instantiate(bulletPrefeb, fireTransform.position, Quaternion.identity);
+            Instantiate(shootPrefeb, shoottransform);
+        }
+
     }
 
     private void OnBoost(InputAction.CallbackContext context)
