@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 5149986185790903130}
   - component: {fileID: 923834044459990947}
   - component: {fileID: 3243137554012724024}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: player1
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -195,7 +195,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5105156170352424290}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: FirePosition
   m_TagString: Untagged
   m_Icon: {fileID: 0}
