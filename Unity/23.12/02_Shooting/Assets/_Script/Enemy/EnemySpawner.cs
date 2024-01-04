@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
@@ -18,7 +19,7 @@ public class EnemySpawner : MonoBehaviour
     const float MinY = -4.0f;
     const float MaxY = 4.0f;
 
-    float elapsedTime = 0.0f;
+    //float elapsedTime = 0.0f;
     int spwanCounter=0;
  
 
@@ -29,7 +30,19 @@ public class EnemySpawner : MonoBehaviour
 
     private void Start()
     {
-        elapsedTime = 0.0f;
+        //elapsedTime = 0.0f;
+        spwanCounter = 0;
+        StartCoroutine(SpawnCoroution());
+    }
+
+    IEnumerator SpawnCoroution()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(interval);  // interval만큼기다린수
+            Spawn();                                    // Spawn()실행
+        }
+
     }
 
     private void Update()
@@ -43,12 +56,14 @@ public class EnemySpawner : MonoBehaviour
             Instantiate(EnemyPrefeb,new Vector3(transform.position.x, rand,0),Quaternion.identity);
         }*/
         
-        elapsedTime += Time.deltaTime;
+/*        elapsedTime += Time.deltaTime;
         if (elapsedTime > interval)
         {
             elapsedTime = 0.0f;
             Spawn();
-        }
+        }*/
+
+        
     }
 
     private void Spawn() // 적을 하나 스폰
@@ -80,23 +95,25 @@ public class EnemySpawner : MonoBehaviour
     private void OnDrawGizmosSelected()
     {
         // 이 오브젝트를 선택했을 때 사각형 그리기
-        Gizmos.color = Color.blue;
-        Vector3[] points;
-        int p = 15;
-        points = new Vector3[8]
-        {
-            new Vector3(-p, 0, 0),
-            new Vector3(p, 0, 0),
-            new Vector3(-p, p, 0),
-            new Vector3(p, p, 0),
-            new Vector3(-p, 0, 0),
-            new Vector3(-p, p, 0),
-            new Vector3(p, p, 0),
-            new Vector3(p, 0, 0)
-        };
+        /*        Gizmos.color = Color.blue;
+                Vector3[] points;
+                int p = 15;
+                points = new Vector3[8]
+                {
+                    new Vector3(-p, 0, 0),
+                    new Vector3(p, 0, 0),
+                    new Vector3(-p, p, 0),
+                    new Vector3(p, p, 0),
+                    new Vector3(-p, 0, 0),
+                    new Vector3(-p, p, 0),
+                    new Vector3(p, p, 0),
+                    new Vector3(p, 0, 0)
+                };
 
-        Gizmos.DrawLineList(points);
+                Gizmos.DrawLineList(points);
 
+        */
 
+             
     }
 }

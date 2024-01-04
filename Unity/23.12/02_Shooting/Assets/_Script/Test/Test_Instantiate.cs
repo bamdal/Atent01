@@ -8,6 +8,11 @@ public class Test_Instantiate : TestBase
 {
     public GameObject prefab;
 
+    private void Start()
+    {
+
+    }
+
     protected override void OnTest1(InputAction.CallbackContext context)
     {
         new GameObject(); // 비어있는 게임 오즈젝트 생성
@@ -32,6 +37,26 @@ public class Test_Instantiate : TestBase
     }
     protected override void OnTest5(InputAction.CallbackContext context)
     {
-        
+        StartCoroutine(TestCorution()); // 정지 안해도 되는경우
+
+        StopAllCoroutines(); // 실행중인 모든 코루틴 정지
+
+        // 정지시킬 필요가 있을시
+        IEnumerator cor = TestCorution();
+        StartCoroutine(cor);
+        StopCoroutine(cor);
     }
+
+    // 코루틴의 가장 큰 특징
+    // 코루틴이 실행 되었을 떄 이전 yield return 다음부터 이어서 시작한다.
+
+    IEnumerator TestCorution()
+    {
+        Debug.Log("시작");
+        /*        yield return null;                      // 다음 프레임까지 대기
+                yield return new WaitForEndOfFrame();   // 프레임이 끝날때까지 대기*/
+        yield return new WaitForSeconds(1.5f);
+        Debug.Log("종료");
+    }
+
 }
