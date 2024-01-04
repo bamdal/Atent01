@@ -1,0 +1,11 @@
+충돌(collider), 겹침(is Trigger)
+
+Bounding Volume(충돌 영역)
+ - 유니티 : collider
+ - 구, 캡슐, 박스 (구 > 캡슐 > 박스(기울어지는 경우가 많음))
+
+구 : 두 원의 반지름의 합이 원의 원점 거리보다 크면 충돌
+
+
+ AABB : Axis Aligned Bounding Box - 연산량 적음
+ OBB : Oriented Bodoung Box - 연산량 많음, 박스가 기울어져 있으면 연산량이 증가함

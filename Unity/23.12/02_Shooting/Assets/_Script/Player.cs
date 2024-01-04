@@ -23,7 +23,7 @@ public class Player : MonoBehaviour
     Vector3 shoot = Vector3.zero;
     Animator anim;
     readonly int InputY_String = Animator.StringToHash("InputY"); // InputY를 해시값으로 바꿔서 애니메이션파라미터 설정에 사용할수있다.
-
+    Rigidbody2D rigid2d;
 
 
     /// <summary>
@@ -42,6 +42,7 @@ public class Player : MonoBehaviour
         anim = GetComponent<Animator>(); // 이 스크립트가 들어있는 게임 오브젝트에서 컴포넌트를 가져온다.
                                          // 단 GetComponent는 매우느리다.
 
+        rigid2d = GetComponent<Rigidbody2D>(); 
         // 게임 오브젝트 찾는 방법
         // GameObject.Find("FirePosition"); // 이름으로 게임 오브젝트 찾기 중복된건 먼저 발견한걸 불러옴
         // GameObject.FindAnyObjectByType<Transform>(); // 특정 컴포넌트를 가지고 있는 오브젝트 찾기 뭐가 나올지 모름
@@ -91,7 +92,7 @@ public class Player : MonoBehaviour
         {
             Debug.Log("OnFire : 눌러짐");
             //Instantiate(bulletPrefeb, transform); 총알이 자식으로 들어감
-            Instantiate(bulletPrefeb, fireTransform.position ,Quaternion.identity);
+           GameObject obj = Instantiate(bulletPrefeb, fireTransform.position ,Quaternion.identity);
 
         }
         if(context.canceled) 
@@ -155,9 +156,15 @@ public class Player : MonoBehaviour
                 }*/
 
         // Time.deltaTime : 프레임간의 시간 간격(가변적)
-        transform.Translate(Time.deltaTime * moveSpeed * inputDir); // 기능은 this.transform.position += inputDir; 같다
+        //transform.Translate(Time.deltaTime * moveSpeed * inputDir); // 기능은 this.transform.position += inputDir; 같다
         // 1초당 moveSpeed속도로 inputDir 방향으로 이동
        
     }
-    
+
+    // 고정된 시간간격으로 호출되는 업데이트(물리연산 처리용 업데이트) 
+    private void FixedUpdate()
+    {
+        //transform.Translate(Time.deltaTime * moveSpeed * inputDir);
+        rigid2d.MovePosition(rigid2d.position + (Vector2)(Time.fixedDeltaTime * moveSpeed * inputDir));
+    }
 }

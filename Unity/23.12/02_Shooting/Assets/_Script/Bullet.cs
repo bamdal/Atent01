@@ -22,7 +22,7 @@ public class Bullet : MonoBehaviour
         // 벡터의 크기를 1로 만드는 작업을 정규화라고 한다
         // => 정규화 된 벡터는 순수하게 방향만 나타낸다.
         // 정규화는 벡터를 벡터의 스칼라 값으로 나눈다.
-        if(BV) 
+/*        if(BV) 
         {
             i++;
             bulletVector += new Vector3(0, 1, 0); 
@@ -41,7 +41,7 @@ public class Bullet : MonoBehaviour
                 BV = true;
             }
         }
-        
+        */
         transform.Translate(Time.deltaTime * bulletSpeed * bulletVector); // time * speed *(x,y)  3번 곱셈
        // transform.Translate(bulletVector *Time.deltaTime  * bulletSpeed); // (x,y) * time * speed 4번 곱셈
         // 벡터의 계산은 마지막으로
