@@ -13,6 +13,7 @@ public class Player : MonoBehaviour
 
     InputSystems inputSystems;
     Vector3 Inputdir= Vector3.zero;
+    Vector3 InputMouse = Vector3.zero;
     public float speed = 6.0f;
     Animator anim;
     readonly int InputX_String = Animator.StringToHash("DirectionX");
@@ -34,10 +35,14 @@ public class Player : MonoBehaviour
         inputSystems.Player.LClick.canceled += OnLClick;
         inputSystems.Player.RClick.performed += OnRClick;
         inputSystems.Player.RClick.canceled += OnRClick;
+        inputSystems.Player.MousePostion.performed += OnMousePostion;
     }
+
+
 
     private void OnDisable()
     {
+        inputSystems.Player.MousePostion.performed -= OnMousePostion;
         inputSystems.Player.RClick.canceled -= OnRClick;
         inputSystems.Player.RClick.performed -= OnRClick;
         inputSystems.Player.LClick.canceled -= OnLClick;
@@ -47,6 +52,18 @@ public class Player : MonoBehaviour
         inputSystems.Player.Move.canceled -= OnMove;
         inputSystems.Player.Move.performed -= OnMove;
         inputSystems.Player.Disable();
+    }
+
+    private void OnMousePostion(InputAction.CallbackContext context)
+    {
+        //Vector2 pos = Camera.main.ScreenToViewportPoint(Mouse.current.position.ReadValue());
+        Vector3 mousePos = Mouse.current.position.ReadValue();
+        mousePos.z = Camera.main.nearClipPlane;
+        Vector3 Worldpos = Camera.main.ScreenToWorldPoint(mousePos);
+        Worldpos -= transform.position;
+       
+        anim.SetFloat(InputX_String, Worldpos.x);
+        anim.SetFloat(InputY_String, Worldpos.y);
     }
 
     private void OnRClick(InputAction.CallbackContext context)
@@ -71,16 +88,14 @@ public class Player : MonoBehaviour
         if(context.performed) 
         {
             Inputdir = context.ReadValue<Vector2>();
-            anim.SetFloat(InputX_String, Inputdir.x);
-            anim.SetFloat(InputY_String, Inputdir.y);
+
            
             anim.SetBool(Input_Move, true);
         }
         if(context.canceled)
         {
             Inputdir = context.ReadValue<Vector2>();
-            anim.SetFloat(InputX_String, Inputdir.x);
-            anim.SetFloat(InputY_String, Inputdir.y);
+      
             anim.SetBool(Input_Move, false);
         }
 
