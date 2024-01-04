@@ -92,8 +92,8 @@ public class Player : MonoBehaviour
         {
             Debug.Log("OnFire : 눌러짐");
             //Instantiate(bulletPrefeb, transform); 총알이 자식으로 들어감
-           GameObject obj = Instantiate(bulletPrefeb, fireTransform.position ,Quaternion.identity);
-
+            GameObject obj = Instantiate(bulletPrefeb, fireTransform.position ,Quaternion.identity);
+            
         }
         if(context.canceled) 
         {
@@ -118,7 +118,7 @@ public class Player : MonoBehaviour
     {
         // scope : 변수나 함수의 사용 가능한 범위
         inputDir =context.ReadValue<Vector2>();
-        Debug.Log($"OnMove : {inputDir}");
+        //Debug.Log($"OnMove : {inputDir}");
 
         //this.transform.position = new Vector3(1, 0, 0); // 현재 이 오브젝트를 (1, 0, 0)에 보내라
         //this.transform.position += new Vector3(1, 0, 0); // 현재 위치에서 (1, 0, 0)만큼 움직여라
@@ -166,5 +166,44 @@ public class Player : MonoBehaviour
     {
         //transform.Translate(Time.deltaTime * moveSpeed * inputDir);
         rigid2d.MovePosition(rigid2d.position + (Vector2)(Time.fixedDeltaTime * moveSpeed * inputDir));
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        // 충돌이 시작했을 때 실행
+        Debug.Log($"OnCollisionEnter2D : {collision.gameObject.name}");
+        Destroy(collision.gameObject); // 충돌 대상제거
+       
+        
+    }
+
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        // 충돌 중인 상태에서 움직일 때 실행
+        //Debug.Log("OnCollisionStay2D");
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        // 충돌 상태에서 떨어졌을 때 실행
+        Debug.Log("OnCollisionExit2D");
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        // 겹치기 시작했을 때 실행
+        Debug.Log($"OnTriggerEnter2D : {collision.gameObject.name}");
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        // 겹쳐있는 상태에서 움직일 때 실행
+        //Debug.Log("OnTriggerStay2D");
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        // 겹쳐있던 상태에서 떨어졌을때 실행
+        Debug.Log("OnTriggerExit2D");
     }
 }

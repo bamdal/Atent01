@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 5945849932101460301}
   m_Layer: 0
   m_Name: Bullet
-  m_TagString: Untagged
+  m_TagString: Bullet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -101,6 +101,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bulletSpeed: 7
+  HitEffectPrefeb: {fileID: 2355538394071159975, guid: 15f0a66d62535304fb2a42525c3a3097, type: 3}
 --- !u!95 &6785083950133847908
 Animator:
   serializedVersion: 5

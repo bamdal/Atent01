@@ -8,8 +8,9 @@ public class Bullet : MonoBehaviour
     //시작하자마자 오른쪽으로 초속 7로 움직이게 만들기
     Vector3 bulletVector = Vector3.right;
     public float bulletSpeed = 7.0f;
-    bool BV = true;
-    float i = 0;
+    public GameObject HitEffectPrefeb;
+    //bool BV = true;
+    //float i = 0;
     private void OnEnable()
     {
         
@@ -45,5 +46,24 @@ public class Bullet : MonoBehaviour
         transform.Translate(Time.deltaTime * bulletSpeed * bulletVector); // time * speed *(x,y)  3번 곱셈
        // transform.Translate(bulletVector *Time.deltaTime  * bulletSpeed); // (x,y) * time * speed 4번 곱셈
         // 벡터의 계산은 마지막으로
+    }
+    // 실습
+    // 1. bullet 프리펩에 필요한 컴포넌트 추가하고 설정
+    // 2. 총알은 "Enemy"태그를 가진 오브젝트와 부딪치면 부딪친대상 삭제
+    // 3. 총알은 다른 오브젝트와 부딪치면 자기 자신을 삭제
+    // 4. Hit 스프라이트를 이용해 HitEffect 프리펩 생성 
+    // 5. 총알이 부딪친 위치에 HitEffect 생성
+    // 6. HitEffect는 한번만 재생
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Enemy")) // collision의 게임 오브젝트가 "Enemy"라는 태그를 가지는지 확인하는 함수
+        {                                             // .tag == "Enemy"는 매우 비효율적
+            Destroy(collision.gameObject);
+            GameObject obj = Instantiate(HitEffectPrefeb,transform.position,Quaternion.identity);
+            // Destroy(obj, obj.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
+            Destroy(this.gameObject);
+        } 
+
+
     }
 }
