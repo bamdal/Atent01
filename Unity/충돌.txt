@@ -9,3 +9,5 @@ Bounding Volume(충돌 영역)
 
  AABB : Axis Aligned Bounding Box - 연산량 적음
  OBB : Oriented Bodoung Box - 연산량 많음, 박스가 기울어져 있으면 연산량이 증가함
+
+Rigidbody type Kinematic은 Kinematic끼리 충돌 안함 Use Full Kinematic Contacts를 체크 해둬야함

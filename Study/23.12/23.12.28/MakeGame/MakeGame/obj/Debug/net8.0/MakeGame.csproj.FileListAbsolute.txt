@@ -1,0 +1,14 @@
+F:\유니티(8)_장민수\23.12\23.12.28\MakeGame\MakeGame\bin\Debug\net8.0\MakeGame.exe
+F:\유니티(8)_장민수\23.12\23.12.28\MakeGame\MakeGame\bin\Debug\net8.0\MakeGame.deps.json
+F:\유니티(8)_장민수\23.12\23.12.28\MakeGame\MakeGame\bin\Debug\net8.0\MakeGame.runtimeconfig.json
+F:\유니티(8)_장민수\23.12\23.12.28\MakeGame\MakeGame\bin\Debug\net8.0\MakeGame.dll
+F:\유니티(8)_장민수\23.12\23.12.28\MakeGame\MakeGame\bin\Debug\net8.0\MakeGame.pdb
+F:\유니티(8)_장민수\23.12\23.12.28\MakeGame\MakeGame\obj\Debug\net8.0\MakeGame.GeneratedMSBuildEditorConfig.editorconfig
+F:\유니티(8)_장민수\23.12\23.12.28\MakeGame\MakeGame\obj\Debug\net8.0\MakeGame.AssemblyInfoInputs.cache
+F:\유니티(8)_장민수\23.12\23.12.28\MakeGame\MakeGame\obj\Debug\net8.0\MakeGame.AssemblyInfo.cs
+F:\유니티(8)_장민수\23.12\23.12.28\MakeGame\MakeGame\obj\Debug\net8.0\MakeGame.csproj.CoreCompileInputs.cache
+F:\유니티(8)_장민수\23.12\23.12.28\MakeGame\MakeGame\obj\Debug\net8.0\MakeGame.dll
+F:\유니티(8)_장민수\23.12\23.12.28\MakeGame\MakeGame\obj\Debug\net8.0\refint\MakeGame.dll
+F:\유니티(8)_장민수\23.12\23.12.28\MakeGame\MakeGame\obj\Debug\net8.0\MakeGame.pdb
+F:\유니티(8)_장민수\23.12\23.12.28\MakeGame\MakeGame\obj\Debug\net8.0\MakeGame.genruntimeconfig.cache
+F:\유니티(8)_장민수\23.12\23.12.28\MakeGame\MakeGame\obj\Debug\net8.0\ref\MakeGame.dll
