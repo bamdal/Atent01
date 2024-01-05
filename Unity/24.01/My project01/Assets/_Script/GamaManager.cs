@@ -6,6 +6,19 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    [System.Serializable]
+    public class Node
+    {
+        public Node(bool _isWall, int _x, int _y) { isWall = _isWall; x = _x; y = _y; }
+
+        public bool isWall;
+        public Node ParentNode;
+
+        // G : 시작으로부터 이동했던 거리, H : |가로|+|세로| 장애물 무시하여 목표까지의 거리, F : G + H
+        public int x, y, G, H;
+        public int F { get { return G + H; } }
+    }
+
     public Vector2Int bottomLeft, topRight, startPos, targetPos;
     public List<Node> FinalNodeList;
     public bool allowDiagonal, dontCrossCorner;
@@ -15,12 +28,9 @@ public class GameManager : MonoBehaviour
     Node StartNode, TargetNode, CurNode;
     List<Node> OpenList, ClosedList;
 
-    GameManager instance;
 
-    private void Awake()
-    {
-        instance = this;
-    }
+
+ 
     public void PathFinding()
     {
         // NodeArray의 크기 정해주고, isWall, x, y 대입
@@ -101,10 +111,14 @@ public class GameManager : MonoBehaviour
         if (checkX >= bottomLeft.x && checkX < topRight.x + 1 && checkY >= bottomLeft.y && checkY < topRight.y + 1 && !NodeArray[checkX - bottomLeft.x, checkY - bottomLeft.y].isWall && !ClosedList.Contains(NodeArray[checkX - bottomLeft.x, checkY - bottomLeft.y]))
         {
             // 대각선 허용시, 벽 사이로 통과 안됨
-            if (allowDiagonal) if (NodeArray[CurNode.x - bottomLeft.x, checkY - bottomLeft.y].isWall && NodeArray[checkX - bottomLeft.x, CurNode.y - bottomLeft.y].isWall) return;
+            if (allowDiagonal) 
+                if (NodeArray[CurNode.x - bottomLeft.x, checkY - bottomLeft.y].isWall 
+                    && NodeArray[checkX - bottomLeft.x, CurNode.y - bottomLeft.y].isWall) return;
 
             // 코너를 가로질러 가지 않을시, 이동 중에 수직수평 장애물이 있으면 안됨
-            if (dontCrossCorner) if (NodeArray[CurNode.x - bottomLeft.x, checkY - bottomLeft.y].isWall || NodeArray[checkX - bottomLeft.x, CurNode.y - bottomLeft.y].isWall) return;
+            if (dontCrossCorner) 
+                if (NodeArray[CurNode.x - bottomLeft.x, checkY - bottomLeft.y].isWall 
+                    || NodeArray[checkX - bottomLeft.x, CurNode.y - bottomLeft.y].isWall) return;
 
 
             // 이웃노드에 넣고, 직선은 10, 대각선은 14비용
@@ -130,18 +144,6 @@ public class GameManager : MonoBehaviour
                 Gizmos.DrawLine(new Vector2(FinalNodeList[i].x, FinalNodeList[i].y), new Vector2(FinalNodeList[i + 1].x, FinalNodeList[i + 1].y));
     }
 
-    [System.Serializable]
-    public class Node
-    {
-        public Node(bool _isWall, int _x, int _y) { isWall = _isWall; x = _x; y = _y; }
-
-        public bool isWall;
-        public Node ParentNode;
-
-        // G : 시작으로부터 이동했던 거리, H : |가로|+|세로| 장애물 무시하여 목표까지의 거리, F : G + H
-        public int x, y, G, H;
-        public int F { get { return G + H; } }
-    }
 
 }
 
