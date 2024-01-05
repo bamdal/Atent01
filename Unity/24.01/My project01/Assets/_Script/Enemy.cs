@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy : Astar
+public class Enemy : MonoBehaviour
 {
     Animator animator;
     public float enemySpeed = 7.0f;
