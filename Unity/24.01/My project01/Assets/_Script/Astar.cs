@@ -20,24 +20,35 @@ public class Astar : MonoBehaviour
     }
 
     public Vector2Int monsterPos, playerPos, detectionbottomLeft, detectiontopRight;
+    public int detectionRange = 10;
     public List<Node> FinalNodeList;
     public GameObject player;
     Vector3 playerV3, enemyV3;
 
-
+    bool Detection = false;
     int sizeX, sizeY;
     Node[,] NodeArray;
     Node StartNode, TargetNode, CurNode;
     List<Node> OpenList, ClosedList;
 
+    BoxCollider2D DetectionCollider;
+
     public void PathFinding()
     {
+        if (Detection)
+        {
 
+        
         playerV3 = player.transform.position;
         enemyV3 = this.transform.position;
+        
+      
         playerPos = new Vector2Int((int)playerV3.x, (int)playerV3.y);
         monsterPos = new Vector2Int((int)enemyV3.x, (int)enemyV3.y);
+        detectionbottomLeft = new Vector2Int((int)enemyV3.x - detectionRange, (int)enemyV3.y - detectionRange);
+        detectiontopRight = new Vector2Int((int)enemyV3.x + detectionRange, (int)enemyV3.y + detectionRange);
 
+        
 
         sizeX = detectiontopRight.x - detectionbottomLeft.x + 1;
         sizeY = detectiontopRight.y - detectionbottomLeft.y + 1;
@@ -94,8 +105,42 @@ public class Astar : MonoBehaviour
             OpenListAdd(CurNode.x - 1, CurNode.y);
 
         }
+          
+                  
+        }
     }
 
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Player"))
+        { 
+             Detection = true;
+        }
+             
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Player"))
+        {
+            Detection = false;
+        }
+    }
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.collider.CompareTag("Player"))
+        {
+            Detection = false;
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.collider.CompareTag("Player"))
+        {
+            Detection = true;
+        }
+    }
     void OpenListAdd(int checkX, int checkY)
     {
         if(checkX >= detectionbottomLeft.x && checkX<detectiontopRight.x +1 // 감지범위 안
@@ -122,8 +167,10 @@ public class Astar : MonoBehaviour
 
     void OnDrawGizmos()
     {
+
         if (FinalNodeList.Count != 0) for (int i = 0; i < FinalNodeList.Count - 1; i++)
                 Gizmos.DrawLine(new Vector2(FinalNodeList[i].x, FinalNodeList[i].y), new Vector2(FinalNodeList[i + 1].x, FinalNodeList[i + 1].y));
+    
     }
 
 
@@ -131,12 +178,9 @@ public class Astar : MonoBehaviour
     private void Awake()
     {
         // public Vector2Int monsterPos, playerPos, detectionbottomLeft, detectiontopRight;
-        
-        playerV3 = player.transform.position;
-        enemyV3 = this.transform.position;
-        playerPos = new Vector2Int((int)playerV3.x,(int)playerV3.y);
-        monsterPos = new Vector2Int((int)enemyV3.x,(int)enemyV3.y);
-      
+        DetectionCollider = this.gameObject.GetComponent<BoxCollider2D>();
+        DetectionCollider.size = new Vector2(detectionRange*2, detectionRange*2);
+
         InvokeRepeating(nameof(PathFinding), 0.0f, 1.0f);
         //CancelInvoke(nameof(PathFinding));
 
@@ -145,10 +189,10 @@ public class Astar : MonoBehaviour
 
 
     private void Update()
-    { 
+    {
+     
+        Debug.Log(new Vector2(FinalNodeList[1].x-transform.position.x, FinalNodeList[1].y - transform.position.y));
 
-
-        
-        
+         transform.Translate(7.0f*Time.deltaTime*new Vector2(FinalNodeList[2].x-transform.position.x, FinalNodeList[2].y - transform.position.y));
     }
 }

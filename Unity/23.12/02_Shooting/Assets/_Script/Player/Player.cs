@@ -52,7 +52,7 @@ public class Player : MonoBehaviour
             if(score != value)
             {
                
-                score = Mathf.Clamp(value, 0, 10000);
+                score = Mathf.Min(value,99999);
                 onScoreChange?.Invoke(score); // 이 델리게이트에 함수를 등록한 모든 대상에게 변경된 점수를 알림
             }
             
