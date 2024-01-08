@@ -28,7 +28,10 @@ public class Enemy : MonoBehaviour
     float elapsedTime = 0.0f; // 전체 경과시간 frequency로 증폭함
     float maxHP =3.0f;
     float hp = 3.0f;
-
+    /// <summary>
+    /// 적을 해치웠을때 얻을 점수ㄴ
+    /// </summary>
+    public int score= 10;
 
     public GameObject enemyExplosion;
 
@@ -100,6 +103,10 @@ public class Enemy : MonoBehaviour
     private void OnDie()
     {
         Instantiate(enemyExplosion,transform.position, Quaternion.Euler(0, 0, UnityEngine.Random.value * 360f));
+        
+        Player player = FindAnyObjectByType<Player>();
+        player.AddScore(score);
+
         Destroy(this.gameObject);
     }
 
