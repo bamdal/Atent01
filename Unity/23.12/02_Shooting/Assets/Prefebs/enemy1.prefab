@@ -100,8 +100,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8d4d8c14b89cc4408650b4a14f28d4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 1
-  amplitude: 3
+  speed: 2
+  amplitude: 1
   frequency: 2
   enemyExplosion: {fileID: 3479997054554681196, guid: 40fb1c29c11370b48bc6dc901a05d584, type: 3}
 --- !u!95 &6949909654150653826

@@ -104,6 +104,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 5
   bulletPrefeb: {fileID: 4315047248936644697, guid: 9c758325962ad754d82bc856b643dd0f, type: 3}
+  shootPrefeb: {fileID: 4538605886695863757, guid: bb708b640a314594c933b3a8b710920c, type: 3}
+  interval: 0.3
 --- !u!95 &5149986185790903130
 Animator:
   serializedVersion: 5
@@ -243,7 +245,7 @@ Transform:
   m_GameObject: {fileID: 4779719915328752102}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.5, y: 0, z: 0}
+  m_LocalPosition: {x: 1, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

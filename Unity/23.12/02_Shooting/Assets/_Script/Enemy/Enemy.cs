@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections.LowLevel.Unsafe;
 using Unity.Mathematics;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -43,9 +44,10 @@ public class Enemy : MonoBehaviour
 
             hp = value;
             hp = Math.Clamp(value, 0.0f, MaxHP);
-            if(hp <=0.0f) 
+            if(hp ==0.0f) 
             {
-                Die();
+               
+                OnDie();
             }
         }
         
@@ -93,7 +95,9 @@ public class Enemy : MonoBehaviour
 
     }
 
-    private void Die()
+
+
+    private void OnDie()
     {
         Instantiate(enemyExplosion,transform.position, Quaternion.Euler(0, 0, UnityEngine.Random.value * 360f));
         Destroy(this.gameObject);
@@ -103,7 +107,7 @@ public class Enemy : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Bullet"))
         {
-            Hp -= 1.0f;
+            Hp--;
         }
     }
     // 실습 

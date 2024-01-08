@@ -32,11 +32,16 @@ public class Player : MonoBehaviour
     //[Range(0.0f,0.5f)] // 스크롤바로 값 조절가능
     public float moveSpeed = 5.0f; // 플레이어 이동속도
     public GameObject bulletPrefeb;
-    public GameObject shootPrefeb;
-    Transform fireTransform;
-    Transform shoottransform;
-    bool shooting=true;
-    public float interval = 0.3f;
+   
+    Transform fireTransform;// 총알 발사 위치
+
+    GameObject fireFlash; // 총알 발사 이펙트
+
+    WaitForSeconds flashWait; // 플래시 대기시간
+
+    IEnumerator fireCoroution;
+    
+    public float fireInterval = 0.5f;
     //[SerializeField] // public이 아닌 경우에도 인스펙터 창에서 확인이 가능
 
     // 이 스크립트가 포함된 게임오브젝트가 생성완료되면 호출
@@ -54,18 +59,20 @@ public class Player : MonoBehaviour
         // GameObject.FindGameObjectWithTag("Player"); // 게임 오브젝트의 태그를 기준으로 찾는 함수
         // GameObject.FindGameObjectsWithTag("Player"); // 특정 태그를 가진 모든 오브젝트들을 배열에 담음
         fireTransform = transform.GetChild(0);
-        shoottransform = transform.GetChild(1);
+        fireFlash = transform.GetChild(1).gameObject; // 두번째 자식 오브젝트 찾기
         // transform.childCount; // 이 게임오브젝트의 자식숫자
-
-
+        flashWait = new WaitForSeconds(0.1f);
+        fireCoroution = FireCoroution();
     }
+
+
 
     // 이 스크립트가 포함된 게임오브젝트가 활성화 되면 호출
     private void OnEnable()
     {
         inputActions.Player.Enable();                   // 활성화될 때 Player액션맵을 활성화
-        inputActions.Player.Fire.performed += OnFire;   // Player액션맵의 Fire 액션에 OnFire함수를 연결(눌렀을 때만 연결된 함수실행)
-        inputActions.Player.Fire.canceled += OnFire;   // Player액션맵의 Fire 액션에 OnFire함수를 연결(땠을 떄만 연겨된 함수실행)
+        inputActions.Player.Fire.performed += OnFireStart;   // Player액션맵의 Fire 액션에 OnFire함수를 연결(눌렀을 때만 연결된 함수실행)
+        inputActions.Player.Fire.canceled += OnFireEnd;   // Player액션맵의 Fire 액션에 OnFire함수를 연결(땠을 떄만 연겨된 함수실행)
         inputActions.Player.Boost.performed += OnBoost;
         inputActions.Player.Boost.canceled += OnBoost;
         inputActions.Player.Move.performed += OnMove;
@@ -82,39 +89,63 @@ public class Player : MonoBehaviour
         inputActions.Player.Move.performed -= OnMove;
         inputActions.Player.Boost.canceled -= OnBoost;
         inputActions.Player.Boost.performed -= OnBoost;
-        inputActions.Player.Fire.canceled -= OnFire;   // Player액션맵의 Fire 액션에 OnFire함수를 연결해제(땠을 떄만 연겨된 함수실행)
-        inputActions.Player.Fire.performed -= OnFire;   // Player액션맵의 Fire 액션에 OnFire함수를 연결해제
+        inputActions.Player.Fire.canceled -= OnFireEnd;   // Player액션맵의 Fire 액션에 OnFire함수를 연결해제(땠을 떄만 연겨된 함수실행)
+        inputActions.Player.Fire.performed -= OnFireStart;   // Player액션맵의 Fire 액션에 OnFire함수를 연결해제
         inputActions.Player.Disable();                  // Player액션맵을 비활성화
     }
-    
+
+
+
     /// <summary>
     /// Fire액션이 발동했을때 실행시킬 함수
     /// </summary>
     /// <param name="context">입력 관련 정보가 들어있는 구조체 변수</param>
-    private void OnFire(InputAction.CallbackContext context)
+    private void OnFireStart(InputAction.CallbackContext _) 
     {
-        if(context.performed) 
-        {
-            Debug.Log("OnFire : 눌러짐");
-            //Instantiate(bulletPrefeb, transform); 총알이 자식으로 들어감
-            shooting = true;
-            StartCoroutine(ShootCoroutine());
-        }
-        if(context.canceled) 
-        {
-            Debug.Log("OnFire : 떨어짐");
-            shooting = false;
-        }
+
+
+        /*            Debug.Log("OnFire : 눌러짐");
+                    //Instantiate(bulletPrefeb, transform); 총알이 자식으로 들어감
+
+                    Fire(fireTransform.position);
+                    StartCoroutine(FlashEffect());*/
+        StartCoroutine(fireCoroution);
+        
+        
+    }
+    private void OnFireEnd(InputAction.CallbackContext _)
+    {
+        StopCoroutine(fireCoroution); // 연사중지
     }
 
-    IEnumerator ShootCoroutine()
+    IEnumerator FireCoroution()
     {
-        while(shooting) 
+        while (true) 
         {
-            yield return new WaitForSeconds(interval);
-            GameObject obj = Instantiate(bulletPrefeb, fireTransform.position, Quaternion.identity);
-            Instantiate(shootPrefeb, shoottransform);
+            Fire(fireTransform.position);
+            StartCoroutine(FlashEffect());
+            yield return new WaitForSeconds(fireInterval);
         }
+    }
+    /// <summary>
+    /// 총알을 하나 발사하는 함수
+    /// </summary>
+    /// <param name="position">총알이 발사될 위치</param>
+    /// <param name="angle">총알이 발사될 각도(디폴트로 0)</param>
+    void Fire(Vector3 position, float angle = 0.0f) //파라메터에 값을 넣어두면 함수호출때 않쓰면 디폴트값을 사용
+    {                                               // 디폴트 파라메터는 마지막에 작성해야 효율적
+        Instantiate(bulletPrefeb, position, Quaternion.identity);
+        
+    }
+
+    IEnumerator FlashEffect()
+    {
+ 
+            
+            fireFlash.SetActive(true);// 플래시 이펙트
+            yield return flashWait;
+            fireFlash.SetActive(false);
+        
 
     }
 

@@ -56,13 +56,13 @@ public class Bullet : MonoBehaviour
     // 6. HitEffect는 한번만 재생
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Enemy")) // collision의 게임 오브젝트가 "Enemy"라는 태그를 가지는지 확인하는 함수
-        {                                             // .tag == "Enemy"는 매우 비효율적
+      //  if (collision.gameObject.CompareTag("Enemy")) // collision의 게임 오브젝트가 "Enemy"라는 태그를 가지는지 확인하는 함수
+      //  {                                             // .tag == "Enemy"는 매우 비효율적
            
             /*GameObject obj =*/ Instantiate(HitEffectPrefeb,transform.position,Quaternion.Euler(0,0,Random.value*360f)); // hit 이펙트 생성
             // Destroy(obj, obj.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
             Destroy(this.gameObject);
-        } 
+      //  } 
 
 
     }
