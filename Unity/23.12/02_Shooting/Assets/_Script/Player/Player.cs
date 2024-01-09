@@ -43,11 +43,13 @@ public class Player : MonoBehaviour
     
     public float fireInterval = 0.5f;
 
+    
+
     int score = 0;
-    int Score
+    public int Score
     {
-        get=> score;
-        set
+        get=> score; // 읽기는 public
+        private set // 쓰기는 private
         {
             if(score != value)
             {
@@ -200,9 +202,11 @@ public class Player : MonoBehaviour
     // 실습
     // 누르고 있으면 계속 그쪽 방향으로 이동하게 만들기
 
+
     // 이 스크립트가 포함된 게임오브젝트의 첫번째 Update함수가 실행되기 직전에 실행
     private void Start()
     {
+        
         
     }
 
@@ -286,4 +290,7 @@ public class Player : MonoBehaviour
         Score += getScore;
 
     }
+
+
+
 }
