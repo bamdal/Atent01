@@ -25,7 +25,9 @@ public class Astar : MonoBehaviour
     public GameObject player;
     Vector3 playerV3, enemyV3;
 
-    bool Detection = false;
+    public bool move = false;
+    bool Detection = true;
+    bool findPlayer = false;
     int sizeX, sizeY;
     Node[,] NodeArray;
     Node StartNode, TargetNode, CurNode;
@@ -33,80 +35,87 @@ public class Astar : MonoBehaviour
 
     BoxCollider2D DetectionCollider;
 
+    public float speed = 7.0f;
+
+    public float someThreshold = 0.1f;
+
     public void PathFinding()
     {
-        if (Detection)
+        if (Detection && !findPlayer)
         {
+            Debug.Log("찾기 시작");
+            move = true;
+            StopAllCoroutines();
 
-        
-        playerV3 = player.transform.position;
-        enemyV3 = this.transform.position;
-        
-      
-        playerPos = new Vector2Int((int)playerV3.x, (int)playerV3.y);
-        monsterPos = new Vector2Int((int)enemyV3.x, (int)enemyV3.y);
-        detectionbottomLeft = new Vector2Int((int)enemyV3.x - detectionRange, (int)enemyV3.y - detectionRange);
-        detectiontopRight = new Vector2Int((int)enemyV3.x + detectionRange, (int)enemyV3.y + detectionRange);
+            playerV3 = player.transform.position;
+            enemyV3 = this.transform.position;
 
-        
 
-        sizeX = detectiontopRight.x - detectionbottomLeft.x + 1;
-        sizeY = detectiontopRight.y - detectionbottomLeft.y + 1;
-        NodeArray = new Node[sizeX, sizeY];
+            playerPos = new Vector2Int((int)playerV3.x, (int)playerV3.y);
+            monsterPos = new Vector2Int((int)enemyV3.x, (int)enemyV3.y);
+            detectionbottomLeft = new Vector2Int((int)enemyV3.x - detectionRange, (int)enemyV3.y - detectionRange);
+            detectiontopRight = new Vector2Int((int)enemyV3.x + detectionRange, (int)enemyV3.y + detectionRange);
 
-        for(int i = 0; i < sizeX; i++)
-        {
-            for(int j = 0; j < sizeY; j++)
+
+
+            sizeX = detectiontopRight.x - detectionbottomLeft.x + 1;
+            sizeY = detectiontopRight.y - detectionbottomLeft.y + 1;
+            NodeArray = new Node[sizeX, sizeY];
+
+            for (int i = 0; i < sizeX; i++)
             {
-                bool isWall = false;
-                foreach(Collider2D col in Physics2D.OverlapCircleAll(new Vector2(i+detectionbottomLeft.x,j+detectionbottomLeft.y), 0.4f))
-                    if(col.gameObject.layer == LayerMask.NameToLayer("Wall")) isWall = true; // 벽 감지 하기
-
-                NodeArray[i,j] = new Node(isWall, i+ detectionbottomLeft.x, j+detectionbottomLeft.y); // 감지할 공간을 배열로 설정
-            }
-        }
-
-        StartNode = NodeArray[monsterPos.x - detectionbottomLeft.x, monsterPos.y - detectionbottomLeft.y];
-        TargetNode = NodeArray[playerPos.x-detectionbottomLeft.x,playerPos.y-detectionbottomLeft.y];
-
-        OpenList = new List<Node>() { StartNode };
-        ClosedList = new List<Node>();
-        FinalNodeList = new List<Node>();
-
-        while (OpenList.Count > 0)
-        {
-            CurNode = OpenList[0];
-            for(int i = 0; i<OpenList.Count; i++) {
-                if (OpenList[i].F <= CurNode.F && OpenList[i].H < CurNode.H) { CurNode = OpenList[i]; }
-            }
-
-            OpenList.Remove(CurNode);
-            ClosedList.Add(CurNode);
-
-            if(CurNode == TargetNode) 
-            {
-                Node TargetCurNode = TargetNode;
-                while(TargetCurNode != StartNode)
+                for (int j = 0; j < sizeY; j++)
                 {
-                    FinalNodeList.Add(TargetCurNode);
-                    TargetCurNode = TargetCurNode.ParentNode;
+                    bool isWall = false;
+                    foreach (Collider2D col in Physics2D.OverlapCircleAll(new Vector2(i + detectionbottomLeft.x, j + detectionbottomLeft.y), 0.4f))
+                        if (col.gameObject.layer == LayerMask.NameToLayer("Wall")) isWall = true; // 벽 감지 하기
+
+                    NodeArray[i, j] = new Node(isWall, i + detectionbottomLeft.x, j + detectionbottomLeft.y); // 감지할 공간을 배열로 설정
                 }
-                FinalNodeList.Add(StartNode);
-                FinalNodeList.Reverse();
             }
 
-            OpenListAdd(CurNode.x+1, CurNode.y+1);
-            OpenListAdd(CurNode.x-1, CurNode.y+1);
-            OpenListAdd(CurNode.x-1, CurNode.y-1);
-            OpenListAdd(CurNode.x + 1, CurNode.y + 1);
-            OpenListAdd(CurNode.x, CurNode.y + 1);
-            OpenListAdd(CurNode.x+1,CurNode.y);
-            OpenListAdd(CurNode.x,CurNode.y-1);
-            OpenListAdd(CurNode.x - 1, CurNode.y);
+            StartNode = NodeArray[monsterPos.x - detectionbottomLeft.x, monsterPos.y - detectionbottomLeft.y];
+            TargetNode = NodeArray[playerPos.x - detectionbottomLeft.x, playerPos.y - detectionbottomLeft.y];
 
-        }
-          
-                  
+            OpenList = new List<Node>() { StartNode };
+            ClosedList = new List<Node>();
+            FinalNodeList = new List<Node>();
+
+            while (OpenList.Count > 0)
+            {
+                CurNode = OpenList[0];
+                for (int i = 0; i < OpenList.Count; i++)
+                {
+                    if (OpenList[i].F <= CurNode.F && OpenList[i].H < CurNode.H) { CurNode = OpenList[i]; }
+                }
+
+                OpenList.Remove(CurNode);
+                ClosedList.Add(CurNode);
+
+                if (CurNode == TargetNode)
+                {
+                    Node TargetCurNode = TargetNode;
+                    while (TargetCurNode != StartNode)
+                    {
+                        FinalNodeList.Add(TargetCurNode);
+                        TargetCurNode = TargetCurNode.ParentNode;
+                    }
+                    FinalNodeList.Add(StartNode);
+                    FinalNodeList.Reverse();
+                }
+
+                OpenListAdd(CurNode.x + 1, CurNode.y + 1);
+                OpenListAdd(CurNode.x - 1, CurNode.y + 1);
+                OpenListAdd(CurNode.x - 1, CurNode.y - 1);
+                OpenListAdd(CurNode.x + 1, CurNode.y + 1);
+                OpenListAdd(CurNode.x, CurNode.y + 1);
+                OpenListAdd(CurNode.x + 1, CurNode.y);
+                OpenListAdd(CurNode.x, CurNode.y - 1);
+                OpenListAdd(CurNode.x - 1, CurNode.y);
+
+            }
+
+            StartCoroutine(OnMove());
         }
     }
 
@@ -126,21 +135,7 @@ public class Astar : MonoBehaviour
             Detection = false;
         }
     }
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.collider.CompareTag("Player"))
-        {
-            Detection = false;
-        }
-    }
 
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        if (collision.collider.CompareTag("Player"))
-        {
-            Detection = true;
-        }
-    }
     void OpenListAdd(int checkX, int checkY)
     {
         if(checkX >= detectionbottomLeft.x && checkX<detectiontopRight.x +1 // 감지범위 안
@@ -168,9 +163,10 @@ public class Astar : MonoBehaviour
     void OnDrawGizmos()
     {
 
-        if (FinalNodeList.Count != 0) for (int i = 0; i < FinalNodeList.Count - 1; i++)
+ /*       if (FinalNodeList.Count != 0) for (int i = 0; i < FinalNodeList.Count - 1; i++)
                 Gizmos.DrawLine(new Vector2(FinalNodeList[i].x, FinalNodeList[i].y), new Vector2(FinalNodeList[i + 1].x, FinalNodeList[i + 1].y));
-    
+
+*/
     }
 
 
@@ -181,18 +177,58 @@ public class Astar : MonoBehaviour
         DetectionCollider = this.gameObject.GetComponent<BoxCollider2D>();
         DetectionCollider.size = new Vector2(detectionRange*2, detectionRange*2);
 
-        InvokeRepeating(nameof(PathFinding), 0.0f, 1.0f);
+        //InvokeRepeating(nameof(PathFinding), 0.0f, 1.5f);
         //CancelInvoke(nameof(PathFinding));
+        
 
+    }
+    private void Start()
+    {
+
+        PathFinding();
+    }
+
+    private void FixedUpdate()
+    {
+
+        // Debug.Log(new Vector2(FinalNodeList[1].x-transform.position.x, FinalNodeList[1].y - transform.position.y));
+   /*     float distanceToPlayer = Vector2.Distance(transform.position, player.transform.position);
+        if (distanceToPlayer < someThreshold)
+        {
+            findPlayer = true; Debug.Log(findPlayer);
+        }
+        else
+        {
+            findPlayer = false; Debug.Log(findPlayer);
+            
+        }*/
 
     }
 
-
-    private void Update()
+    IEnumerator OnMove()
     {
-     
-        Debug.Log(new Vector2(FinalNodeList[1].x-transform.position.x, FinalNodeList[1].y - transform.position.y));
+        move = false;
 
-         transform.Translate(7.0f*Time.deltaTime*new Vector2(FinalNodeList[2].x-transform.position.x, FinalNodeList[2].y - transform.position.y));
+        foreach (var node in FinalNodeList)
+        {
+            Vector3 targetPosition = new Vector3(node.x, node.y, transform.position.z);
+
+            while (transform.position != targetPosition)
+            {
+                transform.position = Vector3.MoveTowards(transform.position, targetPosition, speed * Time.deltaTime);
+                yield return null;
+            }
+
+          
+        }
+        yield return StartCoroutine(WaitForPathFinding());
+    }
+    IEnumerator WaitForPathFinding()
+    {
+        // OnMove 코루틴이 끝날 때까지 기다리기
+        yield return new WaitUntil(() => move == false);
+
+        // 모든 노드 이동이 끝난 후에 실행할 로직 추가 가능
+        PathFinding();
     }
 }

@@ -13,16 +13,16 @@ public class Test_Score : TestBase
 
     protected override void OnTest1(InputAction.CallbackContext context)
     {
-        player.AddScore(10);
+        player.AddScore(100);
     }
 
     protected override void OnTest2(InputAction.CallbackContext context)
     {
-        player.AddScore(100);
+        player.AddScore(1000);
     }
 
     protected override void OnTest3(InputAction.CallbackContext context)
     {
-        player.AddScore(1000);
+        player.AddScore(10000);
     }
 }
