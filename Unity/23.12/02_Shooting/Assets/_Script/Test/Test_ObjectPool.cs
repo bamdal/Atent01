@@ -6,10 +6,38 @@ using UnityEngine.InputSystem;
 public class Test_ObjectPool : TestBase
 {
     // Start is called before the first frame update
-    public BulletPool pool;
+    public BulletPool bulletPool;
+    public HitPool hitPool;
+    public EnemyPool enemyPool;
+    public ExplosionPool explosionPool;
+
+    private void Start()
+    {
+/*        pool.Initialize();
+        hitPool.Initialize();
+        enemyPool.Initialize();
+        explosionPool.Initialize();*/
+    }
 
     protected override void OnTest1(InputAction.CallbackContext context)
     {
-        pool.Initialize();
+        Bullet bullet = bulletPool.GetObject();// 풀에서 오브젝트 하나 꺼내기
+    }
+    protected override void OnTest2(InputAction.CallbackContext context)
+    {
+        // hit
+        HitEffect hitEffect = hitPool.GetObject();
+    }
+
+    protected override void OnTest3(InputAction.CallbackContext context)
+    {
+        // enemy
+        Enemy enemy = enemyPool.GetObject();
+    }
+
+    protected override void OnTest4(InputAction.CallbackContext context)
+    {
+        // explosion
+        Explosion explosion = explosionPool.GetObject();
     }
 }

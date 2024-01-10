@@ -3,19 +3,26 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class Bullet : MonoBehaviour
+public class Bullet : RecycleObject
 {
     //시작하자마자 오른쪽으로 초속 7로 움직이게 만들기
     Vector3 bulletVector = Vector3.right;
     public float bulletSpeed = 7.0f;
     public GameObject HitEffectPrefeb;
 
-    public float LifeTime = 10.0f;
+    public float LifeTime = 3.0f;
     //bool BV = true;
     //float i = 0;
-    private void Awake()
+/*    private void OnEnable()
     {
-        Destroy(this.gameObject,LifeTime);
+        //Destroy(this.gameObject,LifeTime);
+       
+    }*/
+
+    protected override void OnEnable()
+    {
+        base.OnEnable();
+        StartCoroutine(LifeOver(LifeTime));
     }
     // Update is called once per frame
     void Update()
@@ -63,10 +70,10 @@ public class Bullet : MonoBehaviour
       //  {                                             // .tag == "Enemy"는 매우 비효율적
            
             /*GameObject obj =*/ Instantiate(HitEffectPrefeb,transform.position,Quaternion.Euler(0,0,Random.value*360f)); // hit 이펙트 생성
-            // Destroy(obj, obj.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
-            Destroy(this.gameObject);
-      //  } 
-
+                                                                                                                          // Destroy(obj, obj.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
+                                                                                                                          //Destroy(this.gameObject);
+                                                                                                                          //  } 
+        gameObject.SetActive(false);
 
     }
 }

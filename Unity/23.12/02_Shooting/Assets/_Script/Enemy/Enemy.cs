@@ -7,7 +7,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class Enemy : MonoBehaviour
+public class Enemy : RecycleObject
 {
     // 3. 적은 위아래로 파도 치듯이 움직인다.
     // 4. 계속 왼쪽 방향으로 이동한다.
@@ -66,6 +66,8 @@ public class Enemy : MonoBehaviour
 
     public float MaxHP { get => maxHP; set => maxHP = value; }
 
+    Player player;
+
     private void Awake()
     {
 /*        VectorY = transform.position.y;
@@ -73,8 +75,12 @@ public class Enemy : MonoBehaviour
         Mathf.Cos(Time.deltaTime*90.0f * Mathf.Deg2Rad); //90도를 라디안으로 변경해 Cos결과구하기*/
     }
 
-    private void Start()
+
+
+    protected override void OnEnable()
     {
+        base.OnEnable();
+        OnInitialize();
         spawnY = transform.position.y;
         elapsedTime = 0.0f;
 
@@ -83,9 +89,26 @@ public class Enemy : MonoBehaviour
         Func<int> ccc = () => 10; // 10을 리턴하는 람다식
 
 
-        Player player = FindAnyObjectByType<Player>();
+      
         //onDie += player.AddScore;
-        onDie += () => player.AddScore(score); // 죽을 때 플레이어의 AddScore함수에 파라메터로 score넣기
+        //onDie += () => player.AddScore(score); // 죽을 때 플레이어의 AddScore함수에 파라메터로 score넣기
+
+    }
+
+    protected override void OnDisable()
+    {
+        if(player != null)
+        {
+            onDie -= PlayerAddScore;
+            onDie = null;
+            player = null;
+        }
+        base.OnDisable();
+    }
+
+    void PlayerAddScore()
+    {
+        player.AddScore(score);
     }
     private void Update()
     {
@@ -135,6 +158,21 @@ public class Enemy : MonoBehaviour
         {
             Hp--;
         }
+    }
+
+    private void OnInitialize()
+    {
+        if(player == null)
+        {
+            player = FindAnyObjectByType<Player>();
+        }
+
+        if(player != null)
+        {
+            //onDie += () => player.AddScore(score); // 죽을 때 플레이어의 AddScore함수에 파라메터로 score넣기
+            onDie += PlayerAddScore;
+        }
+
     }
     // 실습 
     // 1. 적에게 HP 추가 (3대 맞으면 폭발)

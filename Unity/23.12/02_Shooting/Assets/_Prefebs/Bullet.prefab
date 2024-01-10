@@ -102,6 +102,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bulletSpeed: 7
   HitEffectPrefeb: {fileID: 2355538394071159975, guid: 15f0a66d62535304fb2a42525c3a3097, type: 3}
+  LifeTime: 7
 --- !u!95 &6785083950133847908
 Animator:
   serializedVersion: 5
