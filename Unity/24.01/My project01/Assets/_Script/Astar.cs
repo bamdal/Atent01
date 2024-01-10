@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -22,12 +23,12 @@ public class Astar : MonoBehaviour
     public Vector2Int monsterPos, playerPos, detectionbottomLeft, detectiontopRight;
     public int detectionRange = 10;
     public List<Node> FinalNodeList;
-    public GameObject player;
+    public Player player;
     Vector3 playerV3, enemyV3;
 
-    public bool move = false;
+    public bool astarmove = false;
     bool Detection = true;
-    bool findPlayer = false;
+    //bool findPlayer = false;
     int sizeX, sizeY;
     Node[,] NodeArray;
     Node StartNode, TargetNode, CurNode;
@@ -39,14 +40,18 @@ public class Astar : MonoBehaviour
 
     public float someThreshold = 0.1f;
 
+    public Action FindPlayer;
+    public Action<float> animdirection;
+
     public void PathFinding()
     {
-        if (Detection && !findPlayer)
+        if (Detection && !astarmove)
         {
             Debug.Log("찾기 시작");
-            move = true;
+            
             StopAllCoroutines();
-
+            if(player == null) { return; }
+            astarmove = true;
             playerV3 = player.transform.position;
             enemyV3 = this.transform.position;
 
@@ -123,7 +128,8 @@ public class Astar : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         { 
-             Detection = true;
+            Detection = false;
+            FindPlayer?.Invoke();
         }
              
     }
@@ -132,7 +138,8 @@ public class Astar : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
-            Detection = false;
+            Detection = true;
+            PathFinding();
         }
     }
 
@@ -174,6 +181,7 @@ public class Astar : MonoBehaviour
     private void Awake()
     {
         // public Vector2Int monsterPos, playerPos, detectionbottomLeft, detectiontopRight;
+        player = FindAnyObjectByType<Player>();
         DetectionCollider = this.gameObject.GetComponent<BoxCollider2D>();
         DetectionCollider.size = new Vector2(detectionRange*2, detectionRange*2);
 
@@ -207,7 +215,7 @@ public class Astar : MonoBehaviour
 
     IEnumerator OnMove()
     {
-        move = false;
+        astarmove = false;
 
         foreach (var node in FinalNodeList)
         {
@@ -216,6 +224,8 @@ public class Astar : MonoBehaviour
             while (transform.position != targetPosition)
             {
                 transform.position = Vector3.MoveTowards(transform.position, targetPosition, speed * Time.deltaTime);
+                animdirection?.Invoke(targetPosition.x); /// 안됨 수정!!!
+                
                 yield return null;
             }
 
@@ -226,7 +236,7 @@ public class Astar : MonoBehaviour
     IEnumerator WaitForPathFinding()
     {
         // OnMove 코루틴이 끝날 때까지 기다리기
-        yield return new WaitUntil(() => move == false);
+        yield return new WaitUntil(() => astarmove == false);
 
         // 모든 노드 이동이 끝난 후에 실행할 로직 추가 가능
         PathFinding();
