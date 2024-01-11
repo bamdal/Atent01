@@ -331,6 +331,73 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &240613916 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5366067214034241347, guid: 4878144bd5ad6504b919a1afb2862f97,
+    type: 3}
+  m_PrefabInstance: {fileID: 759688768}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d22da6d274c8344ead1a3c188c69a0a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1 &330713665
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 330713667}
+  - component: {fileID: 330713666}
+  m_Layer: 0
+  m_Name: Astar
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &330713666
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 330713665}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3858b039b60332f499319ae21d60961b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  monsterPos: {x: 0, y: 0}
+  playerPos: {x: 0, y: 0}
+  detectionbottomLeft: {x: 0, y: 0}
+  detectiontopRight: {x: 0, y: 0}
+  detectionRange: 10
+  player: {fileID: 8814419565265521055, guid: 44b2328d3be90024e93b9aa08ee62fc8, type: 3}
+  enemy:
+  - {fileID: 240613916}
+  astarmove: 0
+  speed: 7
+  someThreshold: 0.1
+--- !u!4 &330713667
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 330713665}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -2.4867873, y: 4.550771, z: -0.14556178}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &696084857
 GameObject:
   m_ObjectHideFlags: 0
@@ -416,31 +483,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 423294093592709423, guid: 4878144bd5ad6504b919a1afb2862f97,
-        type: 3}
-      propertyPath: m_IsTrigger
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 812734979357885571, guid: 4878144bd5ad6504b919a1afb2862f97,
-        type: 3}
-      propertyPath: m_BodyType
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1730066726757549526, guid: 4878144bd5ad6504b919a1afb2862f97,
+    - target: {fileID: 5366067214034241347, guid: 4878144bd5ad6504b919a1afb2862f97,
         type: 3}
       propertyPath: player
       value: 
       objectReference: {fileID: 1963411458}
-    - target: {fileID: 1730066726757549526, guid: 4878144bd5ad6504b919a1afb2862f97,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2783178582228116901, guid: 4878144bd5ad6504b919a1afb2862f97,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 7419107750770101687, guid: 4878144bd5ad6504b919a1afb2862f97,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -495,16 +542,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Goblin
-      objectReference: {fileID: 0}
-    - target: {fileID: 8206010768778100953, guid: 4878144bd5ad6504b919a1afb2862f97,
-        type: 3}
-      propertyPath: m_Layer
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 8206010768778100953, guid: 4878144bd5ad6504b919a1afb2862f97,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -11691,6 +11728,11 @@ PrefabInstance:
       propertyPath: m_BodyType
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4233125990593323509, guid: 44b2328d3be90024e93b9aa08ee62fc8,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8110990656812346404, guid: 44b2328d3be90024e93b9aa08ee62fc8,
         type: 3}
       propertyPath: m_IsTrigger
@@ -11767,3 +11809,4 @@ SceneRoots:
   - {fileID: 1676780038}
   - {fileID: 788624353}
   - {fileID: 759688768}
+  - {fileID: 330713667}

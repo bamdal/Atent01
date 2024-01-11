@@ -24,6 +24,7 @@ public class Astar : MonoBehaviour
     public int detectionRange = 10;
     public List<Node> FinalNodeList;
     public Player player;
+    public Enemy[] enemy;
     Vector3 playerV3, enemyV3;
 
     public bool astarmove = false;
@@ -34,16 +35,15 @@ public class Astar : MonoBehaviour
     Node StartNode, TargetNode, CurNode;
     List<Node> OpenList, ClosedList;
 
-    BoxCollider2D DetectionCollider;
+   
 
     public float speed = 7.0f;
 
     public float someThreshold = 0.1f;
 
-    public Action FindPlayer;
-    public Action<float> animdirection;
 
-    public void PathFinding()
+
+    protected virtual void PathFinding()
     {
         if (Detection && !astarmove)
         {
@@ -53,7 +53,7 @@ public class Astar : MonoBehaviour
             if(player == null) { return; }
             astarmove = true;
             playerV3 = player.transform.position;
-            enemyV3 = this.transform.position;
+            enemyV3 = enemy[0].transform.position;
 
 
             playerPos = new Vector2Int((int)playerV3.x, (int)playerV3.y);
@@ -120,28 +120,11 @@ public class Astar : MonoBehaviour
 
             }
 
-            StartCoroutine(OnMove());
+            //StartCoroutine(OnMove());
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.CompareTag("Player"))
-        { 
-            Detection = false;
-            FindPlayer?.Invoke();
-        }
-             
-    }
 
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        if (collision.CompareTag("Player"))
-        {
-            Detection = true;
-            PathFinding();
-        }
-    }
 
     void OpenListAdd(int checkX, int checkY)
     {
@@ -182,19 +165,15 @@ public class Astar : MonoBehaviour
     {
         // public Vector2Int monsterPos, playerPos, detectionbottomLeft, detectiontopRight;
         player = FindAnyObjectByType<Player>();
-        DetectionCollider = this.gameObject.GetComponent<BoxCollider2D>();
-        DetectionCollider.size = new Vector2(detectionRange*2, detectionRange*2);
+
 
         //InvokeRepeating(nameof(PathFinding), 0.0f, 1.5f);
         //CancelInvoke(nameof(PathFinding));
         
 
     }
-    private void Start()
-    {
 
-        PathFinding();
-    }
+    
 
     private void FixedUpdate()
     {
@@ -213,7 +192,7 @@ public class Astar : MonoBehaviour
 
     }
 
-    IEnumerator OnMove()
+/*    IEnumerator OnMove()
     {
         astarmove = false;
 
@@ -240,5 +219,5 @@ public class Astar : MonoBehaviour
 
         // 모든 노드 이동이 끝난 후에 실행할 로직 추가 가능
         PathFinding();
-    }
+    }*/
 }
