@@ -37,6 +37,7 @@ public class Enemy : RecycleObject
     /// </summary>
     Action onDie;
 
+
     // 람다식, 람다함수(Lambda), 익명함수
 
 
@@ -68,6 +69,9 @@ public class Enemy : RecycleObject
 
     Player player;
 
+
+
+
     private void Awake()
     {
 /*        VectorY = transform.position.y;
@@ -84,9 +88,9 @@ public class Enemy : RecycleObject
         spawnY = transform.position.y;
         elapsedTime = 0.0f;
 
-        Action aaa = () => Debug.Log("람다함수"); // 파라메터 없는 람다식
-        Action<int> bbb = (x) => Debug.Log($"람다함수 {x}"); // 파라메터 하나인 람다식
-        Func<int> ccc = () => 10; // 10을 리턴하는 람다식
+        //Action aaa = () => Debug.Log("람다함수"); // 파라메터 없는 람다식
+        //Action<int> bbb = (x) => Debug.Log($"람다함수 {x}"); // 파라메터 하나인 람다식
+        //Func<int> ccc = () => 10; // 10을 리턴하는 람다식
 
 
       
@@ -142,14 +146,14 @@ public class Enemy : RecycleObject
 
     private void OnDie()
     {
-        Instantiate(enemyExplosion,transform.position, Quaternion.Euler(0, 0, UnityEngine.Random.value * 360f));
-        
+        //Instantiate(enemyExplosion,transform.position, Quaternion.Euler(0, 0, UnityEngine.Random.value * 360f));
+        Factory.Instance.GetExplosionEffect(transform.position);
 /*        Player player = FindAnyObjectByType<Player>();
         player.EnemyObj(this.gameObject);*/
         //player.AddScore(score);
         onDie?.Invoke();
 
-        Destroy(this.gameObject);
+        gameObject.SetActive(false);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -173,6 +177,16 @@ public class Enemy : RecycleObject
             onDie += PlayerAddScore;
         }
 
+    }
+
+    /// <summary>
+    /// 시작 위치를 설정하는 함수
+    /// </summary>
+    /// <param name="position"></param>
+    public void SetStartPosition(Vector3 position)
+    {
+        transform.position = position;
+        spawnY = position.y;
     }
     // 실습 
     // 1. 적에게 HP 추가 (3대 맞으면 폭발)

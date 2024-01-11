@@ -20,7 +20,7 @@ public class EnemySpawner : MonoBehaviour
     const float MaxY = 4.0f;
 
     //float elapsedTime = 0.0f;
-    int spwanCounter=0;
+    //int spwanCounter=0;
  
 
     private void Awake()
@@ -31,7 +31,7 @@ public class EnemySpawner : MonoBehaviour
     private void Start()
     {
         //elapsedTime = 0.0f;
-        spwanCounter = 0;
+        //spwanCounter = 0;
         StartCoroutine(SpawnCoroution());
     }
 
@@ -68,10 +68,13 @@ public class EnemySpawner : MonoBehaviour
 
     private void Spawn() // 적을 하나 스폰
     {
-        GameObject obj = Instantiate(enemyPrefeb, GetSpawnPosition(),Quaternion.identity);
-        obj.transform.SetParent(transform);
-        obj.name = $"Enemy_{spwanCounter}";
-        spwanCounter++;
+        //GameObject obj = Instantiate(enemyPrefeb, GetSpawnPosition(),Quaternion.identity);
+        //obj.transform.SetParent(transform);
+        //obj.name = $"Enemy_{spwanCounter}";
+        //spwanCounter++;
+
+        Enemy enemy = Factory.Instance.GetEnemy(GetSpawnPosition());
+        //enemy.transform.SetParent(transform);
     }
 
     Vector3 GetSpawnPosition() // 스폰할 위치를 리턴

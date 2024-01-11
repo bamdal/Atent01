@@ -15,17 +15,17 @@ public class ObjectPool<T> : MonoBehaviour where T : RecycleObject// 제네릭�
     /// T타입으로 지정된 오브젝트의 배열
     /// </summary>
     T[] pool;
-    
+
     /// <summary>
     /// 현재 사용가능한(비활성화되어있는) 오브젝트들을 관리하는 큐
     /// </summary>
     Queue<T> readyQueue;
 
-    private void Awake()
-    {
-        Initialize();
-    }
-
+    /*    private void Awake()
+        {
+            Initialize();
+        }
+    */
     public void Initialize()
     {
         if (pool == null) // pool이 아직 만들어지지 않은 경우
@@ -50,9 +50,9 @@ public class ObjectPool<T> : MonoBehaviour where T : RecycleObject// 제네릭�
     /// <returns> 플에서 꺼낸 오브젝트 (활성화됨)</returns>
     public T GetObject()
     {
-        if(readyQueue.Count > 0) // 레디큐 오브젝트 확인
+        if (readyQueue.Count > 0) // 레디큐 오브젝트 확인
         {
-            T comp =  readyQueue.Dequeue();// 남아있으면 하나 꺼내고
+            T comp = readyQueue.Dequeue();// 남아있으면 하나 꺼내고
             comp.gameObject.SetActive(true);// 활성화시킨후
             return comp;                    // 리턴
         }
@@ -61,7 +61,7 @@ public class ObjectPool<T> : MonoBehaviour where T : RecycleObject// 제네릭�
             // 레디큐가 비어있다. == 남은 오브젝트가 없음
             ExpandPool();       // 풀을 두배로 확장하고
             return GetObject(); // 새로 하나 꺼낸다.
-        }    
+        }
     }
 
     /// <summary>
@@ -70,11 +70,11 @@ public class ObjectPool<T> : MonoBehaviour where T : RecycleObject// 제네릭�
     void ExpandPool()
     {
         // 최대한 일어나면 안되니 경고 디버그
-        Debug.LogWarning($"{gameObject.name} 풀사이즈 증가. {poolSize} -> {poolSize*2}");
-        
+        Debug.LogWarning($"{gameObject.name} 풀사이즈 증가. {poolSize} -> {poolSize * 2}");
+
         int newSize = poolSize * 2;         // 새로운 풀의 크기 지정
         T[] newPool = new T[newSize];       // 새로운 풀 생성
-        for(int i = 0; i < poolSize; i++)   // 이전 풀을 새풀에 복사
+        for (int i = 0; i < poolSize; i++)   // 이전 풀을 새풀에 복사
         {
             newPool[i] = pool[i];
         }

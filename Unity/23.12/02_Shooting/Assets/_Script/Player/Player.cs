@@ -159,8 +159,8 @@ public class Player : MonoBehaviour
     /// <param name="angle">총알이 발사될 각도(디폴트로 0)</param>
     void Fire(Vector3 position, float angle = 0.0f) //파라메터에 값을 넣어두면 함수호출때 않쓰면 디폴트값을 사용
     {                                               // 디폴트 파라메터는 마지막에 작성해야 효율적
-        Instantiate(bulletPrefeb, position, Quaternion.identity);
-        
+        //Instantiate(bulletPrefeb, position, Quaternion.identity);
+        Factory.Instance.GetBullet(position); // 팩토리를 이용해 총알 생성
     }
 
     IEnumerator FlashEffect()
@@ -246,9 +246,10 @@ public class Player : MonoBehaviour
     {
         // 충돌이 시작했을 때 실행
         Debug.Log($"OnCollisionEnter2D : {collision.gameObject.name}");
-        Destroy(collision.gameObject); // 충돌 대상제거
-       
-        
+        //Destroy(collision.gameObject); // 충돌 대상제거
+        collision.gameObject.SetActive(false);
+
+
     }
 
     private void OnCollisionStay2D(Collision2D collision)
