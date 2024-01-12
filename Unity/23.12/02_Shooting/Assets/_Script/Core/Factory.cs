@@ -11,7 +11,8 @@ public enum PoolObjectType
     PlayerBullet = 0,   // 플레이어 총알
     Hit,                // 총알이 터지는 이펙트
     ExplosionEffect,    // 적이 터지는 이펙트
-    Enemy               // 적
+    Enemy,              // 적
+    Asteroid            // 유성 
 }
 
 public class Factory : Singleton<Factory>
@@ -21,6 +22,7 @@ public class Factory : Singleton<Factory>
     HitPool hit;
     ExplosionPool explosion;
     EnemyPool enemy;
+    AsteroidPool asteroid;
 
     /// <summary>
     /// 씬이 로딩이 완료 될때마다 실행되는 초기화 함수
@@ -42,6 +44,11 @@ public class Factory : Singleton<Factory>
         enemy = GetComponentInChildren<EnemyPool>();
         if (enemy != null)
             enemy.Initialize();
+        asteroid = GetComponentInChildren<AsteroidPool>();
+        if (asteroid != null)
+            asteroid.Initialize();
+            
+            
     }
 
     /// <summary>
@@ -65,6 +72,9 @@ public class Factory : Singleton<Factory>
                 break;
             case PoolObjectType.Enemy:
                 result = enemy.GetObject().gameObject;
+                break;
+            case PoolObjectType.Asteroid:
+                result = asteroid.GetObject().gameObject;
                 break;
             default:
                 break;
@@ -151,4 +161,18 @@ public class Factory : Singleton<Factory>
         enemyComp.SetStartPosition(position); // 적의 spanwY 지정하기 위한 용도
         return enemyComp;
     }
+
+    public Asteroid GetAsteroid()
+    {
+        return asteroid.GetObject();
+    }
+
+    public Asteroid GetAsteroid(Vector3 position)
+    {
+        Asteroid comp = asteroid.GetObject();
+        comp.transform.position=position;
+        return comp;
+    }
+
+
 }
