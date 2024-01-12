@@ -11,8 +11,8 @@ public enum PoolObjectType
     PlayerBullet = 0,   // 플레이어 총알
     Hit,                // 총알이 터지는 이펙트
     ExplosionEffect,    // 적이 터지는 이펙트
-    Enemy,              // 적
-    Asteroid            // 유성 
+    EnemyWave,              // 적
+    EnemyAsteroid            // 유성 
 }
 
 public class Factory : Singleton<Factory>
@@ -70,10 +70,10 @@ public class Factory : Singleton<Factory>
             case PoolObjectType.ExplosionEffect:
                 result = explosion.GetObject().gameObject;
                 break;
-            case PoolObjectType.Enemy:
+            case PoolObjectType.EnemyWave:
                 result = enemy.GetObject().gameObject;
                 break;
-            case PoolObjectType.Asteroid:
+            case PoolObjectType.EnemyAsteroid:
                 result = asteroid.GetObject().gameObject;
                 break;
             default:
@@ -97,8 +97,8 @@ public class Factory : Singleton<Factory>
 
         switch (type) // 개별적으로 추가 처리가 필요한 오브젝트들
         {
-            case PoolObjectType.Enemy:
-                Enemy enemy = obj.GetComponent<Enemy>();
+            case PoolObjectType.EnemyWave:
+                Wave enemy = obj.GetComponent<Wave>();
                 enemy.SetStartPosition(position); // 적의 spawnY 지정
                 break;
         }
@@ -150,14 +150,14 @@ public class Factory : Singleton<Factory>
         return comp;
     }
 
-    public Enemy GetEnemy()
+    public Wave GetEnemyWave()
     {
         return enemy.GetObject();
     }
 
-    public Enemy GetEnemy(Vector3 position)
+    public Wave GetEnemyWave(Vector3 position)
     {
-        Enemy enemyComp = enemy.GetObject();
+        Wave enemyComp = enemy.GetObject();
         enemyComp.SetStartPosition(position); // 적의 spanwY 지정하기 위한 용도
         return enemyComp;
     }

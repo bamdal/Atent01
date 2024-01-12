@@ -32,7 +32,7 @@ public class Test_ObjectPool : TestBase
     protected override void OnTest3(InputAction.CallbackContext context)
     {
         // enemy
-        Enemy enemy = enemyPool.GetObject();
+        Wave enemy = enemyPool.GetObject();
     }
 
     protected override void OnTest4(InputAction.CallbackContext context)

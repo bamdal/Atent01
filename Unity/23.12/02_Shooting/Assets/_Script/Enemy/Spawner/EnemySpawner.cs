@@ -73,7 +73,7 @@ public class EnemySpawner : MonoBehaviour
         //obj.name = $"Enemy_{spwanCounter}";
         //spwanCounter++;
 
-        Factory.Instance.GetEnemy(GetSpawnPosition());
+        Factory.Instance.GetEnemyWave(GetSpawnPosition());
         //Enemy enemy = Factory.Instance.GetEnemy(GetSpawnPosition());
         //enemy.transform.SetParent(transform);
     }

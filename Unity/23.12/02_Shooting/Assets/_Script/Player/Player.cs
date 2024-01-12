@@ -244,11 +244,11 @@ public class Player : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        // 충돌이 시작했을 때 실행
+/*        // 충돌이 시작했을 때 실행
         Debug.Log($"OnCollisionEnter2D : {collision.gameObject.name}");
         //Destroy(collision.gameObject); // 충돌 대상제거
         collision.gameObject.SetActive(false);
-
+*/
 
     }
 
