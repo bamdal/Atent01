@@ -11,11 +11,33 @@ public class Enemy : Astar
     Astar astar;
     List<Node> FinalList;
     readonly int Enemy_Move = Animator.StringToHash("IsMoving");
+    readonly int Enemy_Attack = Animator.StringToHash("IsAttack");
+   
+    float attackTime = 0.0f;
+
+/*    private float GetAnimLength(string animName)
+    {
+        float time = 0;
+        RuntimeAnimatorController ac = animator.runtimeAnimatorController;
+
+        for (int i = 0; i < ac.animationClips.Length; i++)
+        {
+            if (ac.animationClips[i].name == animName)
+            {
+                time = ac.animationClips[i].length;
+            }
+        }
+
+        return time;
+    }*/
+
     private void Awake()
     {
         animator = GetComponent<Animator>();
         astar = GetComponent<Astar>();
+        
         PathFinding();
+
     }
 
     protected override void PathFinding()
@@ -46,12 +68,13 @@ public class Enemy : Astar
         }
         animator.SetBool(Enemy_Move, false);
         yield return StartCoroutine(WaitForPathFinding());
+        
     }
     IEnumerator WaitForPathFinding()
     {
         // OnMove 코루틴이 끝날 때까지 기다리기
         yield return new WaitUntil(() => astarmove == false);
-
+       
         // 모든 노드 이동이 끝난 후에 실행할 로직 추가 가능
         PathFinding();
     }
@@ -77,6 +100,7 @@ public class Enemy : Astar
     {
         Debug.Log("멈춤");
         animator.SetBool(Enemy_Move, false);
+        StartCoroutine(EnemyAttack());
         astar.astarmove = true;
     }
 
@@ -86,6 +110,13 @@ public class Enemy : Astar
         astar.astarmove = false;
     }
 
+   IEnumerator EnemyAttack()
+    {
+        animator.SetBool(Enemy_Attack, true);
+        
+        yield return new WaitForSeconds(0.667f);
+        animator.SetBool(Enemy_Attack, false);
+    }
     private void IsAttack()
     {
         Debug.Log("Enemy 공격");

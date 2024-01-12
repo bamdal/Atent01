@@ -80,6 +80,11 @@ public class Astar : MonoBehaviour
             }
 
             StartNode = NodeArray[monsterPos.x - detectionbottomLeft.x, monsterPos.y - detectionbottomLeft.y];
+            if (sizeX * sizeY < (playerPos.x - detectionbottomLeft.x) * (playerPos.y - detectionbottomLeft.y) || sizeX * sizeY < -(playerPos.x - detectionbottomLeft.x) * (playerPos.y - detectionbottomLeft.y))
+            {
+                //범위 밖으로 나갔다면  ektl
+                return;
+            }
             TargetNode = NodeArray[playerPos.x - detectionbottomLeft.x, playerPos.y - detectionbottomLeft.y];
 
             OpenList = new List<Node>() { StartNode };
