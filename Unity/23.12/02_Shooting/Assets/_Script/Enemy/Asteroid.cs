@@ -62,6 +62,15 @@ public class Asteroid : RecycleObject
         
     }
 
+    protected override void OnDisable()
+    {
+        base.OnDisable();
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        gameObject.SetActive(false);
+    }
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.green;

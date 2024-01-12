@@ -97,6 +97,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5462974237330517792, guid: 915c322c1a24d374ab71f585a7381683, type: 3}
+      propertyPath: originalPrefeb
+      value: 
+      objectReference: {fileID: 879174160768395299, guid: d17e7a74f0d2398468522d8f8392dd14, type: 3}
     - target: {fileID: 7293662054747915465, guid: 915c322c1a24d374ab71f585a7381683, type: 3}
       propertyPath: m_Name
       value: AsteroidPool
