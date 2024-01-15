@@ -100,7 +100,7 @@ public class AsteroidSpawner : EnemySpawner
     {
         Vector3 pos = destinationArea.position;
         pos.y += UnityEngine.Random.Range(MinY, MaxY);
-
+        
         return pos;
     }
 }

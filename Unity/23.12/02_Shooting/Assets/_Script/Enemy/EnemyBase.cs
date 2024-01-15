@@ -9,6 +9,7 @@ using UnityEngine.UIElements;
 
 public class EnemyBase : RecycleObject
 {
+    [Header("적 기본 data")]
     // 3. 적은 위아래로 파도 치듯이 움직인다.
     // 4. 계속 왼쪽 방향으로 이동한다.
     /*    float MaxY = 4.0f;
@@ -19,13 +20,13 @@ public class EnemyBase : RecycleObject
         public float EnemySpeedX = 1.0f;
         float EnemySpeedY = 1.0f;
     */
-    public float speed = 1.0f;
+    public float moveSpeed = 1.0f;
 /*    public float amplitude = 3.0f; //높이제한
 
     public float frequency = 2.0f; // 사인 그래프가 황복하는데 걸리는 시간 증폭용
 */
 
-    float maxHP =3.0f;
+    public float maxHP =3.0f;
     float hp = 3.0f;
 
     /// <summary>
@@ -149,7 +150,7 @@ public class EnemyBase : RecycleObject
     /// <summary>
     /// 사망처리용 함수
     /// </summary>
-    private void OnDie()
+    protected virtual void OnDie()
     {
         //Instantiate(enemyExplosion,transform.position, Quaternion.Euler(0, 0, UnityEngine.Random.value * 360f));
         Factory.Instance.GetExplosionEffect(transform.position);
@@ -173,7 +174,7 @@ public class EnemyBase : RecycleObject
     /// <summary>
     /// Enemy 계열의 초기화 함수
     /// </summary>
-    private void OnInitialize()
+    protected virtual void OnInitialize()
     {
         if(player == null)
         {
@@ -195,7 +196,7 @@ public class EnemyBase : RecycleObject
     /// <param name="deltaTime">프레임간의 간격</param>
     protected virtual void OnMoveUpdate(float deltaTime)
     {
-        transform.Translate(deltaTime * speed * -transform.right, Space.World); // 기본 동작(왼쪽으로 이동)
+        transform.Translate(deltaTime * moveSpeed * -transform.right, Space.World); // 기본 동작(왼쪽으로 이동)
     }
 
 /*

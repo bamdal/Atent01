@@ -8,7 +8,7 @@ public class Test_ObjectPool : TestBase
     // Start is called before the first frame update
     public BulletPool bulletPool;
     public HitPool hitPool;
-    public EnemyPool enemyPool;
+    public WavePool enemyPool;
     public ExplosionPool explosionPool;
 
     private void Start()

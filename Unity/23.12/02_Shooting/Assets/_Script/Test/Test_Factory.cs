@@ -10,7 +10,7 @@ public class Test_Factory : TestBase
     Player player;
     protected override void OnTest1(InputAction.CallbackContext context)
     {
-        Factory.Instance.GetObject(objectType, position);
+        //Factory.Instance.GetObject(objectType, position);
     }
 
 

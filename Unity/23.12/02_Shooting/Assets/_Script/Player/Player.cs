@@ -43,7 +43,8 @@ public class Player : MonoBehaviour
     
     public float fireInterval = 0.5f;
 
-    
+    int PowerUp = 0;
+    float bulletangle = 10.0f;
 
     int score = 0;
     public int Score
@@ -145,13 +146,31 @@ public class Player : MonoBehaviour
 
     IEnumerator FireCoroution()
     {
+       
         while (true) 
         {
-            Fire(fireTransform.position);
+            switch(PowerUp)
+            {
+                case 0:
+                    Fire(fireTransform.position);
+                    break; 
+                case 1:
+                    Fire(fireTransform.position,bulletangle);
+                    Fire(fireTransform.position,-bulletangle);
+                    break;
+                default:
+                    Fire(fireTransform.position, bulletangle);
+                    Fire(fireTransform.position, -bulletangle);
+                    Fire(fireTransform.position);
+                 break;
+
+            }
+          //  Fire(fireTransform.position);
             StartCoroutine(FlashEffect());
             yield return new WaitForSeconds(fireInterval);
         }
     }
+
     /// <summary>
     /// 총알을 하나 발사하는 함수
     /// </summary>
@@ -160,7 +179,8 @@ public class Player : MonoBehaviour
     void Fire(Vector3 position, float angle = 0.0f) //파라메터에 값을 넣어두면 함수호출때 않쓰면 디폴트값을 사용
     {                                               // 디폴트 파라메터는 마지막에 작성해야 효율적
         //Instantiate(bulletPrefeb, position, Quaternion.identity);
-        Factory.Instance.GetBullet(position); // 팩토리를 이용해 총알 생성
+        Factory.Instance.GetBullet(position,angle); // 팩토리를 이용해 총알 생성
+
     }
 
     IEnumerator FlashEffect()
@@ -178,11 +198,11 @@ public class Player : MonoBehaviour
     {
         if(context.performed)
         {
-            Debug.Log("OnBoost : 눌러짐");
+            Debug.Log(PowerUp);
         }
         if(context.canceled)
         {
-            Debug.Log("OnBoost : 떨어짐");
+            
         }
     }
 
@@ -261,13 +281,21 @@ public class Player : MonoBehaviour
     private void OnCollisionExit2D(Collision2D collision)
     {
         // 충돌 상태에서 떨어졌을 때 실행
-        Debug.Log("OnCollisionExit2D");
+
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         // 겹치기 시작했을 때 실행
-        Debug.Log($"OnTriggerEnter2D : {collision.gameObject.name}");
+        if (collision.CompareTag("PowerUp"))
+        {
+            PowerUp++;
+            Debug.Log("OnTriggerStay2D");
+        }
+        if(PowerUp > 2) 
+        {
+            AddScore(1000);
+        }
     }
 
     private void OnTriggerStay2D(Collider2D collision)
@@ -279,7 +307,7 @@ public class Player : MonoBehaviour
     private void OnTriggerExit2D(Collider2D collision)
     {
         // 겹쳐있던 상태에서 떨어졌을때 실행
-        Debug.Log("OnTriggerExit2D");
+       
     }
 
     /// <summary>
