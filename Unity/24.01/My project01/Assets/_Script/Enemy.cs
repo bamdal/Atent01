@@ -98,10 +98,14 @@ public class Enemy : Astar
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log("멈춤");
-        animator.SetBool(Enemy_Move, false);
-        StartCoroutine(EnemyAttack());
-        astar.astarmove = true;
+        if (collision.CompareTag("Player"))
+        {
+            Debug.Log("멈춤");
+            animator.SetBool(Enemy_Move, false);
+            StartCoroutine(EnemyAttack());
+            astar.astarmove = true;
+        }
+
     }
 
     private void OnTriggerExit2D(Collider2D collision)

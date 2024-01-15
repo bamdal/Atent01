@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 public class Astar : MonoBehaviour
 {
@@ -16,7 +17,7 @@ public class Astar : MonoBehaviour
 
         public int x, y, G, H;
 
-        public int F { get { return G + H;  } }
+        public int F { get { return G + H; } }
 
     }
 
@@ -35,7 +36,7 @@ public class Astar : MonoBehaviour
     Node StartNode, TargetNode, CurNode;
     List<Node> OpenList, ClosedList;
 
-   
+    int TargetX,TargetY;
 
     public float speed = 7.0f;
 
@@ -45,12 +46,13 @@ public class Astar : MonoBehaviour
 
     protected virtual void PathFinding()
     {
+       
         if (Detection && !astarmove)
         {
             Debug.Log("찾기 시작");
-            
+
             StopAllCoroutines();
-            if(player == null) { return; }
+            if (player == null) { return; }
             astarmove = true;
             playerV3 = player.transform.position;
             enemyV3 = enemy[0].transform.position;
@@ -60,7 +62,6 @@ public class Astar : MonoBehaviour
             monsterPos = new Vector2Int((int)enemyV3.x, (int)enemyV3.y);
             detectionbottomLeft = new Vector2Int((int)enemyV3.x - detectionRange, (int)enemyV3.y - detectionRange);
             detectiontopRight = new Vector2Int((int)enemyV3.x + detectionRange, (int)enemyV3.y + detectionRange);
-
 
 
             sizeX = detectiontopRight.x - detectionbottomLeft.x + 1;
@@ -80,12 +81,31 @@ public class Astar : MonoBehaviour
             }
 
             StartNode = NodeArray[monsterPos.x - detectionbottomLeft.x, monsterPos.y - detectionbottomLeft.y];
-            if (sizeX * sizeY < (playerPos.x - detectionbottomLeft.x) * (playerPos.y - detectionbottomLeft.y) || sizeX * sizeY < -(playerPos.x - detectionbottomLeft.x) * (playerPos.y - detectionbottomLeft.y))
+            if (!((playerPos.x > detectionbottomLeft.x && playerPos.x < detectiontopRight.x) && (playerPos.y > detectionbottomLeft.y && playerPos.y < detectiontopRight.y)))
             {
-                //범위 밖으로 나갔다면  ektl
-                return;
+                TargetX = (playerPos.x - detectionbottomLeft.x);
+                TargetY = (playerPos.y - detectionbottomLeft.y);
+                if (!(playerPos.x > detectionbottomLeft.x && playerPos.x < detectiontopRight.x )) 
+                {
+                    TargetX = (playerPos.x - detectionbottomLeft.x) / detectionRange;
+                }
+
+                if (!(playerPos.y > detectionbottomLeft.y && playerPos.y < detectiontopRight.y))
+                {
+                    TargetY = (playerPos.y - detectionbottomLeft.y) / detectionRange;
+                }
+                
+                
+                Debug.Log((TargetX, TargetY));
+                TargetNode = NodeArray[TargetX, TargetY];
             }
-            TargetNode = NodeArray[playerPos.x - detectionbottomLeft.x, playerPos.y - detectionbottomLeft.y];
+            else
+            {
+                TargetNode = NodeArray[playerPos.x - detectionbottomLeft.x, playerPos.y - detectionbottomLeft.y];
+                Debug.Log((TargetX, TargetY));
+            }
+
+
 
             OpenList = new List<Node>() { StartNode };
             ClosedList = new List<Node>();
@@ -133,17 +153,17 @@ public class Astar : MonoBehaviour
 
     void OpenListAdd(int checkX, int checkY)
     {
-        if(checkX >= detectionbottomLeft.x && checkX<detectiontopRight.x +1 // 감지범위 안
-            && checkY>= detectionbottomLeft.y && checkY < detectiontopRight.y+1 // 감지범위 안
-            && !NodeArray[checkX- detectionbottomLeft.x,checkY - detectionbottomLeft.y].isWall // 벽이 아님
-            && !(NodeArray[CurNode.x-detectionbottomLeft.x, checkY - detectionbottomLeft.y].isWall // 벽사이로 못지나감
-            && NodeArray[checkX-detectionbottomLeft.x,CurNode.y - detectionbottomLeft.y].isWall) // 코너돌때 장애물 없어야됨
-            && !ClosedList.Contains(NodeArray[checkX-detectionbottomLeft.x,checkY-detectionbottomLeft.y])) // 닫힌리스트에 없음
+        if (checkX >= detectionbottomLeft.x && checkX < detectiontopRight.x + 1 // 감지범위 안
+            && checkY >= detectionbottomLeft.y && checkY < detectiontopRight.y + 1 // 감지범위 안
+            && !NodeArray[checkX - detectionbottomLeft.x, checkY - detectionbottomLeft.y].isWall // 벽이 아님
+            && !(NodeArray[CurNode.x - detectionbottomLeft.x, checkY - detectionbottomLeft.y].isWall // 벽사이로 못지나감
+            && NodeArray[checkX - detectionbottomLeft.x, CurNode.y - detectionbottomLeft.y].isWall) // 코너돌때 장애물 없어야됨
+            && !ClosedList.Contains(NodeArray[checkX - detectionbottomLeft.x, checkY - detectionbottomLeft.y])) // 닫힌리스트에 없음
         {
-            Node NeighborNode = NodeArray[checkX-detectionbottomLeft.x,checkY-detectionbottomLeft.y];
-            int MoveCost = CurNode.G + (CurNode.x - checkX ==0 || CurNode.y - checkY ==0 ? 10 : 14);
+            Node NeighborNode = NodeArray[checkX - detectionbottomLeft.x, checkY - detectionbottomLeft.y];
+            int MoveCost = CurNode.G + (CurNode.x - checkX == 0 || CurNode.y - checkY == 0 ? 10 : 14);
 
-            if(MoveCost < NeighborNode.G || !OpenList.Contains(NeighborNode))
+            if (MoveCost < NeighborNode.G || !OpenList.Contains(NeighborNode))
             {
                 NeighborNode.G = MoveCost;
                 NeighborNode.H = (Mathf.Abs(NeighborNode.x - TargetNode.x) + Mathf.Abs(NeighborNode.y - TargetNode.y)) * 10;
@@ -158,10 +178,10 @@ public class Astar : MonoBehaviour
     void OnDrawGizmos()
     {
 
- /*       if (FinalNodeList.Count != 0) for (int i = 0; i < FinalNodeList.Count - 1; i++)
-                Gizmos.DrawLine(new Vector2(FinalNodeList[i].x, FinalNodeList[i].y), new Vector2(FinalNodeList[i + 1].x, FinalNodeList[i + 1].y));
+        /*       if (FinalNodeList.Count != 0) for (int i = 0; i < FinalNodeList.Count - 1; i++)
+                       Gizmos.DrawLine(new Vector2(FinalNodeList[i].x, FinalNodeList[i].y), new Vector2(FinalNodeList[i + 1].x, FinalNodeList[i + 1].y));
 
-*/
+       */
     }
 
 
@@ -174,55 +194,55 @@ public class Astar : MonoBehaviour
 
         //InvokeRepeating(nameof(PathFinding), 0.0f, 1.5f);
         //CancelInvoke(nameof(PathFinding));
-        
+
 
     }
 
-    
+
 
     private void FixedUpdate()
     {
 
         // Debug.Log(new Vector2(FinalNodeList[1].x-transform.position.x, FinalNodeList[1].y - transform.position.y));
-   /*     float distanceToPlayer = Vector2.Distance(transform.position, player.transform.position);
-        if (distanceToPlayer < someThreshold)
-        {
-            findPlayer = true; Debug.Log(findPlayer);
-        }
-        else
-        {
-            findPlayer = false; Debug.Log(findPlayer);
-            
-        }*/
+        /*     float distanceToPlayer = Vector2.Distance(transform.position, player.transform.position);
+             if (distanceToPlayer < someThreshold)
+             {
+                 findPlayer = true; Debug.Log(findPlayer);
+             }
+             else
+             {
+                 findPlayer = false; Debug.Log(findPlayer);
+
+             }*/
 
     }
 
-/*    IEnumerator OnMove()
-    {
-        astarmove = false;
-
-        foreach (var node in FinalNodeList)
+    /*    IEnumerator OnMove()
         {
-            Vector3 targetPosition = new Vector3(node.x, node.y, transform.position.z);
+            astarmove = false;
 
-            while (transform.position != targetPosition)
+            foreach (var node in FinalNodeList)
             {
-                transform.position = Vector3.MoveTowards(transform.position, targetPosition, speed * Time.deltaTime);
-                animdirection?.Invoke(targetPosition.x); /// 안됨 수정!!!
-                
-                yield return null;
+                Vector3 targetPosition = new Vector3(node.x, node.y, transform.position.z);
+
+                while (transform.position != targetPosition)
+                {
+                    transform.position = Vector3.MoveTowards(transform.position, targetPosition, speed * Time.deltaTime);
+                    animdirection?.Invoke(targetPosition.x); /// 안됨 수정!!!
+
+                    yield return null;
+                }
+
+
             }
-
-          
+            yield return StartCoroutine(WaitForPathFinding());
         }
-        yield return StartCoroutine(WaitForPathFinding());
-    }
-    IEnumerator WaitForPathFinding()
-    {
-        // OnMove 코루틴이 끝날 때까지 기다리기
-        yield return new WaitUntil(() => astarmove == false);
+        IEnumerator WaitForPathFinding()
+        {
+            // OnMove 코루틴이 끝날 때까지 기다리기
+            yield return new WaitUntil(() => astarmove == false);
 
-        // 모든 노드 이동이 끝난 후에 실행할 로직 추가 가능
-        PathFinding();
-    }*/
+            // 모든 노드 이동이 끝난 후에 실행할 로직 추가 가능
+            PathFinding();
+        }*/
 }
