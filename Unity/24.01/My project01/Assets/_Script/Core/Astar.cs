@@ -86,7 +86,7 @@ public class Astar : MonoBehaviour
                 TargetX = Mathf.Max(detectionbottomLeft.x,Mathf.Min(playerPos.x, detectiontopRight.x));
                 TargetY = Mathf.Max(detectionbottomLeft.y,Mathf.Min(playerPos.y, detectiontopRight.y));
               
-                Debug.Log((TargetX, TargetY));
+               // Debug.Log((TargetX, TargetY));
                 TargetNode = NodeArray[TargetX - detectionbottomLeft.x, TargetY - detectionbottomLeft.y];
             }
             else

@@ -8,34 +8,59 @@ public class Enemy : Astar
     Animator animator;
 
     public float enemySpeed = 7.0f;
+    public float maxHp = 3.0f;
+    float hp = 3.0f;
     Astar astar;
     List<Node> FinalList;
     readonly int Enemy_Move = Animator.StringToHash("IsMoving");
     readonly int Enemy_Attack = Animator.StringToHash("IsAttack");
-   
+    readonly int Enemy_Hit = Animator.StringToHash("IsHit");
+
+    Player player;
     float attackTime = 0.0f;
 
-/*    private float GetAnimLength(string animName)
+    public float Hp
     {
-        float time = 0;
-        RuntimeAnimatorController ac = animator.runtimeAnimatorController;
-
-        for (int i = 0; i < ac.animationClips.Length; i++)
+        get => hp;
+        private set
         {
-            if (ac.animationClips[i].name == animName)
+            if (hp != value)
             {
-                time = ac.animationClips[i].length;
+                Debug.Log("맞음");
+            }
+            hp = value;
+            hp = Math.Clamp(value, 0.0f, maxHp);
+            if (hp == 0.0f)
+            {
+                OnDie();
             }
         }
+    }
 
-        return time;
-    }*/
+
+
+    /*    private float GetAnimLength(string animName)
+        {
+            float time = 0;
+            RuntimeAnimatorController ac = animator.runtimeAnimatorController;
+
+            for (int i = 0; i < ac.animationClips.Length; i++)
+            {
+                if (ac.animationClips[i].name == animName)
+                {
+                    time = ac.animationClips[i].length;
+                }
+            }
+
+            return time;
+        }*/
 
     private void Awake()
     {
         animator = GetComponent<Animator>();
         astar = GetComponent<Astar>();
-        
+        player = FindAnyObjectByType<Player>();
+        hp = maxHp;
         PathFinding();
 
     }
@@ -64,17 +89,17 @@ public class Enemy : Astar
                 yield return null;
             }
 
-          
+
         }
         animator.SetBool(Enemy_Move, false);
         yield return StartCoroutine(WaitForPathFinding());
-        
+
     }
     IEnumerator WaitForPathFinding()
     {
         // OnMove 코루틴이 끝날 때까지 기다리기
         yield return new WaitUntil(() => astarmove == false);
-       
+
         // 모든 노드 이동이 끝난 후에 실행할 로직 추가 가능
         PathFinding();
     }
@@ -94,6 +119,7 @@ public class Enemy : Astar
             transform.localScale = new Vector3(-1f, 1f, 1f);
         }
         animator.SetBool(Enemy_Move, true);
+       
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -108,21 +134,65 @@ public class Enemy : Astar
 
     }
 
-    private void OnTriggerExit2D(Collider2D collision)
+    private void OnTriggerStay2D(Collider2D collision)
     {
-        animator.SetBool(Enemy_Move, true);
-        astar.astarmove = false;
+        if (collision.CompareTag("Player") && !astar.astarmove)
+        {
+            Debug.Log("멈춤");
+            animator.SetBool(Enemy_Move, false);
+            StartCoroutine(EnemyAttack());
+            astar.astarmove = true;
+        }
     }
 
-   IEnumerator EnemyAttack()
+    public void HitEnemy()
+    {
+        StopAllCoroutines();
+        Hp--;
+        animator.SetBool(Enemy_Hit, true);
+        astar.astarmove = true;
+        StartCoroutine(Delay());
+    }
+
+    IEnumerator Delay() 
+    {
+        yield return new WaitForSeconds(0.333f);
+        animator.SetBool(Enemy_Hit, false);
+        animator.SetBool(Enemy_Move, true);
+        animator.SetBool(Enemy_Attack, false);
+        PathFinding();
+        astar.astarmove = false;
+    }
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Player"))
+        {
+            animator.SetBool(Enemy_Move, true);
+            animator.SetBool(Enemy_Attack, false);
+            astar.astarmove = false;
+        }
+        
+    }
+
+
+
+    IEnumerator EnemyAttack()
     {
         animator.SetBool(Enemy_Attack, true);
-        
+
         yield return new WaitForSeconds(0.667f);
+
         animator.SetBool(Enemy_Attack, false);
+        astar.astarmove = false;
     }
     private void IsAttack()
     {
         Debug.Log("Enemy 공격");
+    }
+
+    private void OnDie()
+    {
+        Debug.Log("사망");
+        gameObject.SetActive(false);
     }
 }
