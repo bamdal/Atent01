@@ -83,26 +83,16 @@ public class Astar : MonoBehaviour
             StartNode = NodeArray[monsterPos.x - detectionbottomLeft.x, monsterPos.y - detectionbottomLeft.y];
             if (!((playerPos.x > detectionbottomLeft.x && playerPos.x < detectiontopRight.x) && (playerPos.y > detectionbottomLeft.y && playerPos.y < detectiontopRight.y)))
             {
-                TargetX = (playerPos.x - detectionbottomLeft.x);
-                TargetY = (playerPos.y - detectionbottomLeft.y);
-                if (!(playerPos.x > detectionbottomLeft.x && playerPos.x < detectiontopRight.x )) 
-                {
-                    TargetX = (playerPos.x - detectionbottomLeft.x) / detectionRange;
-                }
-
-                if (!(playerPos.y > detectionbottomLeft.y && playerPos.y < detectiontopRight.y))
-                {
-                    TargetY = (playerPos.y - detectionbottomLeft.y) / detectionRange;
-                }
-                
-                
+                TargetX = Mathf.Max(detectionbottomLeft.x,Mathf.Min(playerPos.x, detectiontopRight.x));
+                TargetY = Mathf.Max(detectionbottomLeft.y,Mathf.Min(playerPos.y, detectiontopRight.y));
+              
                 Debug.Log((TargetX, TargetY));
-                TargetNode = NodeArray[TargetX, TargetY];
+                TargetNode = NodeArray[TargetX - detectionbottomLeft.x, TargetY - detectionbottomLeft.y];
             }
             else
             {
                 TargetNode = NodeArray[playerPos.x - detectionbottomLeft.x, playerPos.y - detectionbottomLeft.y];
-                Debug.Log((TargetX, TargetY));
+               
             }
 
 
