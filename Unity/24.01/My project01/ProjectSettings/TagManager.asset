@@ -52,15 +52,15 @@ TagManager:
   - name: Layer 3
     uniqueID: 4189426099
     locked: 0
+  - name: Wall
+    uniqueID: 2162426489
+    locked: 0
   - name: Enemy
     uniqueID: 2495828917
-    locked: 0
-  - name: Player
-    uniqueID: 3946890337
     locked: 0
   - name: PlayerAttack
     uniqueID: 3491418593
     locked: 0
-  - name: Wall
-    uniqueID: 2162426489
+  - name: Player
+    uniqueID: 3946890337
     locked: 0

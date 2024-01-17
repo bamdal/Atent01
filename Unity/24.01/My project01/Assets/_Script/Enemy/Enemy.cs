@@ -16,7 +16,7 @@ public class Enemy : Astar
     readonly int Enemy_Attack = Animator.StringToHash("IsAttack");
     readonly int Enemy_Hit = Animator.StringToHash("IsHit");
 
-    Player player;
+
     float attackTime = 0.0f;
 
     public float Hp
