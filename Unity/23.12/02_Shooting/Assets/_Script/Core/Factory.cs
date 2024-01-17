@@ -13,9 +13,11 @@ public enum PoolObjectType
     PlayerBullet = 0,   // 플레이어 총알
     Hit,                // 총알이 터지는 이펙트
     ExplosionEffect,    // 적이 터지는 이펙트
-    EnemyWave,              // 적
-    EnemyAsteroid,            // 큰 유성 
+    PowerUp,              // 파워업 아이템
+    EnemyWave,           // 적
+    EnemyAsteroid,          // 큰 유성 
     EnemyAsteroidMini   // 작은 유성
+
 }
 
 public class Factory : Singleton<Factory>
@@ -24,9 +26,11 @@ public class Factory : Singleton<Factory>
     BulletPool bullet;
     HitPool hit;
     ExplosionPool explosion;
+    PowerUpPool powerUp;
     WavePool enemy;
     AsteroidPool asteroid;
     AsteroidMiniPool asteroidMini;
+
 
     /// <summary>
     /// 씬이 로딩이 완료 될때마다 실행되는 초기화 함수
@@ -45,6 +49,9 @@ public class Factory : Singleton<Factory>
         explosion = GetComponentInChildren<ExplosionPool>();
         if (explosion != null)
             explosion.Initialize();
+        powerUp = GetComponentInChildren<PowerUpPool>();
+        if(powerUp != null)
+            powerUp.Initialize();
         enemy = GetComponentInChildren<WavePool>();
         if (enemy != null)
             enemy.Initialize();
@@ -78,6 +85,9 @@ public class Factory : Singleton<Factory>
                 break;
             case PoolObjectType.ExplosionEffect:
                 result = explosion.GetObject(position, euler).gameObject;
+                break;
+            case PoolObjectType.PowerUp:
+                result = powerUp.GetObject(position, euler).gameObject; 
                 break;
             case PoolObjectType.EnemyWave:
                 result = enemy.GetObject(position, euler).gameObject;
@@ -194,6 +204,18 @@ public class Factory : Singleton<Factory>
     public AsteroidMini GetAsteroidMini(Vector3 position, float angle = 0.0f)
     {
         return asteroidMini.GetObject(position,angle * Vector3.forward);
+       
+    }
+
+    
+    public PowerUp GetPowerUp()
+    {
+        return powerUp.GetObject();
+    }
+
+    public PowerUp GetPowerUp(Vector3 position, float angle = 0.0f)
+    {
+        return powerUp.GetObject(position,angle * Vector3.forward);
        
     }
 
