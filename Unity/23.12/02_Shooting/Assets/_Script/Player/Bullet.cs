@@ -8,7 +8,7 @@ public class Bullet : RecycleObject
     //시작하자마자 오른쪽으로 초속 7로 움직이게 만들기
     Vector3 bulletVector = Vector3.right;
     public float bulletSpeed = 7.0f;
-    public GameObject HitEffectPrefeb;
+    //public GameObject HitEffectPrefeb;
 
     public float LifeTime = 3.0f;
     //bool BV = true;

@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 7750907794543423663}
   m_Layer: 7
   m_Name: Asteroid
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -100,7 +100,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 3
-  RotationSpeed: 360
+  maxHP: 3
+  score: 10
+  minMoveSpeed: 2
+  maxMoveSpeed: 4
+  minRotateSpeed: 30
+  maxRotateSpeed: 360
+  minLifeTime: 4
+  maxLifeTime: 7
+  MinMiniCount: 3
+  MaxMiniCount: 7
+  criticalRate: 0.05
+  criticalMiniCount: 20
+  rotationSpeed: 360
 --- !u!70 &4008917841441062655
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

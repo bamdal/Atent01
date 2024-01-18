@@ -10,6 +10,8 @@ public class RecycleObject : MonoBehaviour
     /// 재활용 오브젝트가 비활성화 될때 실행되는 델리게이트
     /// </summary>
     public Action onDisable;
+
+
     protected virtual void OnEnable()
     {
         transform.localPosition = Vector3.zero; // 부모의 위치로 보내기

@@ -13,10 +13,13 @@ public enum PoolObjectType
     PlayerBullet = 0,   // 플레이어 총알
     Hit,                // 총알이 터지는 이펙트
     ExplosionEffect,    // 적이 터지는 이펙트
-    PowerUp,              // 파워업 아이템
-    EnemyWave,           // 적
-    EnemyAsteroid,          // 큰 유성 
-    EnemyAsteroidMini   // 작은 유성
+    PowerUp,            // 파워업 아이템
+    EnemyWave,          // 적
+    EnemyAsteroid,      // 큰 유성 
+    EnemyAsteroidMini,  // 작은 유성
+    EnemyBonus,         // 적(파워업 아이템 드랍)
+    EnemyCurve,          // 적 커브
+    BossBullet
 
 }
 
@@ -30,6 +33,9 @@ public class Factory : Singleton<Factory>
     WavePool enemy;
     AsteroidPool asteroid;
     AsteroidMiniPool asteroidMini;
+    BonusPool bonus;
+    CurvePool curve;
+    BossBulletPool bossBullet;
 
 
     /// <summary>
@@ -61,6 +67,15 @@ public class Factory : Singleton<Factory>
         asteroidMini = GetComponentInChildren<AsteroidMiniPool>();
         if (asteroidMini != null)
             asteroidMini.Initialize();
+        bonus = GetComponentInChildren<BonusPool>();
+        if (bonus != null)
+            bonus.Initialize();
+        curve = GetComponentInChildren<CurvePool>();
+        if (curve != null)
+            curve.Initialize();
+        bossBullet = GetComponentInChildren<BossBulletPool>();
+        if (bossBullet != null)
+            bossBullet.Initialize();
             
             
     }
@@ -97,6 +112,15 @@ public class Factory : Singleton<Factory>
                 break;
             case PoolObjectType.EnemyAsteroidMini:
                 result = asteroidMini.GetObject(position, euler).gameObject;
+                break;
+            case PoolObjectType.EnemyBonus:
+                result = bonus.GetObject(position, euler).gameObject;
+                break;
+            case PoolObjectType.EnemyCurve:
+                result = curve.GetObject(position, euler).gameObject;
+                break;
+            case PoolObjectType.BossBullet:
+                result = bossBullet.GetObject(position, euler).gameObject;
                 break;
             default:
                 break;
@@ -217,7 +241,39 @@ public class Factory : Singleton<Factory>
     {
         return powerUp.GetObject(position,angle * Vector3.forward);
        
+    }    
+    public Bonus GetBonus()
+    {
+        return bonus.GetObject();
     }
+
+    public Bonus GetBonus(Vector3 position, float angle = 0.0f)
+    {
+        return bonus.GetObject(position,angle * Vector3.forward);
+       
+    }
+     
+    public Curve GetCurve()
+    {
+        return curve.GetObject();
+    }
+
+    public Curve GetCurve(Vector3 position, float angle = 0.0f)
+    {
+        return curve.GetObject(position,angle * Vector3.forward);
+       
+    }   
+    public BossBullet GetBossBullet()
+    {
+        return bossBullet.GetObject();
+    }
+
+    public BossBullet GetBossBullet(Vector3 position, float angle = 0.0f)
+    {
+        return bossBullet.GetObject(position,angle * Vector3.forward);
+       
+    }
+
 
 
 }
