@@ -25,6 +25,7 @@ public class Player : MonoBehaviour
     public float maxHp = 50.0f;
     float hp;
     float angle;
+    Slider slider;
     public float Hp
     {
         get => hp;
