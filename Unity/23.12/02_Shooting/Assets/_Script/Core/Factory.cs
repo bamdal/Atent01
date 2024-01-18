@@ -18,8 +18,9 @@ public enum PoolObjectType
     EnemyAsteroid,      // 큰 유성 
     EnemyAsteroidMini,  // 작은 유성
     EnemyBonus,         // 적(파워업 아이템 드랍)
-    EnemyCurve,          // 적 커브
-    BossBullet
+    EnemyCurve,         // 적 커브
+    BossBullet,         // 보스 총알 
+    BossMissile         // 보스 미사일
 
 }
 
@@ -36,6 +37,7 @@ public class Factory : Singleton<Factory>
     BonusPool bonus;
     CurvePool curve;
     BossBulletPool bossBullet;
+    BossMissilePool bossMissile;
 
 
     /// <summary>
@@ -76,6 +78,9 @@ public class Factory : Singleton<Factory>
         bossBullet = GetComponentInChildren<BossBulletPool>();
         if (bossBullet != null)
             bossBullet.Initialize();
+        bossMissile = GetComponentInChildren<BossMissilePool>();
+        if (bossMissile != null)
+            bossMissile.Initialize();
             
             
     }
@@ -121,6 +126,9 @@ public class Factory : Singleton<Factory>
                 break;
             case PoolObjectType.BossBullet:
                 result = bossBullet.GetObject(position, euler).gameObject;
+                break;
+            case PoolObjectType.BossMissile:
+                result = bossMissile.GetObject(position, euler).gameObject;
                 break;
             default:
                 break;
@@ -271,6 +279,17 @@ public class Factory : Singleton<Factory>
     public BossBullet GetBossBullet(Vector3 position, float angle = 0.0f)
     {
         return bossBullet.GetObject(position,angle * Vector3.forward);
+       
+    }
+    
+    public BossMissile GetBossMissile()
+    {
+        return bossMissile.GetObject();
+    }
+
+    public BossMissile GetBossMissile(Vector3 position, float angle = 0.0f)
+    {
+        return bossMissile.GetObject(position,angle * Vector3.forward);
        
     }
 

@@ -97,7 +97,7 @@ GameObject:
   - component: {fileID: 6367060368334519628}
   - component: {fileID: 7982698373489602902}
   - component: {fileID: 6788142277768520824}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: BossMissile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
