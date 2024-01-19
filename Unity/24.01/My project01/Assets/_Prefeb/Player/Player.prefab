@@ -234,7 +234,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1608872412287295930}
-  m_BodyType: 1
+  m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -282,7 +282,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0.75}
@@ -343,6 +343,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7835523065209743157}
   - component: {fileID: 7664012672880541389}
+  - component: {fileID: 2534774291778792816}
   - component: {fileID: 2300296733728770614}
   m_Layer: 5
   m_Name: Score
@@ -378,6 +379,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6909322686215335049}
   m_CullTransparentMesh: 1
+--- !u!114 &2534774291778792816
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6909322686215335049}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 879eb09ebc39ce747888add68e8ab0c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scoreUpSpeed: 10
 --- !u!114 &2300296733728770614
 MonoBehaviour:
   m_ObjectHideFlags: 0

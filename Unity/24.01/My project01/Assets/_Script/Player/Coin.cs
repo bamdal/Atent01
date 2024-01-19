@@ -4,15 +4,24 @@ using UnityEngine;
 
 public class Coin : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public int score = 10;
+    Player player;
+
+    private void Awake()
     {
-        
+        player = GameManager.Instance.Player;
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            
+            player.AddScore(score);
+            gameObject.SetActive(false);
+        }
+
     }
+
+
 }

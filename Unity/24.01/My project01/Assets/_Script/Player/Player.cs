@@ -13,7 +13,7 @@ public class Player : MonoBehaviour
 
     InputSystems inputSystems;
     Vector3 Inputdir = Vector3.zero;
-    Vector3 InputMouse = Vector3.zero;
+
     Vector3 Worldpos;
     bool isAttack = true;
     float originalspeed;
@@ -36,6 +36,8 @@ public class Player : MonoBehaviour
     bool Isdash = true;
     public float dashSt = 0.1f;
     public float regenSt = 0.5f;
+
+    public Action onDie;
     public float Hp
     {
         get => hp;
@@ -43,8 +45,9 @@ public class Player : MonoBehaviour
         {
             hp = value;
             hp = Mathf.Clamp(value, 0, maxHp);
-            if (hp == 0)
+            if (hp < 0.1f)
             {
+               
                 OnDie();
             }
            
@@ -63,6 +66,27 @@ public class Player : MonoBehaviour
         } 
     }
 
+    int score = 0;
+    public Action<int> onScoreChange;
+    public int Score
+    {
+        get => score; // 읽기는 public
+        private set // 쓰기는 private
+        {
+            if (score != value)
+            {
+
+                score = Mathf.Min(value, 99999);
+                onScoreChange?.Invoke(score); // 이 델리게이트에 함수를 등록한 모든 대상에게 변경된 점수를 알림
+            }
+
+        }
+    }
+    public void AddScore(int getScore)
+    {
+        Score += getScore;
+
+    }
 
     private void Awake()
     {
@@ -238,5 +262,6 @@ public class Player : MonoBehaviour
     private void OnDie()
     {
         //SceneManager.LoadScene("");
+        onDie?.Invoke();
     }
 }

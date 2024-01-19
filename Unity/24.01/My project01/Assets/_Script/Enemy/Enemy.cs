@@ -19,7 +19,6 @@ public class Enemy : Astar
 
 
 
-    float attackTime = 0.0f;
 
     public float Hp
     {
@@ -200,8 +199,8 @@ public class Enemy : Astar
 
     public void EnemyAttacking()
     {
-        Debug.Log(Vector3.Distance(player.transform.position, transform.position));
-        if (Vector3.Distance(player.transform.position, transform.position) < 2.0f)
+        Debug.Log(Vector3.SqrMagnitude(player.transform.position- transform.position));
+        if (Vector3.SqrMagnitude(player.transform.position - transform.position) < 5.0f)
         {
             player.PlayerHit(enemyDamage);
         }
