@@ -19,6 +19,7 @@ public enum PoolObjectType
     EnemyAsteroidMini,  // 작은 유성
     EnemyBonus,         // 적(파워업 아이템 드랍)
     EnemyCurve,         // 적 커브
+    EnemyBoss,          // 적(보스)
     BossBullet,         // 보스 총알 
     BossMissile         // 보스 미사일
 
@@ -36,6 +37,7 @@ public class Factory : Singleton<Factory>
     AsteroidMiniPool asteroidMini;
     BonusPool bonus;
     CurvePool curve;
+    BossPool boss;
     BossBulletPool bossBullet;
     BossMissilePool bossMissile;
 
@@ -75,6 +77,9 @@ public class Factory : Singleton<Factory>
         curve = GetComponentInChildren<CurvePool>();
         if (curve != null)
             curve.Initialize();
+        boss = GetComponentInChildren<BossPool>();
+        if (boss != null)
+            boss.Initialize();
         bossBullet = GetComponentInChildren<BossBulletPool>();
         if (bossBullet != null)
             bossBullet.Initialize();
@@ -123,6 +128,9 @@ public class Factory : Singleton<Factory>
                 break;
             case PoolObjectType.EnemyCurve:
                 result = curve.GetObject(position, euler).gameObject;
+                break;
+            case PoolObjectType.EnemyBoss:
+                result = boss.GetObject(position, euler).gameObject;
                 break;
             case PoolObjectType.BossBullet:
                 result = bossBullet.GetObject(position, euler).gameObject;
@@ -269,6 +277,17 @@ public class Factory : Singleton<Factory>
     public Curve GetCurve(Vector3 position, float angle = 0.0f)
     {
         return curve.GetObject(position,angle * Vector3.forward);
+       
+    }   
+     
+    public Boss GetBoss()
+    {
+        return boss.GetObject();
+    }
+
+    public Boss GetBoss(Vector3 position, float angle = 0.0f)
+    {
+        return boss.GetObject(position,angle * Vector3.forward);
        
     }   
     public BossBullet GetBossBullet()

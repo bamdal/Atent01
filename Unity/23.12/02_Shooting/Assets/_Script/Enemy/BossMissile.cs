@@ -6,6 +6,11 @@ public class BossMissile : EnemyBase
 {
 
     [Header("추적 미사일 데이터")]
+    /// <summary>
+    /// 미사일의 유도 성능
+    /// </summary>
+    public float guiedPerformance = 1.5f;
+
 
     /// <summary>
     /// 추적 대상(플레이어)
@@ -29,9 +34,11 @@ public class BossMissile : EnemyBase
         base.OnMoveUpdate(deltaTime);
         if(OnGuied) // 유도 중이면
         {
+            
+
             Vector3 dir = target.position - transform.position; // 타겟으로 가는 방향 구하고
             //transform.right = -dir; // 방향 돌리기
-            transform.right = -Vector3.Slerp(-transform.right,dir,deltaTime*0.5f);
+            transform.right = -Vector3.Slerp(-transform.right,dir,deltaTime* guiedPerformance);
             // 시작방향에서 목표로 하는 방향으로 대략 2초에 걸쳐서 변경되는 속도
         }
     }

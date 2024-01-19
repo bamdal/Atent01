@@ -3,8 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UIElements;
-
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(Animator))]
 
@@ -16,35 +16,66 @@ public class Player : MonoBehaviour
     Vector3 InputMouse = Vector3.zero;
     Vector3 Worldpos;
     bool isAttack = true;
+    float originalspeed;
     public float speed = 6.0f;
+    public float dashSpeed = 4.0f;
+
     Animator anim;
     readonly int InputX_String = Animator.StringToHash("DirectionX");
     readonly int InputY_String = Animator.StringToHash("DirectionY");
     readonly int Input_Move = Animator.StringToHash("IsMoving");
     Transform AttackPosition;
-    public float maxHp = 50.0f;
+    public float maxHp = 5.0f;
+    public float maxSt = 10.0f;
+    public Slider HPslider;
+    public Slider STslider;
     float hp;
+    float st;
     float angle;
-    Slider slider;
+    Coroutine stcoroutine;
+    bool Isdash = true;
+    public float dashSt = 0.1f;
+    public float regenSt = 0.5f;
     public float Hp
     {
         get => hp;
         private set
         {
-            if (hp != value)
-            {
-
-            }
             hp = value;
+            hp = Mathf.Clamp(value, 0, maxHp);
+            if (hp == 0)
+            {
+                OnDie();
+            }
+           
+            
+            Debug.Log($"HP {hp}");
         }
     }
+
+    public float St 
+    {
+        get => st;
+        set 
+        {
+            st = value;
+            st = Mathf.Clamp(value, 0, maxSt);
+        } 
+    }
+
 
     private void Awake()
     {
         inputSystems = new InputSystems();
         anim = GetComponent<Animator>();
         AttackPosition = transform.GetChild(1);
-        
+        Hp = maxHp;
+        St = maxSt;
+        HPslider.maxValue = maxHp;
+        HPslider.value = Hp;
+        STslider.maxValue = maxSt;
+        STslider.value = St;
+        originalspeed = speed;
     }
     private void OnEnable()
     {
@@ -125,6 +156,40 @@ public class Player : MonoBehaviour
 
     private void OnDash(InputAction.CallbackContext context)
     {
+        if(context.performed) 
+        {
+            Isdash = true;
+            speed += dashSpeed;
+            stcoroutine = StartCoroutine(Stamina());
+        }
+        if(context.canceled)
+        {
+            Isdash = false;
+            speed = originalspeed;
+        }
+    }
+
+    IEnumerator Stamina()
+    {
+        while(Isdash) 
+        {
+            yield return new WaitForSeconds(0.01f);
+            St -= dashSt ; 
+            STslider.value = St;
+            if(St < 0.1f)
+                speed = originalspeed;
+
+        }
+
+        while (St != maxSt && !Isdash)
+        {
+            yield return new WaitForSeconds(0.01f);
+            St += regenSt;
+            STslider.value = St;
+
+
+        }
+ 
 
     }
 
@@ -150,7 +215,28 @@ public class Player : MonoBehaviour
     private void Update()
     {
         transform.Translate(Time.deltaTime * speed * Inputdir);
+        
+        
     }
 
+    public void PlayerHit(float damage)
+    { 
+        if(!anim.GetBool("IsHit"))
+            StartCoroutine(PlayerEmun(damage));
+    }
 
+    IEnumerator PlayerEmun(float damage)
+    {
+        anim.SetBool("IsHit", true);
+        Hp -= damage;
+        HPslider.value = Hp;
+    
+        yield return new WaitForSeconds(0.7f);
+        anim.SetBool("IsHit", false);
+    }
+
+    private void OnDie()
+    {
+        //SceneManager.LoadScene("");
+    }
 }

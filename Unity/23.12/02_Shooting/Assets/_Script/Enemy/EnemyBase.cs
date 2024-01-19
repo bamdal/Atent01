@@ -47,8 +47,8 @@ public class EnemyBase : RecycleObject
         get => hp;
         private set
         {
-            if (hp != value)
-/*            {
+/*             if (hp != value)
+           {
                 Debug.Log("맞음");
             }*/
 

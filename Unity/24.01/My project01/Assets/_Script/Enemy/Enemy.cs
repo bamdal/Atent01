@@ -7,6 +7,7 @@ public class Enemy : Astar
 {
     Animator animator;
 
+    public float enemyDamage = 1.0f;
     public float enemySpeed = 7.0f;
     public float maxHp = 3.0f;
     float hp = 3.0f;
@@ -15,6 +16,7 @@ public class Enemy : Astar
     readonly int Enemy_Move = Animator.StringToHash("IsMoving");
     readonly int Enemy_Attack = Animator.StringToHash("IsAttack");
     readonly int Enemy_Hit = Animator.StringToHash("IsHit");
+
 
 
     float attackTime = 0.0f;
@@ -195,4 +197,14 @@ public class Enemy : Astar
         Debug.Log("사망");
         gameObject.SetActive(false);
     }
+
+    public void EnemyAttacking()
+    {
+        Debug.Log(Vector3.Distance(player.transform.position, transform.position));
+        if (Vector3.Distance(player.transform.position, transform.position) < 2.0f)
+        {
+            player.PlayerHit(enemyDamage);
+        }
+    }
+
 }
