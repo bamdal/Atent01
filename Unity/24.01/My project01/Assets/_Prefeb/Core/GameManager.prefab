@@ -44,5 +44,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ecbea09a8e581f4889162333f062a28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HPslider: {fileID: 0}
-  STslider: {fileID: 0}
+  clearScore: 100

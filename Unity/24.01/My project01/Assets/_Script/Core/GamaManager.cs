@@ -33,6 +33,7 @@ public class GameManager : Singleton<GameManager>
 
     private void Start()
     {
+        
         Player.onScoreChange += ClearGame;
         Player.onDie += GameOver;
         Addscore = 0;
@@ -45,8 +46,9 @@ public class GameManager : Singleton<GameManager>
 
     void ClearGame(int score)
     {
-        Addscore += score;
-        if (clearScore - 1 > Addscore)
+        Addscore = score;
+        Debug.Log($"Addscore{Addscore}");
+        if (clearScore  < Addscore)
         {
             SceneManager.LoadScene("ClearScene");
         

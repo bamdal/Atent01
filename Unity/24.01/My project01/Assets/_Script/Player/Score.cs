@@ -40,7 +40,7 @@ public class Score : MonoBehaviour
         goalScore = 0;
         currentScore = 0.0f;
 
-        score.text = $"Score : 00000";
+        score.text = $"Collecting 100 coins";
     }
 
     private void RefreshScore(int newScore)
@@ -58,7 +58,7 @@ public class Score : MonoBehaviour
             currentScore = Mathf.Min(currentScore, goalScore);
 
             int temp = (int)currentScore;
-            score.text = $"Score : {temp:d5}";
+            score.text = $"Coin : {temp:d5}";
 
         }
     }

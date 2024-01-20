@@ -77,7 +77,8 @@ public class Player : MonoBehaviour
             {
 
                 score = Mathf.Min(value, 99999);
-                onScoreChange?.Invoke(score); // 이 델리게이트에 함수를 등록한 모든 대상에게 변경된 점수를 알림
+               
+                onScoreChange?.Invoke(score);
             }
 
         }
@@ -92,7 +93,7 @@ public class Player : MonoBehaviour
     {
         inputSystems = new InputSystems();
         anim = GetComponent<Animator>();
-        AttackPosition = transform.GetChild(1);
+        AttackPosition = transform.GetChild(0);
         Hp = maxHp;
         St = maxSt;
         HPslider.maxValue = maxHp;

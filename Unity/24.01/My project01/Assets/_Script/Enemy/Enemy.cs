@@ -31,8 +31,11 @@ public class Enemy : Astar
             }
             hp = value;
             hp = Math.Clamp(value, 0.0f, maxHp);
+    
             if (hp == 0.0f)
             {
+                StopAllCoroutines();
+                animator.SetFloat("IsEnemyHp", value);
                 OnDie();
             }
         }
@@ -61,7 +64,8 @@ public class Enemy : Astar
         animator = GetComponent<Animator>();
         astar = GetComponent<Astar>();
         player = FindAnyObjectByType<Player>();
-        hp = maxHp;
+        Hp = maxHp;
+        animator.SetFloat("IsEnemyHp", Hp);
         PathFinding();
 
     }
@@ -194,6 +198,12 @@ public class Enemy : Astar
     private void OnDie()
     {
         Debug.Log("사망");
+        StartCoroutine(EnemyDie());
+        
+    }
+    IEnumerator EnemyDie()
+    {
+        yield return new WaitForSeconds(0.5f);
         gameObject.SetActive(false);
     }
 

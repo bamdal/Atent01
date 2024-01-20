@@ -212,10 +212,11 @@ MonoBehaviour:
   enemy:
   - {fileID: 5366067214034241347}
   astarmove: 0
-  speed: 5
+  speed: 7
   someThreshold: 0.1
+  enemyDamage: 1
   enemySpeed: 7
-  maxHp: 30
+  maxHp: 3
 --- !u!50 &812734979357885571
 Rigidbody2D:
   serializedVersion: 4

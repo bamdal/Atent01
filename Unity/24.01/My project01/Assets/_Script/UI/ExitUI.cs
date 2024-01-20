@@ -5,6 +5,9 @@ using UnityEngine;
 public class ExitUI : MonoBehaviour
 {
     public void ExitGame()
-    { }
+    {
+        UnityEditor.EditorApplication.isPlaying = false;
+        Application.Quit();
+    }
 
 }
