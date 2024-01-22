@@ -13,6 +13,7 @@ public class Player : MonoBehaviour
 
     InputSystems inputSystems;
     Vector3 Inputdir = Vector3.zero;
+    Rigidbody2D rigid2d;
 
     Vector3 Worldpos;
     bool isAttack = true;
@@ -93,6 +94,7 @@ public class Player : MonoBehaviour
     {
         inputSystems = new InputSystems();
         anim = GetComponent<Animator>();
+        rigid2d = GetComponent<Rigidbody2D>();
         AttackPosition = transform.GetChild(0);
         Hp = maxHp;
         St = maxSt;
@@ -237,11 +239,12 @@ public class Player : MonoBehaviour
 
     }
 
-    private void Update()
+
+
+    private void FixedUpdate()
     {
-        transform.Translate(Time.deltaTime * speed * Inputdir);
-        
-        
+        rigid2d.MovePosition(rigid2d.position + (Vector2)(Time.fixedDeltaTime * speed * Inputdir));
+
     }
 
     public void PlayerHit(float damage)

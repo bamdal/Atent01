@@ -22,6 +22,7 @@ public class Player : MonoBehaviour
     Animator anim;
     readonly int InputY_String = Animator.StringToHash("InputY"); // InputY를 해시값으로 바꿔서 애니메이션파라미터 설정에 사용할수있다.
     Rigidbody2D rigid2d;
+    SpriteRenderer spriteRenderer;
 
 
     /// <summary>
@@ -83,24 +84,63 @@ public class Player : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 플레이어의 남은 생명
+    /// </summary>
+    private int life = 3;
+
+    /// <summary>
+    /// 플레이어 시작시 생명
+    /// </summary>
+    const int startLife = 3;
 
 
-
-    int score = 0;
-    public int Score
+    /// <summary>
+    /// 생명을 설정하고 확인하기 위한 프로퍼티
+    /// </summary>
+    private int Life
     {
-        get => score; // 읽기는 public
-        private set // 쓰기는 private
+        get => life;
+        set
         {
-            if (score != value)
+            if (life != value) // 변화가 있을 때만 처리
             {
-
-                score = Mathf.Min(value, 99999);
-                onScoreChange?.Invoke(score); // 이 델리게이트에 함수를 등록한 모든 대상에게 변경된 점수를 알림
+                life = value;
+                life = Mathf.Clamp(life, 0, startLife);
+                if (IsAlive)
+                {
+                    OnHit(); // 맞고나서 살아있으면 맞은처리
+                }
+                else
+                {
+                    OnDie(); // 맞고나서 죽었으면 죽은처리
+                }
+                onLifeChange?.Invoke(life); // 생명변화가 있었음을 알림
             }
+
 
         }
     }
+    /// <summary>
+    /// 살았는지 죽었는지 확인하기 위한 프로퍼티
+    /// </summary>
+    private bool IsAlive => life > 0;
+
+    /// <summary>
+    /// 생명변화가 있음을 알리는 델리게이트
+    /// </summary>
+    public Action<int> onLifeChange;
+
+    /// <summary>
+    /// 맞았을때 무적시간
+    /// </summary>
+    public float invincibleTime = 2.0f;
+
+    /// <summary>
+    /// 죽었음을 알리는 델리게이트(점수도 같이 전달)
+    /// </summary>
+    public Action<int> onDie;
+
     /// <summary>
     /// 점수가 변경되었을때 알리는 델리게이트 (파라메터: 변경된 점수)
     /// </summary>
@@ -116,7 +156,7 @@ public class Player : MonoBehaviour
         inputActions = new PlayerInputActions();
         anim = GetComponent<Animator>(); // 이 스크립트가 들어있는 게임 오브젝트에서 컴포넌트를 가져온다.
                                          // 단 GetComponent는 매우느리다.
-
+        spriteRenderer = GetComponent<SpriteRenderer>();
         rigid2d = GetComponent<Rigidbody2D>();
         // 게임 오브젝트 찾는 방법
         // GameObject.Find("FirePosition"); // 이름으로 게임 오브젝트 찾기 중복된건 먼저 발견한걸 불러옴
@@ -134,6 +174,7 @@ public class Player : MonoBehaviour
         // transform.childCount; // 이 게임오브젝트의 자식숫자
         flashWait = new WaitForSeconds(0.1f);
         fireCoroution = FireCoroution();
+
     }
 
 
@@ -274,7 +315,8 @@ public class Player : MonoBehaviour
     // 이 스크립트가 포함된 게임오브젝트의 첫번째 Update함수가 실행되기 직전에 실행
     private void Start()
     {
-
+        power = 1;
+        Life = startLife;
 
     }
 
@@ -306,8 +348,11 @@ public class Player : MonoBehaviour
     // 고정된 시간간격으로 호출되는 업데이트(물리연산 처리용 업데이트) 
     private void FixedUpdate()
     {
-        //transform.Translate(Time.deltaTime * moveSpeed * inputDir);
-        rigid2d.MovePosition(rigid2d.position + (Vector2)(Time.fixedDeltaTime * moveSpeed * inputDir));
+        if (IsAlive) // 살아있을때만 이동
+        {
+            //transform.Translate(Time.deltaTime * moveSpeed * inputDir);
+            rigid2d.MovePosition(rigid2d.position + (Vector2)(Time.fixedDeltaTime * moveSpeed * inputDir));
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -317,11 +362,18 @@ public class Player : MonoBehaviour
                 //Destroy(collision.gameObject); // 충돌 대상제거
                 collision.gameObject.SetActive(false);
         */
-        if (collision.gameObject.CompareTag("PowerUp"))
+
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            Life--;
+        }
+        else if (collision.gameObject.CompareTag("PowerUp"))
         {
             Power++;
+            Life++;
             collision.gameObject.SetActive(false);
         }
+
 
     }
 
@@ -395,6 +447,92 @@ public class Player : MonoBehaviour
             {
                 fireTransforms[i].gameObject.SetActive(false); // 비활성화
             }
+        }
+    }
+
+
+    /// <summary>
+    /// 맞았을 때 ㅣㄹ행되는 함수
+    /// </summary>
+    private void OnHit()
+    {
+        //Debug.Log($"플레이어 생명이 {Life}남았다");
+
+        // 파워 단계 떨어트리기
+        Power--;
+        StartCoroutine(InvincibleMode()); // 무적모드에 들어감
+    }
+    /// <summary>
+    /// 무적 모드 처리용 코루틴
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator InvincibleMode()
+    {
+        // 일시적으로 무적(무적일 때 화면 밖으로 나가면 안된다, 적과 충돌하면 안된다. 2초간) 
+        // - 무적일 때 화면 밖으로 나가면 안된다
+        // - 적과 충돌하면 안된다.
+        // - 무적 상태 표시 (플레이어의 비행기가 깜박인다)
+
+        //Physics2D.IgnoreLayerCollision(6,7);
+        gameObject.layer = LayerMask.NameToLayer("Invincible"); // 레이어를 무적레이어로 변경
+        float timeElapsed = 0.0f;
+        while (timeElapsed < invincibleTime) // invincibleTime동안 계속하기
+        {
+            timeElapsed += Time.deltaTime;
+            float alpha = (Mathf.Cos(timeElapsed * 30.0f) + 1.0f) * 0.5f; // 코사인 결과를 1~0사이로 변경
+            spriteRenderer.color = new Color(1, 1, 1, alpha);           // 알파에 지정(깜박거리기)
+            yield return null;
+
+        }
+        gameObject.layer = LayerMask.NameToLayer("Player"); // 레이어를 다시 플레이어로 되돌리기
+        spriteRenderer.color = Color.white;                 // 알파값도 원상복구
+
+        //Physics2D.IgnoreLayerCollision(6,7,false);
+    }
+
+    private void OnDie()
+    {
+        Debug.Log($"플레이어가 죽었다");
+
+        // 충돌이 안 일어나야함
+        Collider2D body = GetComponent<Collider2D>();
+        body.enabled = false;
+
+        // 내가 터지는 이팩트
+        Factory.Instance.GetExplosionEffect(transform.position);
+
+        // 입력도 안되어야 함
+        inputActions.Player.Disable();
+
+        // 이동 초기화, 총알 발사 코루틴 정지 => disable하면서 자동으로 입력이 디폴트가됨
+
+        // 튕겨나가는 듯한 연출을 보여줘야 한다.
+        rigid2d.gravityScale = 1.0f;
+        rigid2d.freezeRotation = false;
+        rigid2d.AddTorque(1000);
+        rigid2d.AddForce(Vector2.left * 10.0f, ForceMode2D.Impulse);// Force 지속적인힘, Impulse 순간적인힘
+        
+        // 사망했음을 알림
+        onDie?.Invoke(score);    
+    }
+
+    public void Test_Die()
+    {
+        Life = 0;
+    }
+    int score = 0;
+    public int Score
+    {
+        get => score; // 읽기는 public
+        private set // 쓰기는 private
+        {
+            if (score != value)
+            {
+
+                score = Mathf.Min(value, 99999);
+                onScoreChange?.Invoke(score); // 이 델리게이트에 함수를 등록한 모든 대상에게 변경된 점수를 알림
+            }
+
         }
     }
 

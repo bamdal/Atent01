@@ -120,8 +120,8 @@ MonoBehaviour:
   moveSpeed: 2.5
   maxHP: 10
   score: 300
-  bullet: 9
-  misslie: 10
+  bullet: 10
+  misslie: 11
   bulletInterval: 1
   areaMin: {x: 2, y: -3}
   areaMax: {x: 7, y: 3}

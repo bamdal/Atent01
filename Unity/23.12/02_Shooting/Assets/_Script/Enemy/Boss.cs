@@ -153,10 +153,14 @@ public class Boss : EnemyBase
     /// <returns></returns>
     IEnumerator FireBullet()
     {
-        Factory.Instance.GetObject(PoolObjectType.BossBullet, fire1.position);
-        Factory.Instance.GetObject(PoolObjectType.BossBullet, fire2.position);
+        while (true)
+        {
+            Factory.Instance.GetObject(PoolObjectType.BossBullet, fire1.position);
+            Factory.Instance.GetObject(PoolObjectType.BossBullet, fire2.position);
 
-        yield return new WaitForSeconds(bulletInterval);
+            yield return new WaitForSeconds(bulletInterval);
+        }
+
     }
 
     /// <summary>

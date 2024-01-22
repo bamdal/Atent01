@@ -6,7 +6,7 @@ using UnityEngine;
 public class Enemy : Astar
 {
     Animator animator;
-
+    Rigidbody2D rigidbody2D;
     public float enemyDamage = 1.0f;
     public float enemySpeed = 7.0f;
     public float maxHp = 3.0f;
@@ -16,7 +16,7 @@ public class Enemy : Astar
     readonly int Enemy_Move = Animator.StringToHash("IsMoving");
     readonly int Enemy_Attack = Animator.StringToHash("IsAttack");
     readonly int Enemy_Hit = Animator.StringToHash("IsHit");
-
+    Coroutine onMove;
 
 
 
@@ -25,19 +25,21 @@ public class Enemy : Astar
         get => hp;
         private set
         {
+            hp = value;
+            hp = Math.Clamp(value, 0.0f, maxHp);
             if (hp != value)
             {
                 Debug.Log("맞음");
+                if (hp < 0.1f)
+                {
+                    StopAllCoroutines();
+                    animator.SetFloat("IsEnemyHp", value);
+                    OnDie();
+                }
             }
-            hp = value;
-            hp = Math.Clamp(value, 0.0f, maxHp);
+
     
-            if (hp == 0.0f)
-            {
-                StopAllCoroutines();
-                animator.SetFloat("IsEnemyHp", value);
-                OnDie();
-            }
+
         }
     }
 
@@ -62,6 +64,7 @@ public class Enemy : Astar
     private void Awake()
     {
         animator = GetComponent<Animator>();
+        rigidbody2D = GetComponent<Rigidbody2D>();
         astar = GetComponent<Astar>();
         player = FindAnyObjectByType<Player>();
         Hp = maxHp;
@@ -75,7 +78,7 @@ public class Enemy : Astar
 
         base.PathFinding();
         FinalList = astar.FinalNodeList;
-        StartCoroutine(OnMove());
+        onMove = StartCoroutine(OnMove());
     }
 
     IEnumerator OnMove()
@@ -89,6 +92,7 @@ public class Enemy : Astar
             while (transform.position != targetPosition)
             {
                 transform.position = Vector3.MoveTowards(transform.position, targetPosition, speed * Time.deltaTime);
+
                 AnimDirection(targetPosition.x - transform.position.x);
 
                 yield return null;
@@ -131,6 +135,7 @@ public class Enemy : Astar
     {
         if (collision.CompareTag("Player"))
         {
+            StopCoroutine(onMove);
             Debug.Log("멈춤");
             animator.SetBool(Enemy_Move, false);
             StartCoroutine(EnemyAttack());
@@ -139,20 +144,10 @@ public class Enemy : Astar
 
     }
 
-    private void OnTriggerStay2D(Collider2D collision)
-    {
-        if (collision.CompareTag("Player") && !astar.astarmove)
-        {
-            Debug.Log("멈춤");
-            animator.SetBool(Enemy_Move, false);
-            StartCoroutine(EnemyAttack());
-            astar.astarmove = true;
-        }
-    }
 
     public void HitEnemy()
     {
-        StopAllCoroutines();
+        StopCoroutine(onMove);
         Hp--;
         animator.SetBool(Enemy_Hit, true);
         astar.astarmove = true;
@@ -172,9 +167,11 @@ public class Enemy : Astar
     {
         if (collision.CompareTag("Player"))
         {
+            
             animator.SetBool(Enemy_Move, true);
             animator.SetBool(Enemy_Attack, false);
             astar.astarmove = false;
+            PathFinding();
         }
         
     }
@@ -183,21 +180,23 @@ public class Enemy : Astar
 
     IEnumerator EnemyAttack()
     {
-        animator.SetBool(Enemy_Attack, true);
+        while (true)
+        {
+            animator.SetBool(Enemy_Attack, true);
 
-        yield return new WaitForSeconds(0.667f);
+            yield return new WaitForSeconds(0.667f);
 
-        animator.SetBool(Enemy_Attack, false);
-        astar.astarmove = false;
-    }
-    private void IsAttack()
-    {
-        Debug.Log("Enemy 공격");
+            animator.SetBool(Enemy_Attack, false);
+            astar.astarmove = false;
+        }
+
     }
 
     private void OnDie()
     {
         Debug.Log("사망");
+        Collider2D body = GetComponent<Collider2D>();
+        body.enabled = false;
         StartCoroutine(EnemyDie());
         
     }
