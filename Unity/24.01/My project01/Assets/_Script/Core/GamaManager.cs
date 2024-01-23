@@ -48,7 +48,7 @@ public class GameManager : Singleton<GameManager>
     {
         Addscore = score;
         Debug.Log($"Addscore{Addscore}");
-        if (clearScore  < Addscore)
+        if (clearScore  <= Addscore)
         {
             SceneManager.LoadScene("ClearScene");
         

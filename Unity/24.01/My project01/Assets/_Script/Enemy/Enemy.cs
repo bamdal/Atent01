@@ -69,8 +69,13 @@ public class Enemy : Astar
         player = FindAnyObjectByType<Player>();
         Hp = maxHp;
         animator.SetFloat("IsEnemyHp", Hp);
-        PathFinding();
+     
 
+    }
+
+    private void OnEnable()
+    {
+        PathFinding();
     }
 
     protected override void PathFinding()

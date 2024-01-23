@@ -18,7 +18,7 @@ public class Coin : MonoBehaviour
         {
             
             player.AddScore(score);
-            gameObject.SetActive(false);
+            transform.parent.gameObject.SetActive(false);
         }
 
     }

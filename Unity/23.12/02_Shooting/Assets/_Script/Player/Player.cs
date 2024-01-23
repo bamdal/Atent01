@@ -546,5 +546,10 @@ public class Player : MonoBehaviour
     {
         Power--;
     }
+
+    public void Test_SetScore(int score)
+    {
+        Score += score;
+    }
 #endif
 }
