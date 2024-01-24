@@ -388,26 +388,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
-    - target: {fileID: 1711686281778353263, guid: 44b2328d3be90024e93b9aa08ee62fc8,
-        type: 3}
-      propertyPath: m_Mass
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1711686281778353263, guid: 44b2328d3be90024e93b9aa08ee62fc8,
-        type: 3}
-      propertyPath: m_Constraints
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 1711686281778353263, guid: 44b2328d3be90024e93b9aa08ee62fc8,
-        type: 3}
-      propertyPath: m_UseAutoMass
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2300296733728770614, guid: 44b2328d3be90024e93b9aa08ee62fc8,
-        type: 3}
-      propertyPath: m_text
-      value: Collecting 100 coins
-      objectReference: {fileID: 0}
     - target: {fileID: 5864742829827176536, guid: 44b2328d3be90024e93b9aa08ee62fc8,
         type: 3}
       propertyPath: m_AnchorMax.x
@@ -427,16 +407,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8110990656812346404, guid: 44b2328d3be90024e93b9aa08ee62fc8,
-        type: 3}
-      propertyPath: m_Size.y
-      value: 0.4087057
-      objectReference: {fileID: 0}
-    - target: {fileID: 8110990656812346404, guid: 44b2328d3be90024e93b9aa08ee62fc8,
-        type: 3}
-      propertyPath: m_Offset.y
-      value: 0.20435286
       objectReference: {fileID: 0}
     - target: {fileID: 8286902442986247090, guid: 44b2328d3be90024e93b9aa08ee62fc8,
         type: 3}
@@ -487,11 +457,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8814419565265521055, guid: 44b2328d3be90024e93b9aa08ee62fc8,
-        type: 3}
-      propertyPath: maxHp
-      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -6377,12 +6342,12 @@ PrefabInstance:
     - target: {fileID: 7940124377307582663, guid: 85f65d0753ce1d64eb39daeceeb279b1,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -22.66
+      value: -22.73
       objectReference: {fileID: 0}
     - target: {fileID: 7940124377307582663, guid: 85f65d0753ce1d64eb39daeceeb279b1,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 13.22
+      value: 12.94
       objectReference: {fileID: 0}
     - target: {fileID: 7940124377307582663, guid: 85f65d0753ce1d64eb39daeceeb279b1,
         type: 3}

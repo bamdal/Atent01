@@ -87,6 +87,7 @@ public class CoinManager : MonoBehaviour
             return GetRandomPositionInsideCollider(collider, spawnAreaCollider);
         }
 
+
         return randomPosition;
     }
 }

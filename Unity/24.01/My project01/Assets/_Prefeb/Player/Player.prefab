@@ -192,7 +192,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0.75}
+  m_Offset: {x: 0, y: 0.20435286}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0.03125, z: 0, w: 0.9375}
     pivot: {x: 0.5, y: 0}
@@ -203,7 +203,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.65625, y: 1.5}
+  m_Size: {x: 0.65625, y: 0.4087057}
   m_EdgeRadius: 0
 --- !u!70 &649419616428684746
 CapsuleCollider2D:
@@ -319,7 +319,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Score : 00000'
+  m_text: Collecting 100 coins
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1009,6 +1009,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: AttackPosition
+      objectReference: {fileID: 0}
+    - target: {fileID: 6445666186361868711, guid: 095be0abaf9944940a248268850cf424,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7593599735666533020, guid: 095be0abaf9944940a248268850cf424,
+        type: 3}
+      propertyPath: m_Size.y
+      value: 2.7323856
+      objectReference: {fileID: 0}
+    - target: {fileID: 7593599735666533020, guid: 095be0abaf9944940a248268850cf424,
+        type: 3}
+      propertyPath: m_Offset.y
+      value: 0.9352951
       objectReference: {fileID: 0}
     - target: {fileID: 7593599735666533020, guid: 095be0abaf9944940a248268850cf424,
         type: 3}

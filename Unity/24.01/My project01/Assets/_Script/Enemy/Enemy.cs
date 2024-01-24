@@ -2,11 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Enemy : Astar
 {
     Animator animator;
-    Rigidbody2D rigidbody2D;
     public float enemyDamage = 1.0f;
     public float enemySpeed = 7.0f;
     public float maxHp = 3.0f;
@@ -17,8 +17,8 @@ public class Enemy : Astar
     readonly int Enemy_Attack = Animator.StringToHash("IsAttack");
     readonly int Enemy_Hit = Animator.StringToHash("IsHit");
     Coroutine onMove;
-
-
+    bool Alive = true;
+    Coroutine onAttack;
 
     public float Hp
     {
@@ -30,8 +30,9 @@ public class Enemy : Astar
             if (hp != value)
             {
                 Debug.Log("맞음");
-                if (hp < 0.1f)
+                if (hp < 0.1f && Alive)
                 {
+                    Alive = false;
                     StopAllCoroutines();
                     animator.SetFloat("IsEnemyHp", value);
                     OnDie();
@@ -64,23 +65,50 @@ public class Enemy : Astar
     private void Awake()
     {
         animator = GetComponent<Animator>();
-        rigidbody2D = GetComponent<Rigidbody2D>();
+
         astar = GetComponent<Astar>();
         player = FindAnyObjectByType<Player>();
         Hp = maxHp;
         animator.SetFloat("IsEnemyHp", Hp);
-     
+
+   
+    }
+
+    Vector3 now;
+
+    float time=0;
+    private void FixedUpdate()
+    {
+
+        time += Time.deltaTime;
+        if(time > 2.0f)
+        {
+            now = transform.position;
+        }
+        if(time > 4.0f)
+        {
+
+            if (now == transform.position )
+            {
+
+                PathFinding();
+            }
+            time = 0;
+        }
 
     }
 
     private void OnEnable()
     {
+        Hp = maxHp;
+        Alive = true;
+        animator.SetFloat("IsEnemyHp", Hp);
         PathFinding();
     }
 
     protected override void PathFinding()
     {
-
+        
         base.PathFinding();
         FinalList = astar.FinalNodeList;
         onMove = StartCoroutine(OnMove());
@@ -143,7 +171,7 @@ public class Enemy : Astar
             StopCoroutine(onMove);
             Debug.Log("멈춤");
             animator.SetBool(Enemy_Move, false);
-            StartCoroutine(EnemyAttack());
+            onAttack =StartCoroutine(EnemyAttack());
             astar.astarmove = true;
         }
 
@@ -172,11 +200,11 @@ public class Enemy : Astar
     {
         if (collision.CompareTag("Player"))
         {
-            
+       
             animator.SetBool(Enemy_Move, true);
             animator.SetBool(Enemy_Attack, false);
             astar.astarmove = false;
-            PathFinding();
+     
         }
         
     }
@@ -185,16 +213,29 @@ public class Enemy : Astar
 
     IEnumerator EnemyAttack()
     {
-        while (true)
-        {
+       
+            StopCoroutine(onMove);
             animator.SetBool(Enemy_Attack, true);
 
             yield return new WaitForSeconds(0.667f);
 
             animator.SetBool(Enemy_Attack, false);
             astar.astarmove = false;
-        }
+        
 
+    }
+    public void EnemyAttacking()
+    {
+        //Debug.Log(Vector3.SqrMagnitude(player.transform.position- transform.position));
+        if (Vector3.SqrMagnitude(player.transform.position - transform.position) < 5.0f)
+        {
+            player.PlayerHit(enemyDamage);
+            onAttack = StartCoroutine(EnemyAttack());
+        }
+        else
+        {
+            PathFinding();
+        }
     }
 
     private void OnDie()
@@ -211,13 +252,6 @@ public class Enemy : Astar
         gameObject.SetActive(false);
     }
 
-    public void EnemyAttacking()
-    {
-        Debug.Log(Vector3.SqrMagnitude(player.transform.position- transform.position));
-        if (Vector3.SqrMagnitude(player.transform.position - transform.position) < 5.0f)
-        {
-            player.PlayerHit(enemyDamage);
-        }
-    }
+
 
 }

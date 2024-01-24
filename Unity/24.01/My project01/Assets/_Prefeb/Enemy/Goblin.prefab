@@ -209,8 +209,7 @@ MonoBehaviour:
   detectiontopRight: {x: 0, y: 0}
   detectionRange: 10
   player: {fileID: 0}
-  enemy:
-  - {fileID: 5366067214034241347}
+  enemy: {fileID: 5366067214034241347}
   astarmove: 0
   speed: 7
   someThreshold: 0.1

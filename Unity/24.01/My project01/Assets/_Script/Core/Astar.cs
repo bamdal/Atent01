@@ -25,7 +25,7 @@ public class Astar : MonoBehaviour
     public int detectionRange = 10;
     public List<Node> FinalNodeList;
     public Player player;
-    public Enemy[] enemy;
+    public Enemy enemy;
     Vector3 playerV3, enemyV3;
 
     public bool astarmove = false;
@@ -55,7 +55,7 @@ public class Astar : MonoBehaviour
             if (player == null) { return; }
             astarmove = true;
             playerV3 = player.transform.position;
-            enemyV3 = enemy[0].transform.position;
+            enemyV3 = enemy.transform.position;
 
 
             playerPos = new Vector2Int((int)playerV3.x, (int)playerV3.y);
@@ -135,7 +135,7 @@ public class Astar : MonoBehaviour
 
             }
 
-            //StartCoroutine(OnMove());
+         
         }
     }
 
@@ -165,14 +165,7 @@ public class Astar : MonoBehaviour
         }
     }
 
-    void OnDrawGizmos()
-    {
 
-        /*       if (FinalNodeList.Count != 0) for (int i = 0; i < FinalNodeList.Count - 1; i++)
-                       Gizmos.DrawLine(new Vector2(FinalNodeList[i].x, FinalNodeList[i].y), new Vector2(FinalNodeList[i + 1].x, FinalNodeList[i + 1].y));
-
-       */
-    }
 
 
     // Start is called before the first frame update
@@ -182,57 +175,10 @@ public class Astar : MonoBehaviour
         player = FindAnyObjectByType<Player>();
 
 
-        //InvokeRepeating(nameof(PathFinding), 0.0f, 1.5f);
-        //CancelInvoke(nameof(PathFinding));
-
 
     }
 
 
 
-    private void FixedUpdate()
-    {
-
-        // Debug.Log(new Vector2(FinalNodeList[1].x-transform.position.x, FinalNodeList[1].y - transform.position.y));
-        /*     float distanceToPlayer = Vector2.Distance(transform.position, player.transform.position);
-             if (distanceToPlayer < someThreshold)
-             {
-                 findPlayer = true; Debug.Log(findPlayer);
-             }
-             else
-             {
-                 findPlayer = false; Debug.Log(findPlayer);
-
-             }*/
-
-    }
-
-    /*    IEnumerator OnMove()
-        {
-            astarmove = false;
-
-            foreach (var node in FinalNodeList)
-            {
-                Vector3 targetPosition = new Vector3(node.x, node.y, transform.position.z);
-
-                while (transform.position != targetPosition)
-                {
-                    transform.position = Vector3.MoveTowards(transform.position, targetPosition, speed * Time.deltaTime);
-                    animdirection?.Invoke(targetPosition.x); /// 안됨 수정!!!
-
-                    yield return null;
-                }
-
-
-            }
-            yield return StartCoroutine(WaitForPathFinding());
-        }
-        IEnumerator WaitForPathFinding()
-        {
-            // OnMove 코루틴이 끝날 때까지 기다리기
-            yield return new WaitUntil(() => astarmove == false);
-
-            // 모든 노드 이동이 끝난 후에 실행할 로직 추가 가능
-            PathFinding();
-        }*/
+   
 }
