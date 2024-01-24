@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 public class Test_Powerup : TestBase
 {
     Player player;
+#if UNITY_EDITOR
 
     private void Start()
     {
@@ -25,4 +26,5 @@ public class Test_Powerup : TestBase
     {
         Factory.Instance.GetPowerUp();
     }
+#endif
 }

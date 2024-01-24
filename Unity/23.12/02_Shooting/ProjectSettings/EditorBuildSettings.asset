@@ -6,6 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Test/01_Test_Sptrite.unity
-    guid: 2cda990e2423bbf4892e6590ba056729
+    path: Assets/Scenes/Main.unity
+    guid: 4d87c693c5ce5c747b2b997b216d1edc
   m_configObjects: {}

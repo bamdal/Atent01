@@ -105,16 +105,19 @@ public class Player : MonoBehaviour
         {
             if (life != value) // 변화가 있을 때만 처리
             {
-                life = value;
-                life = Mathf.Clamp(life, 0, startLife);
-                if (IsAlive)
+                if (IsAlive&&value<life)
                 {
                     OnHit(); // 맞고나서 살아있으면 맞은처리
                 }
-                else
+                life = value;
+                life = Mathf.Clamp(life, 0, startLife);
+                if (!IsAlive)
                 {
                     OnDie(); // 맞고나서 죽었으면 죽은처리
                 }
+
+
+
                 onLifeChange?.Invoke(life); // 생명변화가 있었음을 알림
             }
 

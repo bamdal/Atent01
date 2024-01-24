@@ -14,7 +14,7 @@ public class Test_GameOver : TestBase
 
     public RankPanel panel;
 
-
+#if UNITY_EDITOR
 
     private void Start()
     {
@@ -46,4 +46,5 @@ public class Test_GameOver : TestBase
         panel.Test_SaveRankData();
 
     }
+#endif
 }

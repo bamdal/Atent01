@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using TMPro;
 using UnityEngine;
 
 public class RankPanel : MonoBehaviour
@@ -25,11 +27,32 @@ public class RankPanel : MonoBehaviour
     /// </summary>
     const int rankCount = 5;
 
+    /// <summary>
+    /// 이름 입력을 받기 위한 인풋 필드
+    /// </summary>
+    TMP_InputField inputField;
+
+    /// <summary>
+    /// 갱신된 랭킹의 인덱스
+    /// </summary>
+    int updatedIndex = -1;
+
+
     private void Awake()
     {
         rankLines = GetComponentsInChildren<RankLine>();
         highScores = new int[rankCount];
         rankerNames = new string[rankCount];
+        inputField = GetComponentInChildren<TMP_InputField>(true);  // true로 비활성화된것도 찾기
+        inputField.onEndEdit.AddListener(OnNameInputEnd);
+
+    }
+
+    private void Start()
+    {
+        GameManager.Instance.Player.onDie += UpdateRankData;
+
+        LoadRankdata();
     }
 
     // 랭킹을 파일로 저장할 수 있어야 한다.
@@ -103,16 +126,67 @@ public class RankPanel : MonoBehaviour
     {
         bool result = false;
 
+        string path = $"{Application.dataPath}/Save/";
+        if (Directory.Exists(path)) // Exists : true면 폴더가 있다. false면 폴더가 없다.
+        {
+            string fullpath = $"{path}Save.json";   // 전체 경로 만들기
+            if (File.Exists(fullpath))
+            {
+                string json = File.ReadAllText(fullpath);
+                SaveData loadData = JsonUtility.FromJson<SaveData>(json);   
+
+                highScores = loadData.highScores;
+                rankerNames = loadData.rankerNames;
+
+                result = true;
+            }
+        }
+
+        if (!result)    // 로딩 실패
+        {
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+            SetDefaultData();   // 기본 데이터 설정;
+            
+        }
+
+        RefreshRankLines();
+
         return result;
     }
 
     /// <summary>
     /// 랭킹 데이터를 업데이트하는 함수
     /// </summary>
-    /// <param name="score"></param>
+    /// <param name="score">새 점수</param>
     void UpdateRankData(int score)
     {
+        for(int i = 0; i<rankCount; i++)
+        {
+            if (highScores[i] < score)  // i번째 등수에 끼어 들면 된다.
+            {
+                for(int j = rankCount-1;j>i;j--)
+                {
+                    highScores[j] = highScores[j-1];
+                    rankerNames[j]= rankerNames[j-1];
+                    rankLines[j].SetData(rankerNames[j], highScores[j]);
+                }
+                highScores[i] = score;                              // 점수 기록
+                
+                rankLines[i].SetData("새 랭커", score);              // 
+                updatedIndex = i;                                   // 업데이트된 인덱스
 
+                Vector3 newPos = inputField.transform.position;     // 인풋필드의 위치값
+                newPos.y = rankLines[i].transform.position.y;       // 이동해야할 Y값
+                inputField.transform.position = newPos;             // 인풋필드 이동
+
+                inputField.gameObject.SetActive(true);              // 인풋필드 활성화
+                inputField.Select();
+                break;
+            }
+        }
     }
 
     /// <summary>
@@ -120,11 +194,26 @@ public class RankPanel : MonoBehaviour
     /// </summary>
     void RefreshRankLines()
     {
-        for (int i = 0;i < rankLines.Length;i++)
+        for (int i = 0;i < rankCount; i++)
         {
             rankLines[i].SetData(rankerNames[i], highScores[i]);
         }
     }
+
+    /// <summary>
+    /// 인풋필드에 입력이 끝났을 때 실행될 함수
+    /// </summary>
+    /// <param name="text">인풋 필드에 기록되어 있는 문자열</param>
+    private void OnNameInputEnd(string text)
+    {
+        inputField.gameObject.SetActive(false); // 입력 완료되었으니 인풋필드 안보이게 만들기
+        if (text == "")
+            text = "AAA";
+        rankerNames[updatedIndex] = text;       // 랭커 이름 설정
+        RefreshRankLines() ;                    // UI 갱신
+        SaveRankData();                         // 저장
+    }
+
 #if UNITY_EDITOR
     public void Test_DefaultRankPanel()
     {
@@ -137,6 +226,16 @@ public class RankPanel : MonoBehaviour
         SetDefaultData();
         RefreshRankLines();
         SaveRankData();
+    }
+
+    public void Test_LoadRankPanel()
+    {
+        LoadRankdata();
+    }
+
+    public void Test_UpdateRankPanel(int score)
+    {
+        UpdateRankData(score);
     }
 #endif
 }
