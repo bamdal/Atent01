@@ -19,7 +19,7 @@ public class Enemy : Astar
     Coroutine onMove;
     bool Alive = true;
     Coroutine onAttack;
-
+    Collider2D body;
     public float Hp
     {
         get => hp;
@@ -33,6 +33,7 @@ public class Enemy : Astar
                 if (hp < 0.1f && Alive)
                 {
                     Alive = false;
+                    body.enabled = false;
                     StopAllCoroutines();
                     animator.SetFloat("IsEnemyHp", value);
                     OnDie();
@@ -65,7 +66,7 @@ public class Enemy : Astar
     private void Awake()
     {
         animator = GetComponent<Animator>();
-
+         body = GetComponent<Collider2D>();
         astar = GetComponent<Astar>();
         player = FindAnyObjectByType<Player>();
         Hp = maxHp;
@@ -241,8 +242,8 @@ public class Enemy : Astar
     private void OnDie()
     {
         Debug.Log("사망");
-        Collider2D body = GetComponent<Collider2D>();
-        body.enabled = false;
+
+   
         StartCoroutine(EnemyDie());
         
     }

@@ -7,6 +7,8 @@ public class RetryUI : MonoBehaviour
 {
     public void Retry()
     {
+        GameManager.Instance.Addscore1 = 0;
+        GameManager.Instance.ClearScore = 100;
         SceneManager.LoadScene("StartScene");
     }
 }

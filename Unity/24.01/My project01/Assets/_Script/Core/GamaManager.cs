@@ -10,7 +10,7 @@ public class GameManager : Singleton<GameManager>
 {
 
     Player player;
-    public int clearScore = 100;
+    private int clearScore = 100;
     int Addscore=0;
     public Player Player
     {
@@ -24,6 +24,8 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
+    public int Addscore1 { get => Addscore; set => Addscore = value; }
+    public int ClearScore { get => clearScore; set => clearScore = value; }
 
     protected override void OnInitialize()
     {
@@ -35,20 +37,24 @@ public class GameManager : Singleton<GameManager>
     {
         
         Player.onScoreChange += ClearGame;
-        Player.onDie += GameOver;
-        Addscore = 0;
+
+        Addscore1 = 0;
+        SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
-    private void GameOver()
+    private void OnSceneLoaded(Scene arg0, LoadSceneMode arg1)
     {
-        SceneManager.LoadScene("GameOverScene");
+        Player.onScoreChange += ClearGame;
     }
+
+
+    
 
     void ClearGame(int score)
     {
-        Addscore = score;
-        Debug.Log($"Addscore{Addscore}");
-        if (clearScore  <= Addscore)
+        Addscore1 = score;
+        Debug.Log($"Addscore{Addscore1}");
+        if (ClearScore  <= Addscore1)
         {
             SceneManager.LoadScene("ClearScene");
         

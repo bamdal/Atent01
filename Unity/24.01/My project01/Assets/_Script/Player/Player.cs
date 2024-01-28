@@ -38,7 +38,7 @@ public class Player : MonoBehaviour
     public float dashSt = 0.1f;
     public float regenSt = 0.5f;
 
-    public Action onDie;
+   
     public float Hp
     {
         get => hp;
@@ -53,7 +53,7 @@ public class Player : MonoBehaviour
             }
            
             
-            Debug.Log($"HP {hp}");
+     
         }
     }
 
@@ -266,6 +266,8 @@ public class Player : MonoBehaviour
     private void OnDie()
     {
         //SceneManager.LoadScene("");
-        onDie?.Invoke();
+   
+        SceneManager.LoadScene("GameOverScene");
+
     }
 }
