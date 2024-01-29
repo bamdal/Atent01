@@ -44,7 +44,8 @@ public class GameManager : Singleton<GameManager>
 
     private void OnSceneLoaded(Scene arg0, LoadSceneMode arg1)
     {
-        Player.onScoreChange += ClearGame;
+        if(arg0.name == "MainMap")
+            Player.onScoreChange += ClearGame;
     }
 
 

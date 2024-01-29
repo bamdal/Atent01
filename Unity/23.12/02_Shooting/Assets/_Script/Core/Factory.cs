@@ -187,7 +187,7 @@ public class Factory : Singleton<Factory>
 /*        Bullet comp = bullet.GetObject();
         comp.transform.position = position;  
         comp.transform.Rotate(angle * Vector3.forward);*/
-        return bullet.GetObject(position, angle * Vector3.forward); ;
+        return bullet.GetObject(position, angle * Vector3.forward); 
     }
 
     public HitEffect GetHitEffect()
