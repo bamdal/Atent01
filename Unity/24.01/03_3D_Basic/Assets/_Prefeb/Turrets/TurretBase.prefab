@@ -343,6 +343,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8858666028292073956}
+  - component: {fileID: 5787234924926523535}
   - component: {fileID: 8366537788250566274}
   m_Layer: 0
   m_Name: TurretBase
@@ -369,6 +370,20 @@ Transform:
   - {fileID: 6137301625871365007}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5787234924926523535
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3720524895917306887}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26493585359e08540832cfa9cf55c5bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bulletType: 0
+  fireInterval: 1
 --- !u!136 &8366537788250566274
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -404,7 +419,7 @@ GameObject:
   m_Layer: 0
   m_Name: FirePosition
   m_TagString: Untagged
-  m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: -5442936267250999957, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1

@@ -5,7 +5,14 @@ using UnityEngine;
 
 public class Bullet : RecycleObject
 {
+    /// <summary>
+    /// 총알의 속도
+    /// </summary>
     public float initalSpeed = 20.0f;
+
+    /// <summary>
+    /// 총알의 수명
+    /// </summary>
     public float lifeTime = 10.0f;
 
     Rigidbody rigid;
@@ -15,28 +22,23 @@ public class Bullet : RecycleObject
         rigid = GetComponent<Rigidbody>();
     }
 
-    private void Start()
-    {
-
-    }
+   
 
     protected override void OnEnable()
     {
         base.OnEnable();
-        rigid.velocity = initalSpeed * transform.forward;
-
-        StartCoroutine(a());
+        StartCoroutine(LifeOver(lifeTime));                 // 수명 설정
+        rigid.angularVelocity = Vector3.zero;               // 이전의 회전력 제거
+        rigid.velocity = initalSpeed * transform.forward;   // 발사 방향과 속도 설정
     }
 
-    protected override void OnDisable()
+
+    private void OnCollisionEnter(Collision collision)
     {
-        base.OnDisable();
+        StopAllCoroutines();
+        StartCoroutine(LifeOver(2.0f));                     // 충돌하고 2초 뒤에 사라짐
     }
 
-    IEnumerator a()
-    {
-        yield return new WaitForSeconds(lifeTime);
-        this.gameObject.SetActive(false);
 
-    }
+
 }

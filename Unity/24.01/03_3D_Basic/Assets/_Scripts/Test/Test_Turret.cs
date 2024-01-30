@@ -7,6 +7,7 @@ public class Test_Turret : TestBase
 {
     public GameObject bulletPrefab;
     public float interval = 0.1f;
+    public PoolObjectType type;
 
     Transform FireTransform;
     public Transform TurretFireTransform;
@@ -18,7 +19,7 @@ public class Test_Turret : TestBase
 
     protected override void OnTest1(InputAction.CallbackContext context)
     {
-        Factory.Instance.GetBullet(FireTransform.position);
+        Factory.Instance.GetObject(type,FireTransform.position);
 
     }
 
@@ -32,7 +33,7 @@ public class Test_Turret : TestBase
     {
         while (true)
         {
-            Factory.Instance.GetBullet(TurretFireTransform.position);
+            Factory.Instance.GetObject(type, FireTransform.position);
             yield return new WaitForSeconds(interval);
         }
     }

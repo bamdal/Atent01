@@ -14,8 +14,8 @@ public class RecycleObject : MonoBehaviour
 
     protected virtual void OnEnable()
     {
-        transform.localPosition = Vector3.zero; // 부모의 위치로 보내기
-        transform.localRotation = Quaternion.identity;  // 부모의 회전과 같게 만들기
+       // transform.localPosition = Vector3.zero; // 부모의 위치로 보내기
+       // transform.localRotation = Quaternion.identity;  // 부모의 회전과 같게 만들기
 
         StopAllCoroutines(); // 리셋용도 (없어도됨)
     }

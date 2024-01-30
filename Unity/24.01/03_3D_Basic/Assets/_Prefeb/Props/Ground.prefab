@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8597457149253585232}
   - component: {fileID: 2088727456868805019}
   - component: {fileID: 5047857675455478743}
-  - component: {fileID: 1730202745215096252}
+  - component: {fileID: 1533733506730743024}
   m_Layer: 0
   m_Name: Ground
   m_TagString: Ground
@@ -331,7 +331,7 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3058043188117024204}
   m_Mesh: {fileID: 0}
---- !u!65 &1730202745215096252
+--- !u!65 &1533733506730743024
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -351,4 +351,4 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 100, y: 5, z: 100}
-  m_Center: {x: 1.7274551, y: -3.241888, z: -3.8473625}
+  m_Center: {x: 1.7274551, y: -2.5418882, z: -3.8473625}

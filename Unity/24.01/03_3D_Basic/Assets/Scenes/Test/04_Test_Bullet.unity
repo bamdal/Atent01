@@ -646,7 +646,7 @@ GameObject:
   - component: {fileID: 2011774473}
   - component: {fileID: 2011774472}
   m_Layer: 0
-  m_Name: Test_Turret
+  m_Name: Test_Bullet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -667,6 +667,7 @@ MonoBehaviour:
   seed: -1
   bulletPrefab: {fileID: 3296965619366806789, guid: 956b82a32ddc2984ab8971d74b425644, type: 3}
   interval: 0.1
+  type: 0
   TurretFireTransform: {fileID: 1960612800}
 --- !u!4 &2011774473
 Transform:
@@ -725,15 +726,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4350879417197607550, guid: 3c396e0aaf011dc44a44ff4c3897f361, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1.533765
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4350879417197607550, guid: 3c396e0aaf011dc44a44ff4c3897f361, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.19227259
+      value: -10
       objectReference: {fileID: 0}
     - target: {fileID: 4350879417197607550, guid: 3c396e0aaf011dc44a44ff4c3897f361, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 3.8223126
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4350879417197607550, guid: 3c396e0aaf011dc44a44ff4c3897f361, type: 3}
       propertyPath: m_LocalRotation.w

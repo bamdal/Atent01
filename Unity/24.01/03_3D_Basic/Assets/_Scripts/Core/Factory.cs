@@ -5,20 +5,20 @@ using UnityEngine;
 
 public enum PoolObjectType
 {
-    TurretBullet
+    Bullet
 }
 
 public class Factory : Singleton<Factory>
 {
-    BulletPool bullet;
+    BulletPool bulletPool;
 
     protected override void OnInitialize()
     {
         base.OnInitialize();
 
-        bullet = GetComponentInChildren<BulletPool>(true);
-        if(bullet != null)
-            bullet.Initialize();
+        bulletPool = GetComponentInChildren<BulletPool>(true);
+        if(bulletPool != null)
+            bulletPool.Initialize();
     }
 
     public GameObject GetObject(PoolObjectType type, Vector3? position = null, Vector3? euler = null)
@@ -26,8 +26,8 @@ public class Factory : Singleton<Factory>
         GameObject result = null;
         switch (type)
         {
-            case PoolObjectType.TurretBullet:
-                result = bullet.GetObject(position, euler).gameObject;
+            case PoolObjectType.Bullet:
+                result = bulletPool.GetObject(position, euler).gameObject;
                 break;
             default:
                 break;
@@ -37,12 +37,12 @@ public class Factory : Singleton<Factory>
 
     public Bullet GetBullet()
     {
-        return bullet.GetObject();
+        return bulletPool.GetObject();
     }
 
     public Bullet GetBullet(Vector3 position, float angle = 0.0f)
     {
-        return bullet.GetObject(position, angle * Vector3.forward); 
+        return bulletPool.GetObject(position, angle * Vector3.forward); 
     }
 }
 
