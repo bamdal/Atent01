@@ -362,6 +362,8 @@
 "Assets/AssetStore/Mimic/Scripts/Mimic.cs"
 "Assets/AssetStore/Mimic/Scripts/Movement.cs"
 "Assets/AssetStore/WhiteCity/Offer/Asset_Store_Offers.cs"
+"Assets/Input/PlayerInputActions.cs"
+"Assets/_Script/Player/Player.cs"
 -langversion:9.0
 
 /deterministic
