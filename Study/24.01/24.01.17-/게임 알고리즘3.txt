@@ -1,0 +1,5 @@
+Ray : 특정 위치에서 특정 방향으로 나가는 선
+ - origin(위치 Vector3), direction(방향 Vector3)
+
+Line : 특정 위치에서 특정 위치로 이어진 선
+ - 시작 위치(Vector3), 도착 위치(Vector3)

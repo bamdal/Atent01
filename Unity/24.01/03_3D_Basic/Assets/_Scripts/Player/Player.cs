@@ -153,11 +153,19 @@ public class Player : MonoBehaviour
         // Quaternion.Slerp(); : 시작 회전에서 목표 회전으로 보간하는 함수 (곡선으로 보간)
         // Quaternion.LookRotation() : 특정 방향을 바라보는 회전을 만들어주는 함수
 
+        // Quaternion.identity; : 아무런 회전도 하지 않았다.
+        // Quaternion.Inverse(); : 역회전을 계산하는 함수
+
+
+        // Quaternion.RotateTowards(); : from에서 to로 회전 시키는 함수 한번 실행될때마다 maxDegressDelta만큼 회전 
+
         // 이번 fixedUpdate에서 추가로 회전할 회전각도
         Quaternion roate = Quaternion.AngleAxis(Time.fixedDeltaTime * rotateSpeed * rotateDirection, transform.up);
         
         // 현재 회전에서 rotate만큼 추가 회전 
         rigid.MoveRotation(rigid.rotation * roate);
+
+        // transform.RotateAround : 특정 위치에서 특정 축을 기준으로 회전하기
     }
 
 

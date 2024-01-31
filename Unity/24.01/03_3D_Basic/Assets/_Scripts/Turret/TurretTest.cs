@@ -1,4 +1,4 @@
-using System.Collections;
+/*using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -23,8 +23,6 @@ public class TurretTest : TurretBase
     SphereCollider sightTrigger;
 
 
-    Transform Barrelbody;
-
     /// <summary>
     /// 시야에 들어온 플레이어
     /// </summary>
@@ -35,33 +33,16 @@ public class TurretTest : TurretBase
     /// </summary>
     bool isFiring = false;
 
-    /// <summary>
-    /// 발사 코루틴
-    /// </summary>
-    IEnumerator fireCoroutine;
 
 
     protected override void Awake()
     {
         base.Awake();
         sightTrigger = GetComponent<SphereCollider>();
-        fireCoroutine = PeriodFire();
+
     }
 
-    IEnumerator PeriodFire()
-    {
-        while (true) 
-        { 
-        yield return new WaitForSeconds(fireInterval);
-        for(int i = 0; i < 5; i++) 
-        {
-            for(int j = 0; j < 5; j++)
-            {
-                Factory.Instance.GetObject(bulletType, fireTransform.position + new Vector3(i, j), fireTransform.rotation.eulerAngles*i*j);
-            }
-        }
-        }
-    }
+
 
     private void Start()
     {
@@ -144,8 +125,9 @@ public class TurretTest : TurretBase
         }
     }
 #if UNITY_EDITOR
-    private void OnDrawGizmos()
+    protected override void OnDrawGizmos()
     {
+        base.OnDrawGizmos();
         Handles.DrawWireDisc(transform.position, Vector3.up, sightRange);
 
 
@@ -170,3 +152,4 @@ public class TurretTest : TurretBase
 #endif
 
 }
+*/

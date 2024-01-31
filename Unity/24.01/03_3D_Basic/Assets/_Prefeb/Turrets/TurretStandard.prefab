@@ -10,7 +10,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3720524895917306887, guid: c897caf2b8c6bec4e80ed9a56e96b012, type: 3}
       propertyPath: m_Name
-      value: TurretStandard Variant
+      value: TurretStandard
       objectReference: {fileID: 0}
     - target: {fileID: 8690684998892344852, guid: c897caf2b8c6bec4e80ed9a56e96b012, type: 3}
       propertyPath: m_Icon
@@ -18,15 +18,15 @@ PrefabInstance:
       objectReference: {fileID: -5442936267250999957, guid: 0000000000000000d000000000000000, type: 0}
     - target: {fileID: 8858666028292073956, guid: c897caf2b8c6bec4e80ed9a56e96b012, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 2.75
+      value: 4.44
       objectReference: {fileID: 0}
     - target: {fileID: 8858666028292073956, guid: c897caf2b8c6bec4e80ed9a56e96b012, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.041887283
       objectReference: {fileID: 0}
     - target: {fileID: 8858666028292073956, guid: c897caf2b8c6bec4e80ed9a56e96b012, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -0.7364602
       objectReference: {fileID: 0}
     - target: {fileID: 8858666028292073956, guid: c897caf2b8c6bec4e80ed9a56e96b012, type: 3}
       propertyPath: m_LocalRotation.w
