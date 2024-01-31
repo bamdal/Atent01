@@ -239,11 +239,11 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""e2542135-e6ea-4a07-af37-c828b8b51e71"",
-                    ""path"": ""<Mouse>/position"",
+                    ""id"": ""73d28136-9a1b-4499-9607-222589d58b3c"",
+                    ""path"": ""<Mouse>/delta"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""New control scheme"",
+                    ""groups"": """",
                     ""action"": ""MouseVector"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false

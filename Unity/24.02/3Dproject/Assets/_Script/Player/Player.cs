@@ -1,3 +1,4 @@
+using Cinemachine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -19,10 +20,6 @@ public class Player : MonoBehaviour
     Rigidbody rigid;
     Animator animator;
 
-    /// <summary>
-    /// 이동 방향(1 : 전진, -1 : 후진, 0 : 정지)
-    /// </summary>
-    float moveDirection = 0.0f;
 
     /// <summary>
     /// 이동 속도
@@ -37,7 +34,7 @@ public class Player : MonoBehaviour
     /// <summary>
     /// 회전 속도
     /// </summary>
-    public float rotateSpeed = 180.0f;
+    public float rotateSpeed = 30.0f;
 
     /// <summary>
     /// 애니메이션 해쉬값
@@ -69,12 +66,29 @@ public class Player : MonoBehaviour
     /// 실제 이동방향을 나타낼 벡터
     /// </summary>
     Vector3 moveVector = Vector3.zero;
+
+    /// <summary>
+    /// 전진 명령
+    /// </summary>
+    float go = 0.0f;
+
+    /// <summary>
+    /// 우회전 명령
+    /// </summary>
+    float turnRight = 0.0f;
+
+    CinemachineVirtualCamera virtualCamera;
+    Vector3 cameraRotation;
+    Vector3 cameraPosition;
     private void Awake()
     {
         //inputActions = new PlayerInputActions();
         inputActions = new();
         rigid = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
+        virtualCamera = transform.GetChild(3).GetComponent<CinemachineVirtualCamera>();
+        cameraRotation = virtualCamera.transform.localRotation.eulerAngles;
+        cameraPosition = virtualCamera.transform.localPosition;
     }
 
     private void OnEnable()
@@ -142,10 +156,13 @@ public class Player : MonoBehaviour
 
     void SetRotation(Vector2 input)
     {
-        rotateDirection = input.x;
+        //rotateDirection = input.x;
 
-        rotateDirection -=  moveDirection;
-        // 전프레임 위치 구해서 마우스 움직임 구하기
+        cameraRotation.y -= -input.x;
+        cameraPosition // 카메라 원운동 시키기 https://gr-st-dev.tistory.com/53
+        virtualCamera.transform.localRotation = Quaternion.Euler(cameraRotation);
+        virtualCamera.transform.localPosition = cameraPosition;
+        //Rotate();
     }
 
     /// <summary>
@@ -155,8 +172,9 @@ public class Player : MonoBehaviour
     /// <param name="IsMove">이동중이면 true, 이동중이 아니면 false</param>
     void SetInput(Vector2 input, bool IsMove)
     {
+        go = input.y;
+        turnRight = input.x;
 
-        moveVector = new Vector3(input.x, 0, input.y).normalized;
         animator.SetBool(IsMoveHash, IsMove);
     }
 
@@ -165,6 +183,15 @@ public class Player : MonoBehaviour
     /// </summary>
     void Move()
     {
+        moveVector = Vector3.zero;
+        if (go > 0.0f)
+            moveVector += transform.forward;
+        else if (go < 0.0f)
+            moveVector += -transform.forward;
+        if (turnRight > 0.0f)
+            moveVector += transform.right;
+        else if(turnRight < 0.0f)
+            moveVector += -transform.right;
         rigid.MovePosition(rigid.position + Time.fixedDeltaTime * moveSpeed * moveVector);
     }
 
@@ -200,7 +227,7 @@ public class Player : MonoBehaviour
     private void FixedUpdate()
     {
         Move();
-        Rotate();
+        //Rotate();
     }
 
     private void OnCollisionEnter(Collision collision)
