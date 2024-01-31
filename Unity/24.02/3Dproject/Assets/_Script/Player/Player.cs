@@ -159,7 +159,7 @@ public class Player : MonoBehaviour
         //rotateDirection = input.x;
 
         cameraRotation.y -= -input.x;
-        cameraPosition // 카메라 원운동 시키기 https://gr-st-dev.tistory.com/53
+
         virtualCamera.transform.localRotation = Quaternion.Euler(cameraRotation);
         virtualCamera.transform.localPosition = cameraPosition;
         //Rotate();
