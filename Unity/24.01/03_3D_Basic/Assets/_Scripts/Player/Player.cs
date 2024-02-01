@@ -43,6 +43,7 @@ public class Player : MonoBehaviour
     /// 애니메이션 해쉬값
     /// </summary>
     readonly int IsMoveHash = Animator.StringToHash("IsMove");
+    readonly int UseHash = Animator.StringToHash("Use");
 
     /// <summary>
     /// 점프력
@@ -74,7 +75,12 @@ public class Player : MonoBehaviour
         inputActions = new();
         rigid = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
+
+        ItemUseChecker checker = GetComponentInChildren<ItemUseChecker>();
+        checker.onItemUse += (interacable) => interacable.Use();
     }
+
+
 
     private void OnEnable()
     {
@@ -115,7 +121,7 @@ public class Player : MonoBehaviour
 
     private void OnUseInput(InputAction.CallbackContext context)
     {
-
+        animator.SetTrigger(UseHash);
     }
 
     /// <summary>

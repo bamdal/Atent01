@@ -7,7 +7,7 @@ public class DoorAuto : DoorBase
     private void OnTriggerEnter(Collider other)
     {
         
-        if (other.CompareTag("Player") && Vector3.Dot(transform.forward,other.transform.forward)<0.0f)
+        if (other.CompareTag("Player"))
         {
             Open();
         }
