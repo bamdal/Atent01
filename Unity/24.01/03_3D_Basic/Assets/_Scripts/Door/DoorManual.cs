@@ -4,28 +4,33 @@ using UnityEngine;
 
 public class DoorManual : DoorBase, IInteracable
 {
-    public float autoCloseTime = 3.0f;
 
     TextMeshPro text; //3D글자(UI아님)
+    bool isOpen = false;
 
-    private void Start()
+    protected override void Awake()
     {
+        base.Awake();
         text = GetComponentInChildren<TextMeshPro>(true);
         text.enabled = false;
     }
+
+
     public void Use()
     {
-        Open();
-        StopAllCoroutines();
-        StartCoroutine(AutoClose());
-    }
-    IEnumerator AutoClose()
-    {
-        yield return new WaitForSeconds(autoCloseTime);
-        Close();
+        if(isOpen)
+        {
+            Close();
+            isOpen = false;
+        }
+        else
+        {
+            Open();
+            isOpen = true;
+        }
     }
 
-    private void OnTriggerEnter(Collider other)
+    protected virtual void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Player"))
         { 
@@ -49,7 +54,7 @@ public class DoorManual : DoorBase, IInteracable
         }
     }
 
-    private void OnTriggerExit(Collider other)
+    protected virtual void OnTriggerExit(Collider other)
     {
         if (other.gameObject.CompareTag("Player"))
         { 

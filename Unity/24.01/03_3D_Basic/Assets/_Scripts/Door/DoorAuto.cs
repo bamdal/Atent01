@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DoorAuto : DoorBase
 {
-    private void OnTriggerEnter(Collider other)
+    protected virtual void OnTriggerEnter(Collider other)
     {
         
         if (other.CompareTag("Player"))
@@ -13,7 +13,7 @@ public class DoorAuto : DoorBase
         }
     }
 
-    private void OnTriggerExit(Collider other)
+    protected virtual void OnTriggerExit(Collider other)
     {
         if (other.CompareTag("Player"))
         {

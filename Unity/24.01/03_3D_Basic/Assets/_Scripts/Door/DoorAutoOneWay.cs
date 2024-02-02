@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DoorAutoOneWay : DoorAuto
 {
-    private void OnTriggerEnter(Collider other)
+    private new void OnTriggerEnter(Collider other)
     {
         if(other.gameObject.CompareTag("Player"))
         {
