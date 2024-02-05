@@ -12,5 +12,10 @@ using UnityEngine;
 
 public interface IInteracable // 인터페이스는 인터페이스만 상속가능함
 {
+    bool CanUse    // 사용가능한지 확인하는 프로퍼티
+    {
+        get;
+    }
+
     void Use(); // 사용하는 기능이 있다고 선언해 놓은 것
 }

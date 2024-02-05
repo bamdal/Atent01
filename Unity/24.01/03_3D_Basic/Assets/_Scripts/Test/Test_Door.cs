@@ -28,4 +28,9 @@ public class Test_Door : TestBase
         IInteracable interacable = doorSwitch.transform.GetComponent<IInteracable>();
         interacable.Use();
     }
+
+    protected override void OnTest4(InputAction.CallbackContext context)
+    {
+        GameManager.Instance.Player.Die();
+    }
 }

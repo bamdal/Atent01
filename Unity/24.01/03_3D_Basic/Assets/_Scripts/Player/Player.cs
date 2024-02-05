@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour, IAlive
 {
     // 실습
     // 1. 플레이어는 WS키로 전진/후진을 한다.
@@ -44,6 +44,7 @@ public class Player : MonoBehaviour
     /// </summary>
     readonly int IsMoveHash = Animator.StringToHash("IsMove");
     readonly int UseHash = Animator.StringToHash("Use");
+    readonly int DieHash = Animator.StringToHash("Die");
 
     /// <summary>
     /// 점프력
@@ -69,6 +70,16 @@ public class Player : MonoBehaviour
     /// 점프가 가능한지 확인하는 프로퍼티(점프중이 아니고 쿨타임이 아님)
     /// </summary>
     bool IsJumpAvailable => !isJumping && (jumpCoolRemains < 0.0f);
+
+    /// <summary>
+    /// 사망 델리게이트
+    /// </summary>
+    public Action onDie;
+
+    /// <summary>
+    /// 플레이어 사망
+    /// </summary>
+    bool isAlive = true;
     private void Awake()
     {
         //inputActions = new PlayerInputActions();
@@ -78,6 +89,7 @@ public class Player : MonoBehaviour
 
         ItemUseChecker checker = GetComponentInChildren<ItemUseChecker>();
         checker.onItemUse += (interacable) => interacable.Use();
+   
     }
 
 
@@ -190,6 +202,32 @@ public class Player : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// 사망 처리용 함수
+    /// </summary>
+    public void Die()
+    {
+        if(isAlive)
+        {
+            Debug.Log("죽었음");
+            animator.SetTrigger(DieHash);   // 사망 애니메이션
+
+            inputActions.Player.Disable();  // 플레이어 조종 막기
+
+            rigid.constraints = RigidbodyConstraints.None;  // 물리잠금 해제
+            Transform head = transform.GetChild(0);
+            rigid.AddForceAtPosition(-transform.forward, head.position, ForceMode.Impulse);
+            rigid.AddTorque(transform.up * 1.5f, ForceMode.Impulse);
+
+            onDie?.Invoke();
+            isAlive = false;
+        }
+        // 죽는 애니메이션이 나온다.
+        // 더이상 조정이 안되어야 한다.
+        // 대굴대굴 구른다(뒤로 넘어가면서 y축으로 스핀 먹이기)
+        // 죽었다고 신호보내기(onDie델리게이트 실행)
+    }
+
     private void Update()
     {
         jumpCoolRemains -= Time.deltaTime;
@@ -210,6 +248,7 @@ public class Player : MonoBehaviour
         }
         
     }
+
 
 }
 // 실습

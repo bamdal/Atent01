@@ -252,7 +252,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2608656209149583182, guid: 6e1d8139597afec42bc45bc2449783b8, type: 3}
       propertyPath: m_VersionIndex
-      value: 842
+      value: 845
       objectReference: {fileID: 0}
     - target: {fileID: 6827536316144727566, guid: 6e1d8139597afec42bc45bc2449783b8, type: 3}
       propertyPath: m_Name

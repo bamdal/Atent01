@@ -11,15 +11,18 @@ public class DoorTrap : DoorManual
     protected override void Awake()
     {
         base.Awake();
+
         Transform child = transform.GetChild(3);
         ps = child.GetComponent<ParticleSystem>();
 
         alives = new List<IAlive>(4);
     }
+
     protected override void OnOpen()
     {
+        ps.Stop();
         ps.Play();
-        foreach(IAlive alive in alives)
+        foreach (IAlive alive in alives)
         {
             alive.Die();
         }
@@ -28,6 +31,7 @@ public class DoorTrap : DoorManual
     protected override void OnTriggerEnter(Collider other)
     {
         base.OnTriggerEnter(other);
+
         IAlive alive = other.GetComponent<IAlive>();
         if (alive != null)
         {
@@ -41,8 +45,7 @@ public class DoorTrap : DoorManual
         IAlive alive = other.GetComponent<IAlive>();
         if (alive != null)
         {
-            alives.Add(alive);
+            alives.Remove(alive);
         }
     }
-
 }
