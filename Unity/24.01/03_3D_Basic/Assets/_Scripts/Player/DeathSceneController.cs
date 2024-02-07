@@ -6,22 +6,32 @@ using UnityEngine;
 
 public class DeathSceneController : MonoBehaviour
 {
+    public float cartSpeed = 15.0f;
     CinemachineVirtualCamera vCam;
     CinemachineDollyCart cart;
+    Player player;
 
     private void Awake()
     {
-        GameManager.Instance.Player.onDie += PlayerDie;
-        cart = transform.GetChild(1).GetComponent<CinemachineDollyCart>();
-        vCam = transform.GetChild(1).GetChild(0).GetComponent<CinemachineVirtualCamera>();
+        cart = GetComponentInChildren<CinemachineDollyCart>();
+        vCam = GetComponentInChildren<CinemachineVirtualCamera>();
+    }
+    private void Start()
+    {
+        player = GameManager.Instance.Player;
+        player.onDie += DeathSceneStart;
     }
 
-    private void PlayerDie()
+    private void DeathSceneStart()
     {
-        transform.position = GameManager.Instance.Player.transform.position;
-        transform.rotation = GameManager.Instance.Player.transform.rotation;
-        vCam.Priority = 15;
-        cart.m_Speed = 10;
+
+        transform.rotation = player.transform.rotation;
+        vCam.Priority = 21;
+        cart.m_Speed = cartSpeed;
+    }
+    private void Update()
+    {
+        transform.position = player.transform.position;
     }
 
     // 플레이어의 onDie 델리게이트에 함수 연결

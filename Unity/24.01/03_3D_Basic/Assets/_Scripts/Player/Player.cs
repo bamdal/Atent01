@@ -16,7 +16,7 @@ public class Player : MonoBehaviour, IAlive
     // 6. Player_Idle 애님이션은 머리가 살짝 앞뒤로 까닥거린다.
 
     PlayerInputActions inputActions;
-    Rigidbody rigid;
+    public Rigidbody rigid;
     Animator animator;
 
     /// <summary>
