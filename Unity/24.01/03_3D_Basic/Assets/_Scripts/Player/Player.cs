@@ -25,9 +25,14 @@ public class Player : MonoBehaviour, IAlive
     float moveDirection = 0.0f;
 
     /// <summary>
-    /// 이동 속도
+    /// 이동 속도(기준 속도)
     /// </summary>
     public float moveSpeed = 5.0f;
+
+    /// <summary>
+    /// 현재 이동 속도
+    /// </summary>
+    float currentMoveSpeed = 5.0f;
 
     /// <summary>
     /// 회전 방향(1 : 우회전, -1 : 좌회전, 0 : 정지)
@@ -52,9 +57,9 @@ public class Player : MonoBehaviour, IAlive
     public float jumpPower = 6.0f;
 
     /// <summary>
-    /// 점프 중인지 아닌지 나타내는 변수
+    /// 공중에 떠 있는지 아닌지 나타내는 변수
     /// </summary>
-    bool isJumping = false;
+    bool inAir = false;
 
     /// <summary>
     /// 점프 쿨 타임
@@ -69,7 +74,7 @@ public class Player : MonoBehaviour, IAlive
     /// <summary>
     /// 점프가 가능한지 확인하는 프로퍼티(점프중이 아니고 쿨타임이 아님)
     /// </summary>
-    bool IsJumpAvailable => !isJumping && (jumpCoolRemains < 0.0f);
+    bool IsJumpAvailable => !inAir && (jumpCoolRemains < 0.0f);
 
     /// <summary>
     /// 사망 델리게이트
@@ -92,7 +97,10 @@ public class Player : MonoBehaviour, IAlive
    
     }
 
-
+    private void Start()
+    {
+        currentMoveSpeed = moveSpeed;
+    }
 
     private void OnEnable()
     {
@@ -153,7 +161,7 @@ public class Player : MonoBehaviour, IAlive
     /// </summary>
     void Move()
     {
-        rigid.MovePosition(rigid.position + Time.fixedDeltaTime * moveSpeed * moveDirection * transform.forward);
+        rigid.MovePosition(rigid.position + Time.fixedDeltaTime * currentMoveSpeed * moveDirection * transform.forward);
     }
 
     /// <summary>
@@ -196,7 +204,7 @@ public class Player : MonoBehaviour, IAlive
         {
             rigid.AddForce(jumpPower * Vector3.up, ForceMode.Impulse);  // 위쪽으로 jumpPower만큼 힘을 더하기
             jumpCoolRemains = jumpCoolTime; // 쿨타임 초기화
-            isJumping = true;               // 점프했다고 표시
+            inAir = true;               // 점프했다고 표시
         }
 
 
@@ -243,12 +251,63 @@ public class Player : MonoBehaviour, IAlive
     {
         if(collision.gameObject.CompareTag("Ground"))
         {
-            isJumping = false;
+            inAir = false;
 
         }
         
     }
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            inAir = true;
 
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        PlatformBase platform = other.GetComponent<PlatformBase>();
+        if(platform != null)
+        {
+            platform.onMove += OnRideMovingObject;  // 플랫폼 트리거에 들어갔을때 함수 연결
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        PlatformBase platform = other.GetComponent<PlatformBase>();
+        if (platform != null)
+        {
+            platform.onMove -= OnRideMovingObject;  // 플랫폼 트리거에 나왔을때 연결 해제
+        }
+    }
+
+    /// <summary>
+    /// 움직이는 물체에 탑승했을 때 연결될 함수
+    /// </summary>
+    /// <param name="delta">움직인 양</param>
+    void OnRideMovingObject(Vector3 delta)
+    {
+        rigid.MovePosition(rigid.position + delta);
+    }
+
+    /// <summary>
+    /// 이동 속도 증감용 함수
+    /// </summary>
+    /// <param name="ratio">원본에서의 증감 비율</param>
+    public void SetSpeedModifier(float ratio = 1.0f)
+    {
+        currentMoveSpeed = moveSpeed * ratio;
+    }
+
+    /// <summary>
+    /// 원래 기준속도로 복구하는 함수
+    /// </summary>
+    public void RestoreMoveSpeed()
+    {
+        currentMoveSpeed = moveSpeed;
+    }
 
 }
 // 실습
