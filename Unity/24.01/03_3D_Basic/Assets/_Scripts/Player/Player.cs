@@ -57,9 +57,37 @@ public class Player : MonoBehaviour, IAlive
     public float jumpPower = 6.0f;
 
     /// <summary>
-    /// 공중에 떠 있는지 아닌지 나타내는 변수
+    /// 공중에 떠 있는지 아닌지 나타내는 프로퍼티
     /// </summary>
-    bool inAir = false;
+    bool InAir
+    {
+        get => GroundCount < 1;
+        
+    }
+
+    int groundCount = 0;
+    /// <summary>
+    /// 접촉하고 있는 "Ground" 태그 오브젝트의 개수
+    /// </summary>
+    int GroundCount
+    {
+        get => groundCount;
+        set
+        {
+            if(groundCount < 0)
+            {
+                groundCount = 0;
+            }
+            groundCount = value;
+            if (groundCount < 0)
+            {
+                groundCount = 0;
+            }
+            Debug.Log(groundCount);
+        }
+    }
+
+    
 
     /// <summary>
     /// 점프 쿨 타임
@@ -74,12 +102,45 @@ public class Player : MonoBehaviour, IAlive
     /// <summary>
     /// 점프가 가능한지 확인하는 프로퍼티(점프중이 아니고 쿨타임이 아님)
     /// </summary>
-    bool IsJumpAvailable => !inAir && (jumpCoolRemains < 0.0f);
+    bool IsJumpAvailable => !InAir && (jumpCoolRemains < 0.0f);
+
+    
 
     /// <summary>
     /// 사망 델리게이트
     /// </summary>
     public Action onDie;
+
+    /// <summary>
+    /// 시작했을때의 플레이어 수명
+    /// </summary>
+    public float startLifeTime = 10.0f;
+
+    /// <summary>
+    /// 현재 플레이어 수명
+    /// </summary>
+    float lifeTime = 0.0f;
+
+    /// <summary>
+    /// 플레이어의 수명을 확인하고 설정하기 위한 프로퍼티
+    /// </summary>
+    float LifeTime 
+    { 
+        get => lifeTime;
+        set
+        {
+            lifeTime = value;
+            if(lifeTime < 0.0f)
+            {
+                lifeTime = 0.0f;    // 수명이 다 되었으면 0.0으로 숫자 정리 및 사망처리
+                Die();
+            }
+            onLifeTimeChange?.Invoke(lifeTime/startLifeTime);   // 현재 수명 비율 알림
+
+        }
+    }
+
+    public Action<float> onLifeTimeChange;
 
     /// <summary>
     /// 플레이어 사망
@@ -100,6 +161,18 @@ public class Player : MonoBehaviour, IAlive
     private void Start()
     {
         currentMoveSpeed = moveSpeed;
+        LifeTime = startLifeTime;
+    }
+    private void Update()
+    {
+        jumpCoolRemains -= Time.deltaTime;
+        LifeTime -= Time.deltaTime;
+    }
+
+    private void FixedUpdate()
+    {
+        Move();
+        Rotate();
     }
 
     private void OnEnable()
@@ -204,7 +277,7 @@ public class Player : MonoBehaviour, IAlive
         {
             rigid.AddForce(jumpPower * Vector3.up, ForceMode.Impulse);  // 위쪽으로 jumpPower만큼 힘을 더하기
             jumpCoolRemains = jumpCoolTime; // 쿨타임 초기화
-            inAir = true;               // 점프했다고 표시
+            //GroundCount = 0;              // 점프했다고 표시
         }
 
 
@@ -236,22 +309,13 @@ public class Player : MonoBehaviour, IAlive
         // 죽었다고 신호보내기(onDie델리게이트 실행)
     }
 
-    private void Update()
-    {
-        jumpCoolRemains -= Time.deltaTime;
-    }
-
-    private void FixedUpdate()
-    {
-        Move();
-        Rotate();
-    }
 
     private void OnCollisionEnter(Collision collision)
     {
         if(collision.gameObject.CompareTag("Ground"))
         {
-            inAir = false;
+
+            GroundCount++;
 
         }
         
@@ -260,7 +324,8 @@ public class Player : MonoBehaviour, IAlive
     {
         if (collision.gameObject.CompareTag("Ground"))
         {
-            inAir = true;
+            GroundCount--;
+
 
         }
     }
