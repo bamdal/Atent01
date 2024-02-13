@@ -1,0 +1,115 @@
+using System.Collections;
+using System.Collections.Generic;
+using System.Reflection;
+using UnityEngine;
+
+
+
+public class UseSwitch : MonoBehaviour, IInteracable
+{
+    // 수동문을 열고 닫는 스위치
+    enum State
+    {
+        Off,    // 스위치가 꺼진 상태
+        On      // 스위치가 켜지 상태
+        
+    }
+
+    /// <summary>
+    /// 스위치의 현재 상태
+    /// </summary>
+    State state = State.On;
+
+
+    /// <summary>
+    /// target이 가지고 있는 IInteracable
+    /// </summary>
+    IInteracable target;
+
+    /// <summary>
+    /// 스위치 애니메이터
+    /// </summary>
+    Animator animator;
+
+    /// <summary>
+    /// 애니메이터용 해쉬
+    /// </summary>
+    readonly int SwitchOnHash = Animator.StringToHash("IsUse");
+
+    /// <summary>
+    /// 재사용 쿨타임
+    /// </summary>
+    public float coolTime = 0.5f;
+
+    /// <summary>
+    /// 현재 남아있는 쿨타임
+    /// </summary>
+    float currentCoolTime = 0;
+
+    /// <summary>
+    /// 사용 가능 여부. 쿨타임이 0 미만일 때 사용 가능
+    /// </summary>
+    public bool CanUse => currentCoolTime < 0.0f;
+
+    private void Awake()
+    {
+        animator = GetComponent<Animator>();
+
+    }
+
+    void Start()
+    {
+        target = transform.parent.GetComponent<IInteracable>();
+
+        if (target == null)
+        {
+            Debug.LogWarning($"{gameObject.name}에게 사용할 오브젝트가 없음");
+        }
+    }
+
+    void Update()
+    {
+        currentCoolTime -= Time.deltaTime;
+    }
+
+    /// <summary>
+    /// 스위치 사용
+    /// </summary>
+    public void Use()
+    {
+        if (target != null && CanUse)  // 조작할 오브젝트가 있어야 한다. 그리고 사용 가능할 때만 사용
+        {
+            switch (state)
+            {
+                case State.Off:
+                    //스위치를 켠 상황
+                    animator.SetBool(SwitchOnHash, true);
+                    state = State.On;
+                    break;
+                case State.On:
+                    // 스위치를 끄려는 상황
+                    animator.SetBool(SwitchOnHash, false);
+                    state = State.Off;
+                    break;
+
+
+            }
+
+            target.Use();   // 대상을 사용하기
+        }
+    }
+
+
+
+
+}
+
+// 실습
+// 1. DoorManual 새로 만들기
+// 1.1 열렸을 때 사용하면 닫힌다.
+// 1.2 닫혔을 때 사용하면 열린다.
+// 2. DoorSwitch 수정하기
+// 2.1 3개 상태를 가진다(On,Off)
+// 2.2 사용할 문은 무조건 Manual 계열의 문만 가능
+// 2.3 on이 될 때 문이 열려야 한다.
+// 2.4 off때 문이 닫힌다.(autoClose문은 시간지나면 닫히고 시간 다되기 전에 off가 되면 즉시 닫힘)

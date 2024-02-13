@@ -2,3 +2,35 @@ Unity Engine
  - 스크립트 언어를 지원(C#)
  - Play In Editor : 에디터에서 실제 플레이가 가능하고, 플레이 도중에 에디터를 이용하여 게임 내부도 변경할 수 있게 해주는 기능
  - 멀티 플랫폼 지원
+
+유니티 특수폴더
+Resources
+ - 씬에서 필요한 에셋을 동적으로 로딩할 파일을 저장하는 폴더
+ - 해당 폴더에 있는 모든 에셋은 프로그램이 실행되자마자 메모리에 올라간다.
+
+Scene
+ - 맵, 게임 월드
+
+GameObject
+ - 유니티 씬에 배치되는 최소 단위
+ - 여러개의 컴포넌트로 구성되어 있다
+ - 반드시 Transform 컴포넌트를 가지고 있어야 한다.
+
+Component
+ - GameObject를 구성하는 기능의 최소 단위
+ - MonoBehavior를 상속받아야 함
+ - 주요 컴포넌트, Rigidbody, Collider, Renderer 등등
+ - 주요 함수 
+    - public T GetComponent<T>() where T : Component;
+    - public T AddComponent<T>() where T : Component;
+
+카메라
+ - 하나는 필수로 존재
+
+
+
+
+
+
+
+

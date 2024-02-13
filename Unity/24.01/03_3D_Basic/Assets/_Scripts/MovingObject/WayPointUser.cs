@@ -101,6 +101,8 @@ public class WayPointUser : MonoBehaviour
     /// </summary>
     protected virtual void OnArrived()
     {
+    
         Target = targetWayPoints.GetNextWaypoint();
+
     }
 }
