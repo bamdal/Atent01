@@ -99,10 +99,22 @@ public class Player : MonoBehaviour, IAlive
     /// </summary>
     float jumpCoolRemains = -1.0f;
 
+    float JumpCoolRemains
+    {
+        get => jumpCoolRemains;
+        set
+        {
+            jumpCoolRemains = value;
+            onJumpCoolTimeChange?.Invoke(JumpCoolRemains / jumpCoolTime);
+        }
+    }
+
+    public Action<float> onJumpCoolTimeChange;
+
     /// <summary>
     /// 점프가 가능한지 확인하는 프로퍼티(점프중이 아니고 쿨타임이 아님)
     /// </summary>
-    bool IsJumpAvailable => !InAir && (jumpCoolRemains < 0.0f);
+    bool IsJumpAvailable => !InAir && (jumpCoolRemains < 0.0f) && isAlive;
 
     
 
@@ -155,17 +167,38 @@ public class Player : MonoBehaviour, IAlive
 
         ItemUseChecker checker = GetComponentInChildren<ItemUseChecker>();
         checker.onItemUse += (interacable) => interacable.Use();
+        GameManager.Instance.onClear += GameClear;
    
     }
+
+    VirtualStick stick;
+    VirtualButton jump;
 
     private void Start()
     {
         currentMoveSpeed = moveSpeed;
         LifeTime = startLifeTime;
+
+        stick = GameManager.Instance.Stick;
+        if (stick != null)
+        {
+            stick.onMoveInput += (inputDelta) => SetInput(inputDelta, inputDelta.sqrMagnitude > 0.0025f);   // 이동 입력 전달
+            onDie += () => stick.Stop();    // 플레이어 죽으면 정지
+          
+            
+        }
+        jump = GameManager.Instance.JumpButton;
+        if (jump != null)
+        {
+            jump.onClick += Jump;   // 점프 입력전달
+            //onJumpCoolTimeChange += jump.RefreshCoolTime;   // 점프 쿨타임 전달
+            onDie += () => jump.Stop(); // 플레이어 죽으면 정지
+            
+        }
     }
     private void Update()
     {
-        jumpCoolRemains -= Time.deltaTime;
+        JumpCoolRemains -= Time.deltaTime;
         LifeTime -= Time.deltaTime;
     }
 
@@ -276,7 +309,7 @@ public class Player : MonoBehaviour, IAlive
         if (IsJumpAvailable) // 점프가 가능할 때만 점프
         {
             rigid.AddForce(jumpPower * Vector3.up, ForceMode.Impulse);  // 위쪽으로 jumpPower만큼 힘을 더하기
-            jumpCoolRemains = jumpCoolTime; // 쿨타임 초기화
+            JumpCoolRemains = jumpCoolTime; // 쿨타임 초기화
             //GroundCount = 0;              // 점프했다고 표시
         }
 
@@ -302,6 +335,8 @@ public class Player : MonoBehaviour, IAlive
 
             onDie?.Invoke();
             isAlive = false;
+
+            
         }
         // 죽는 애니메이션이 나온다.
         // 더이상 조정이 안되어야 한다.
@@ -309,6 +344,14 @@ public class Player : MonoBehaviour, IAlive
         // 죽었다고 신호보내기(onDie델리게이트 실행)
     }
 
+    private void GameClear()
+    {
+        Debug.Log("클리어");
+        inputActions.Player.Disable();  // 플레이어 조종 막기
+        stick.Stop(); 
+        jump.Stop();
+
+    }
 
     private void OnCollisionEnter(Collision collision)
     {

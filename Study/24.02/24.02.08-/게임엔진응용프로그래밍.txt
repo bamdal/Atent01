@@ -25,7 +25,25 @@ Component
     - public T AddComponent<T>() where T : Component;
 
 카메라
- - 하나는 필수로 존재
+ - 투영법(Projection)
+  - 원근투영(Perspective)
+  - 직교투영(Otthographic, Isometric)
+ - 랜더링 파이프라인, 랜더링 패스
+  - ForWard : 저성능
+  - Deferred : 고성능, 비디오램 소비가 크다.
+
+Line : 시작점에서 도착점을 잇는 직선 
+Ray : 시작점(원점)에서 특정 방향으로 나가는 선
+Raycast : 하나의 Ray가 다른 오브젝트와 충돌했는지 체크하는 것
+
+HMD(Head Mount Display) 
+ VR(Virtual Reality, 가상 현실)
+  - 몰입감(헤드 트래킹을 통해 머리의 움직임과 게임 카메라를 연동시켜 현실감을 증가시킨다)
+  - 자이로스코프 센서를 활용한 해드 트래킹 및 동작 인식 
+  - 사람의 눈 처럼 서로 떨어져 있는 두개의 카메라를 이용해 각각 렌더링하여 
+     VR기기에 있는 2개의 디스플레이에 각각 재생한다.(양안시차 이용)
+
+
 
 
 

@@ -25,8 +25,17 @@ public class LifeTimeGauge : MonoBehaviour
     }
     private void Start()
     {
+        
         player.onLifeTimeChange += Refresh;
+        player.onDie += Stop;
+        GameManager.Instance.onClear += Stop;
         maxValue = player.startLifeTime;
+
+    }
+
+    private void Stop()
+    {
+        player.onLifeTimeChange -= Refresh;
 
     }
 
@@ -39,8 +48,4 @@ public class LifeTimeGauge : MonoBehaviour
 
     }
 
-    private void Update()
-    {
-
-    }
 }
