@@ -47,3 +47,9 @@ TagManager:
   - name: Road
     uniqueID: 2195339965
     locked: 0
+  - name: Obstacle
+    uniqueID: 1816688475
+    locked: 0
+  - name: Object
+    uniqueID: 1080490459
+    locked: 0
