@@ -1,0 +1,4 @@
+URP(Universal Render Pipeline)
+SRP(Scriptable Render Pipeline)
+ - LWRP(Light Weight RP) : 가벼운 랜더링 파이프라인 -> URP로 이름이 바뀜(별로 안가벼워서 바뀜)
+ - HDRP(High Definition RP) : AAA급 게임을 목표로한 고해상도용 랜더링 -> 영상쪽으로 용도 변경(너무 무거움)
