@@ -134,6 +134,9 @@ public class Player : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 이동 속도를 원래대로 되돌리는 함수
+    /// </summary>
     public void RestoreSpeed()
     {
         currentSpeed = speed;
