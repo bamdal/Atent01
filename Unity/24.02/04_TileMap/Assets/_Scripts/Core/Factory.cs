@@ -5,20 +5,20 @@ using UnityEngine;
 
 public enum PoolObjectType
 {
-    Bullet
+    Slime
 }
 
 public class Factory : Singleton<Factory>
 {
-    //BulletPool bulletPool;
+    SlimePool slimePool;
 
-/*    protected override void OnInitialize()
+    protected override void OnInitialize()
     {
         base.OnInitialize();
 
-       bulletPool = GetComponentInChildren<BulletPool>(true);
-        if(bulletPool != null)
-            bulletPool.Initialize();
+       slimePool = GetComponentInChildren<SlimePool>(true);
+        if(slimePool != null)
+            slimePool.Initialize();
     }
 
     public GameObject GetObject(PoolObjectType type, Vector3? position = null, Vector3? euler = null)
@@ -26,8 +26,8 @@ public class Factory : Singleton<Factory>
         GameObject result = null;
         switch (type)
         {
-            case PoolObjectType.Bullet:
-                result = bulletPool.GetObject(position, euler).gameObject;
+            case PoolObjectType.Slime:
+                result = slimePool.GetObject(position, euler).gameObject;
                 break;
             default:
                 break;
@@ -35,16 +35,14 @@ public class Factory : Singleton<Factory>
         return result;
     }
 
-    public Bullet GetBullet()
+    public Slime GetSlime()
     {
-        return bulletPool.GetObject();
+        return slimePool.GetObject();
     }
 
-    public Bullet GetBullet(Vector3 position, float angle = 0.0f)
+    public Slime GetSlime(Vector3 position, float angle = 0.0f)
     {
-        return bulletPool.GetObject(position, angle * Vector3.forward); 
-    }*/
+        return slimePool.GetObject(position, angle * Vector3.forward); 
+    }
 }
 
-// 팩토리 만들기
-// - 이전 프로젝트 펙토리 이식

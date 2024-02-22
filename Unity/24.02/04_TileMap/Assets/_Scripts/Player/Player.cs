@@ -43,7 +43,10 @@ public class Player : MonoBehaviour
     /// </summary>
     public bool IsAttackReady => currentAttackCoolTime < 0.0f;
 
-
+    /// <summary>
+    /// AttackSensor 회전축
+    /// </summary>
+    Transform AttackSensorAxis;
 
 
     /// <summary>
@@ -69,6 +72,7 @@ public class Player : MonoBehaviour
         animator = GetComponent<Animator>();
 
         currentSpeed = speed;
+        AttackSensorAxis = transform.GetChild(0);
     }
 
     private void Update()
@@ -110,7 +114,7 @@ public class Player : MonoBehaviour
         isMove = true;
         animator.SetBool(HashIsMove, isMove);
 
-
+        AttackSensorRotate(inputDirection);
     }
     private void OnStop(InputAction.CallbackContext context)
     {
@@ -142,6 +146,36 @@ public class Player : MonoBehaviour
         currentSpeed = speed;
     }
 
+    /// <summary>
+    /// 입력 방향에 따라 AttackSensor를 회전시키는 함수
+    /// </summary>
+    /// <param name="direction">입력 방향</param>
+    void AttackSensorRotate(Vector2 direction)
+    {
+        // AttackSensorAxis.rotation = Quaternion.LookRotation(transform.forward,-direction);
+        if(direction.y < 0.0f)
+        {
+            AttackSensorAxis.rotation = Quaternion.identity;
+        }
+        else if(direction.y > 0.0f)
+        {
+            AttackSensorAxis.rotation = Quaternion.Euler(0, 0, 180);
+        }
+        else if (direction.x < 0.0f)
+        {
+            AttackSensorAxis.rotation = Quaternion.Euler(0, 0, -90);
+
+        }
+        else if(direction.x > 0.0f)
+        {
+            AttackSensorAxis.rotation = Quaternion.Euler(0, 0, 90);
+
+        }
+        else
+        {
+            AttackSensorAxis.rotation = Quaternion.identity;
+        }
+    }
 }
 // 플레이어가 공격하기
 // - 애니메이션만 재생

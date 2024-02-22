@@ -238,7 +238,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 957993999}
-  - component: {fileID: 957993998}
+  - component: {fileID: 957994000}
   m_Layer: 0
   m_Name: Test_Slime
   m_TagString: Untagged
@@ -246,34 +246,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &957993998
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 957993997}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 08c0754fcee560e4cb0e21cdef6a3faf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  seed: -1
-  slimes:
-  - {fileID: 1869011515}
-  - {fileID: 1775732542}
-  - {fileID: 2004687737}
-  - {fileID: 251985857}
-  - {fileID: 1423011861}
-  speed: 2
-  outLineThicknessChange: 0
-  phaseSplitChange: 0
-  phaseThicknessChange: 0
-  inLineThicknessChange: 0
-  dissloveChange: 0
-  split: 0.298
-  pahseThickness: 0.1
-  outlineThickness: 0
 --- !u!4 &957993999
 Transform:
   m_ObjectHideFlags: 0
@@ -289,6 +261,34 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &957994000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 957993997}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4a0a992123d0ef749b4a053bcb6c8d36, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  seed: -1
+  slimes:
+  - {fileID: 1869011515}
+  - {fileID: 1775732542}
+  - {fileID: 2004687737}
+  - {fileID: 251985857}
+  - {fileID: 1423011861}
+  speed: 0.5
+  outLineThicknessChange: 0
+  phaseSplitChange: 0
+  phaseThicknessChange: 0
+  inLineThicknessChange: 0
+  dissloveChange: 0
+  split: 0
+  pahseThickness: 0.1
+  outlineThickness: 0.0015
 --- !u!1 &1251408765
 GameObject:
   m_ObjectHideFlags: 0
