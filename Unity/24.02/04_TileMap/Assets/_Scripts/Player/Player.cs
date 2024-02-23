@@ -46,8 +46,17 @@ public class Player : MonoBehaviour
     /// <summary>
     /// AttackSensor 회전축
     /// </summary>
-    Transform AttackSensorAxis;
+    Transform attackSensorAxis;
 
+    /// <summary>
+    /// 현재 내 공격 범위 안에 들어있는 적의 목록
+    /// </summary>
+    List<Slime> attackTargetList;
+
+    /// <summary>
+    /// 지금 공격이 유효한 상태인지 확인하는 변수
+    /// </summary>
+    bool isAttackVaild = false;
 
     /// <summary>
     /// 컴포넌트들
@@ -72,7 +81,27 @@ public class Player : MonoBehaviour
         animator = GetComponent<Animator>();
 
         currentSpeed = speed;
-        AttackSensorAxis = transform.GetChild(0);
+        attackSensorAxis = transform.GetChild(0);
+
+        attackTargetList = new List<Slime>(4);
+        AttackSensor sensor = attackSensorAxis.GetComponentInChildren<AttackSensor>();
+        sensor.onEnemyEnter += (slime) =>   // 적이 센서 안에 들어오면
+        {
+            if (isAttackVaild)  // 공격이 유효한 상황이면
+            {
+                slime.Die();    // 즉시 죽이기
+            }
+            else
+            {   // 공격이 유효하지 않으면
+                 attackTargetList.Add(slime);    // 리스트에 추가하고
+            }
+            slime.ShowOutline(true);        // 아웃라인을 그린다
+        };
+        sensor.onEnemyExit += (slime) =>    // 적이 센서에서 나가면
+        {
+            attackTargetList.Remove(slime); // 리스트에서 제거하고
+            slime.ShowOutline(false);       // 아웃라인을 끈다
+        };
     }
 
     private void Update()
@@ -135,6 +164,7 @@ public class Player : MonoBehaviour
             animator.SetTrigger(HashAttack);    // 애니메이션 재생
             currentAttackCoolTime = attackCoolTime; // 공격 쿨타임 초기화
             currentSpeed = 0.0f;
+            isAttackVaild = false;      // 초기화(isAttackVaild 가 true로 고정되는 일 방지)
         }
     }
 
@@ -155,26 +185,47 @@ public class Player : MonoBehaviour
         // AttackSensorAxis.rotation = Quaternion.LookRotation(transform.forward,-direction);
         if(direction.y < 0.0f)
         {
-            AttackSensorAxis.rotation = Quaternion.identity;
+            attackSensorAxis.rotation = Quaternion.identity;
         }
         else if(direction.y > 0.0f)
         {
-            AttackSensorAxis.rotation = Quaternion.Euler(0, 0, 180);
+            attackSensorAxis.rotation = Quaternion.Euler(0, 0, 180);
         }
         else if (direction.x < 0.0f)
         {
-            AttackSensorAxis.rotation = Quaternion.Euler(0, 0, -90);
+            attackSensorAxis.rotation = Quaternion.Euler(0, 0, -90);
 
         }
         else if(direction.x > 0.0f)
         {
-            AttackSensorAxis.rotation = Quaternion.Euler(0, 0, 90);
+            attackSensorAxis.rotation = Quaternion.Euler(0, 0, 90);
 
         }
         else
         {
-            AttackSensorAxis.rotation = Quaternion.identity;
+            attackSensorAxis.rotation = Quaternion.identity;
         }
+    }
+
+    /// <summary>
+    /// 공격 애니메이션 진행 중에 공격이 유효해지면 애니메이션 이벤트로 실행
+    /// </summary>
+    void AttackValid()
+    {
+        isAttackVaild = true;
+        foreach (var slime in attackTargetList)
+        {
+            slime.Die();
+        }
+        attackTargetList.Clear();
+    }
+
+    /// <summary>
+    /// 공격 애니메이션 진행 중에 공격이 유효하지 않게 되면 애니메이션 이벤트로 실행
+    /// </summary>
+    void AttackNotVaild()
+    {
+        isAttackVaild = false;
     }
 }
 // 플레이어가 공격하기

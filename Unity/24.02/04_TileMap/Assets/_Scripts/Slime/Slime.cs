@@ -18,9 +18,6 @@ public class Slime : RecycleObject
     /// </summary>
     public float dissolveDuration = 1.0f;
 
-    // Test_Slime2에 있는 함수 4개 가져오기
-    // 팩토리 추가
-    // 슬라임 풀 추가
 
     /// <summary>
     /// 슬라임의 머티리얼
@@ -83,11 +80,17 @@ public class Slime : RecycleObject
 
     }
 
-    void Die()
+    /// <summary>
+    /// 슬라임이 죽을 때 실행되는 함수
+    /// </summary>
+    public void Die()
     {
-        StartCoroutine(StartDissolve());
+        StartCoroutine(StartDissolve());    // 디졸브만 실행(디졸브 코루틴안에서 비활성화까지 처리)
     }
 
+    /// <summary>
+    /// 비활성화 되면서 풀로 되돌린다
+    /// </summary>
     private void ReturnToPool()
     {
         gameObject.SetActive(false);
@@ -114,7 +117,7 @@ public class Slime : RecycleObject
         if (isShow)
         {
             mainMaterial.SetFloat(OutlineThicknessID, VisibleOutlineThickness); // 보이는 것은 두께를 설정하는 것으로 보이게 만듬
-            Hp--;
+            
         }
         else
         {
