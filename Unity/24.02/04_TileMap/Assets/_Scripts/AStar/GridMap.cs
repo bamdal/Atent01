@@ -7,17 +7,19 @@ public class GridMap
     /// <summary>
     /// 이 맵에 있는 모든 노드
     /// </summary>
-    Node[] nodes;
+    protected Node[] nodes;
 
     /// <summary>
     /// 맵의 가로길이
     /// </summary>
-    int width;
+    protected int width;
     
     /// <summary>
     /// 맵의 세로 길이
     /// </summary>
-    int height;
+    protected int height;
+
+    protected GridMap() { }
 
     /// <summary>
     /// 생성자
@@ -80,6 +82,29 @@ public class GridMap
     }
 
     /// <summary>
+    /// 특정 위치가 평지인지 아닌지 확인하는 함수
+    /// </summary>
+    /// <param name="x">맵에서의 x좌표</param>
+    /// <param name="y">맵에서의 y좌표</param>
+    /// <returns>true면 평지, false면 평지아님</returns>
+    public bool IsPlain(int x, int y)
+    {
+        Node node = GetNode(x, y);
+        return node != null && node.nodeType == Node.NodeType.Plain;
+    }
+
+    /// <summary>
+    /// 특정 위치가 평지인지 아닌지 확인하는 함수
+    /// </summary>
+    /// <param name="gridPosition">>맵에서의 그리드 좌표</param>
+    /// <returns>true면 평지, false면 평지아님</returns>
+    public bool IsPlain(Vector2Int gridPosition)
+    {
+        return IsPlain(gridPosition.x, gridPosition.y);
+    }
+
+
+    /// <summary>
     /// 특정 위치가 벽인지 아닌지 확인하는 함수
     /// </summary>
     /// <param name="x">맵에서의 x좌표</param>
@@ -131,14 +156,14 @@ public class GridMap
     /// <param name="y">맵에서의 y좌표</param>
     /// <param name="index">(출력용) 변경된 인덱스</param>
     /// <returns>좌표가 적절하면 true, 맵 밖이면 false</returns>
-    bool GridToIndex(int x, int y, out int? index)
+    protected bool GridToIndex(int x, int y, out int? index)
     {
         bool result = false;
         index = null;
 
         if (IsValidPosition(x, y))
         {
-            index = x + width * y;
+            index = CalcIndex(x,y);
             result = true;
         }
 
@@ -146,11 +171,22 @@ public class GridMap
     }
 
     /// <summary>
+    /// 인덱스 계산식
+    /// </summary>
+    /// <param name="x">x좌표</param>
+    /// <param name="y">y좌표</param>
+    /// <returns>계산된 인덱스 값</returns>
+    protected virtual int CalcIndex(int x, int y)
+    {
+        return x + width * y;
+    }
+
+    /// <summary>
     /// 인덱스 값을 그리드 좌표로 변경해주는 함수
     /// </summary>
     /// <param name="index">변경할 index값</param>
     /// <returns>변경된 그리드 좌표</returns>
-    Vector2Int IndexToGrid(int index)
+    public Vector2Int IndexToGrid(int index)
     {
         return new Vector2Int(index % width, index / width);
     }
@@ -161,7 +197,7 @@ public class GridMap
     /// <param name="x">확인할 x좌표</param>
     /// <param name="y">확인할 y좌표</param>
     /// <returns>true면 맵 안, false면 맵 밖</returns>
-    public bool IsValidPosition(int x, int y)
+    public virtual bool IsValidPosition(int x, int y)
     {
         return x < width && y < height && x >= 0 && y >= 0;
     }
