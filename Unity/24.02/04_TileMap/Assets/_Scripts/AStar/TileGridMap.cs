@@ -18,7 +18,10 @@ public class TileGridMap : GridMap
     /// </summary>
     Tilemap background;
 
-
+    /// <summary>
+    /// 이동 가능한 지역(평지)의 위치모음
+    /// </summary>
+    Vector2Int[] movablePositions;
 
     
 
@@ -37,6 +40,7 @@ public class TileGridMap : GridMap
         Vector2Int min = (Vector2Int)background.cellBounds.min; //for를 위한 최소/최대 구하기
         Vector2Int max = (Vector2Int)background.cellBounds.max;
 
+        List<Vector2Int> movable = new List<Vector2Int>(width * height);    // 이동가능한 지역을 저장할 임시리스트
         for (int y = min.y; y < max.y; y++)
         {
             for (int x = min.x; x < max.x; x++)
@@ -49,12 +53,17 @@ public class TileGridMap : GridMap
                     {
                         nodeType = Node.NodeType.Wall;                // 장애물 타일이 있는곳이변 벽으로 설정
                     }
+                    else
+                    {
+                        movable.Add(new Vector2Int(x, y));            // 이동가능한 지역 저장
+                    }
                     nodes[index.Value] = new Node(x, y, nodeType);    // 인덱스 위치에 노드 생성
                 }
                 
 
             }
         }
+        movablePositions = movable.ToArray();   // 임시 리스트를 배열에 저장
 
     }
 
@@ -107,4 +116,28 @@ public class TileGridMap : GridMap
         return background.CellToWorld((Vector3Int)girdPosition) + new Vector3(0.5f,0.5f);
     }
 
+    /// <summary>
+    /// 이동 가능한 위치 중 랜덤으로 선택해서 리턴하는 함수
+    /// </summary>
+    /// <returns>이동가능한 위치</returns>
+    public Vector2Int GetRandomMoveablePosition()
+    {
+        /*        Vector2Int min = (Vector2Int)background.cellBounds.min; //for를 위한 최소/최대 구하기
+                Vector2Int max = (Vector2Int)background.cellBounds.max;
+
+                Vector2Int gridPos = new Vector2Int(Random.Range(min.x, max.y), Random.Range(min.x, max.y));
+
+                if (IsValidPosition(gridPos) && IsPlain(gridPos))
+                {
+                    return gridPos;
+                }
+                else
+                {
+                    return GetRandomMoveablePosition();
+                }
+        */
+        int index = Random.Range(0, movablePositions.Length);
+        return movablePositions[index];
+        
+    }
 }
