@@ -68,7 +68,7 @@ public class Spawner : MonoBehaviour
     /// </summary>
     void Spawn()
     {
-        if (IsSpawnAvailable(out Vector3 spawnPosition))
+        if (IsSpawnAvailable(out Vector3 spawnPosition))    // 스폰가능한지 체크(빈공간이 있어야함)
         {
             Slime slime = Factory.Instance.GetSlime();      // 위치는 슬라임 초기화함수에서 설정
             slime.Initialize(map.GridMap, spawnPosition);   // 초기화
@@ -95,19 +95,21 @@ public class Spawner : MonoBehaviour
         {
             if (node.nodeType == Node.NodeType.Plain)
             {
-                positions.Add(node);
+                positions.Add(node);        // 미리 맵에서 찾아놓은 벽이 아닌 지역중에서 평지만 골라넣기
             }
         }
 
         if (positions.Count > 0)
         {
+            // 빈칸이 있다
             int index = Random.Range(0, positions.Count);
             Node target = positions[index];
-            spawnablePosition = map.GridToWorld(target.X, target.Y);
+            spawnablePosition = map.GridToWorld(target.X, target.Y);    // 빈 칸 중 하나를 랜덤으로 골라 돌려주기
             result = true;
         }
         else
         {
+            // 빈칸이 없다 => 스폰 불가능
             spawnablePosition = Vector3.zero;
             result = false;
         }
@@ -117,6 +119,7 @@ public class Spawner : MonoBehaviour
 #if UNITY_EDITOR
     private void OnDrawGizmos()
     {
+        // 스폰 영역 그려서 표현하기
         Vector3 p0 = new(Mathf.Floor(transform.position.x), Mathf.Floor(transform.position.y));
         Vector3 p1 = p0 + size.x * Vector3.right;
         Vector3 p2 = p0 + (Vector3)size;

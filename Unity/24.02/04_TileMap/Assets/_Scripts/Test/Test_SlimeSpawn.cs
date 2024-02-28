@@ -1,18 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
-public class Test_SlimeSpawn : MonoBehaviour
+public class Test_SlimeSpawn : TestBase
 {
-    // Start is called before the first frame update
-    void Start()
+    
+    protected override void OnTest1(InputAction.CallbackContext context)
     {
-        
+        Slime[] slimes = FindObjectsByType<Slime>(FindObjectsSortMode.InstanceID);
+        foreach (Slime slime in slimes)
+        {
+            slime.Die();
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    protected override void OnTest2(InputAction.CallbackContext context)
     {
+        Slime[] slimes = FindObjectsOfType<Slime>();
+        slimes[0].Die();
         
     }
 }

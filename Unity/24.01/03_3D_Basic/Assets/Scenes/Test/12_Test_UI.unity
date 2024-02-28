@@ -1006,19 +1006,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6268510679523639612, guid: 91dcce3698eee824982d0dda26cc5475, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.5363607
+      value: 0.53636074
       objectReference: {fileID: 0}
     - target: {fileID: 6268510679523639612, guid: 91dcce3698eee824982d0dda26cc5475, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.46618086
+      value: 0.46618095
       objectReference: {fileID: 0}
     - target: {fileID: 6268510679523639612, guid: 91dcce3698eee824982d0dda26cc5475, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.5310158
+      value: 0.5310157
       objectReference: {fileID: 0}
     - target: {fileID: 6268510679523639612, guid: 91dcce3698eee824982d0dda26cc5475, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.46153533
+      value: -0.4615353
       objectReference: {fileID: 0}
     - target: {fileID: 9122548201338665842, guid: 91dcce3698eee824982d0dda26cc5475, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1403,6 +1403,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6020398827705941674, guid: c0ce47981ca36354e8408a2ce1a53e1e, type: 3}
+      propertyPath: m_Value
+      value: 0.744
+      objectReference: {fileID: 0}
     - target: {fileID: 6169593629490179101, guid: c0ce47981ca36354e8408a2ce1a53e1e, type: 3}
       propertyPath: m_Name
       value: LifeTimeGauge
@@ -1525,6 +1529,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 257412126}
     m_Modifications:
+    - target: {fileID: 3693692664856458924, guid: 23bda4f887e5fbc4ca7a878d5e804ba9, type: 3}
+      propertyPath: m_FillAmount
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5097949111161144507, guid: 23bda4f887e5fbc4ca7a878d5e804ba9, type: 3}
+      propertyPath: m_FillAmount
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5695205247412805351, guid: 23bda4f887e5fbc4ca7a878d5e804ba9, type: 3}
       propertyPath: m_Name
       value: VirtualButton

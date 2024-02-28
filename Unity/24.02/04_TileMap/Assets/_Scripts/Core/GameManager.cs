@@ -18,6 +18,15 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
+    WolrdManager wolrdManager;
+
+    public WolrdManager Wolrd => wolrdManager;
+
+    protected override void OnPreInitialize()
+    {
+        base.OnPreInitialize();
+        wolrdManager = GetComponent<WolrdManager>();
+    }
 
     protected override void OnInitialize()
     {

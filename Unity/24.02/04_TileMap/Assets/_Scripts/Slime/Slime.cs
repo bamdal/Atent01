@@ -7,10 +7,6 @@ using UnityEngine;
 public class Slime : RecycleObject
 {
 
-    private float maxHp = 3.0f;
-    float hp;
-
-
     /// <summary>
     /// 페이즈 진행시간
     /// </summary>
@@ -74,6 +70,40 @@ public class Slime : RecycleObject
     Vector2Int GridPosition => map.WorldToGrid(transform.position);
 
     /// <summary>
+    /// 이 슬라임이 위치하고 있는 노드
+    /// </summary>
+    Node current = null;
+
+    Node Current
+    {
+        get => current;
+        set
+        {
+
+            if (current != value)
+            {
+                if (current != null)    // 이전 노드가 null이면 스킵
+                {
+                    current.nodeType = Node.NodeType.Plain; // 이전 노드를 Plain으로 되돌리기
+                }
+                current = value;
+                if (current != null)    // 새 노드가 null이면 스킵
+                {
+                    current.nodeType = Node.NodeType.Slime; // 새로 이동한 노드는 Slime으로 변경하기
+                }
+
+
+                // 위에서 발생하는 에러의 원인을 확인하고 수정하기
+                // 아래쪽에 있는 슬라임이 위에 그려지게 만들기
+            }
+
+
+
+
+        }
+    }
+
+    /// <summary>
     /// 슬라임의 이동 속도
     /// </summary>
     public float moveSpeed = 2.0f;
@@ -107,31 +137,32 @@ public class Slime : RecycleObject
         }
     }
 
-    public float Hp 
-    { 
-        get => hp;
-        set
-        {
+    /// <summary>
+    /// 스프라이트 랜더러 (Order In Layer 수정용)
+    /// </summary>
+    SpriteRenderer spriteRenderer;
 
-            hp = Mathf.Clamp(value, 0.0f, maxHp);
-            if(hp == 0)
-            {
-                Die();
-            }
-        }
-    }
+    /// <summary>
+    /// 다른 슬라인에 의해 경로가 막혔을 때 기다린 시간
+    /// </summary>
+    float pathWaitTime = 0.0f;
+
+    /// <summary>
+    /// 경로가 막혔을 때 최대로 기다리는 시간
+    /// </summary>
+    const float MaxPathWaitTime = 1.0f;
 
 
     private void Awake()
     {
-        Renderer spriteRenderer = GetComponent<Renderer>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
         mainMaterial = spriteRenderer.material;  // 머티리얼 가져오기
         onPhaseEnd += () =>
         {
             isMoveActivate = true;
         };
         onDissolveEnd += ReturnToPool;
-        hp = maxHp;
+    
         path = new List<Vector2Int>();
         pathLine = GetComponentInChildren<PathLine>();
     }
@@ -150,33 +181,48 @@ public class Slime : RecycleObject
     {
         if (isMoveActivate)
         {
-            if (path.Count > 0)
+            if (path.Count > 0 && pathWaitTime < MaxPathWaitTime)
             {
+                
                 // path의 첫번째 위치로 계속 이동
                 Vector2Int destGrid = path[0];                          // path의 첫번째 위치 가져오기
-
-                Vector3 destPosition = map.GridToWorld(destGrid);       // 목적지 월드좌표 구하기
-                Vector3 direction = destPosition - transform.position;   // 방향계산
-
-                if (direction.sqrMagnitude < 0.001f)                    // 방향벡터의 길이를 확인해서 도착했는지 확인
+                
+                // 다른 슬라임이 있는 칸에는 이동하지않는다
+                // 슬라임으로 표시된 노드가 아니거나, 내가 있는 노드일 때만 움직이기
+                if (!map.IsSlime(destGrid) || map.GetNode(destGrid) == Current)
                 {
-                    transform.position = destPosition;                  // 오차보정
-                    path.RemoveAt(0);                                   // path의 첫번째 위치를 제거
+
+                    Vector3 destPosition = map.GridToWorld(destGrid);       // 목적지 월드좌표 구하기
+                    Vector3 direction = destPosition - transform.position;   // 방향계산
+
+                    if (direction.sqrMagnitude < 0.001f)                    // 방향벡터의 길이를 확인해서 도착했는지 확인
+                    {
+                        transform.position = destPosition;                  // 오차보정
+                        path.RemoveAt(0);                                   // path의 첫번째 위치를 제거
+                    }
+                    else
+                    {
+                        //transform.Translate(Time.deltaTime * moveSpeed * direction);    //도착 안했으면 direction의 위치로 이동
+                        transform.Translate(Time.deltaTime * moveSpeed * direction.normalized); // 아래쪽에 있는 슬라임이 위에 그려지게 하기
+                        Current = map.GetNode(transform.position);  // Current 변경 시도 및 처리
+                    }
+                    spriteRenderer.sortingOrder = -Mathf.FloorToInt(transform.position.y * 100);
+
+                    // 첫번째 위치에 도착하면 path의 첫번째 위치를 제거
+                    //transform.position = Vector2.MoveTowards(transform.position, map.GridToWorld(path[1]), moveSpeed * Time.deltaTime);
+                    pathWaitTime = 0.0f;    //기다리는 시간 초기화
                 }
                 else
                 {
-                    //transform.Translate(Time.deltaTime * moveSpeed * direction);    //도착 안했으면 direction의 위치로 이동
-                    transform.Translate(Time.deltaTime * moveSpeed * direction.normalized);
-
+                    // 다른 슬라임이 있어서 기다리는중
+                    pathWaitTime += Time.deltaTime; // 기다린 시간 누적
                 }
-
-                // 첫번째 위치에 도착하면 path의 첫번째 위치를 제거
-                //transform.position = Vector2.MoveTowards(transform.position, map.GridToWorld(path[1]), moveSpeed * Time.deltaTime);
 
             }
             else
             {
-                // 목적지 도착
+                // 목적지 도착 or 오래 기다렸음
+                pathWaitTime = 0.0f;
                 OnDestinationArrive();  // 도착지 자동 설정
             }
 
@@ -209,6 +255,7 @@ public class Slime : RecycleObject
     {
         map = gridMap;
         transform.position = map.GridToWorld(map.WorldToGrid(world));   // 셀의 가운데 위치에 배치
+        Current = map.GetNode(world);
     }
 
     /// <summary>
@@ -227,6 +274,7 @@ public class Slime : RecycleObject
     /// </summary>
     private void ReturnToPool()
     {
+        Current = null; 
         transform.SetParent(pool);
         gameObject.SetActive(false);
     }

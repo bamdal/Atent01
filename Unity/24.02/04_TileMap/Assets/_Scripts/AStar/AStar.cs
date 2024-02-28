@@ -19,7 +19,7 @@ public static class AStar
     {
         List<Vector2Int> path = null;
 
-        if (map.IsValidPosition(start) && map.IsValidPosition(end) && map.IsPlain(start) && map.IsPlain(end))   // 평지인지 아닌지 확인하면 맵 안인지도 확인 가능
+        if (map.IsValidPosition(start) && map.IsValidPosition(end) && !map.IsWall(start) && !map.IsWall(end))   // 평지인지 아닌지 확인하면 맵 안인지도 확인 가능
         {
             // start와 end가 벽이아니고 맵안이다.
             map.ClearMapData();
