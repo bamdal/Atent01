@@ -43,6 +43,8 @@ public class Player : MonoBehaviour
     /// </summary>
     public bool IsAttackReady => currentAttackCoolTime < 0.0f;
 
+
+
     /// <summary>
     /// AttackSensor 회전축
     /// </summary>
@@ -73,6 +75,35 @@ public class Player : MonoBehaviour
     readonly int HashIsMove = Animator.StringToHash("IsMove");
     readonly int HashAttack = Animator.StringToHash("Attack");
 
+    /// <summary>
+    /// 플레이어가 현재 위치하고 있는 맵의 그리드
+    /// </summary>
+    Vector2Int currentMap;
+
+    /// <summary>
+    /// CurrentMap에 값을 설정할 떄 변경이 있으면 델리게이트를 실행해서 알리는 프로퍼티
+    /// </summary>
+    Vector2Int CurrentMap 
+    {
+        get => currentMap;
+        set 
+        {
+            if (currentMap != value)
+            {
+                currentMap = value;
+                onMapChange?.Invoke(currentMap);
+            }
+
+        }
+        
+    }
+
+    /// <summary>
+    /// 플레이어가 있는 맵이 변경되면 불리는 델리게이트
+    /// </summary>
+    public Action<Vector2Int> onMapChange;
+
+    WorldManager world;
 
     private void Awake()
     {
@@ -104,6 +135,11 @@ public class Player : MonoBehaviour
         };
     }
 
+    private void Start()
+    {
+        world = GameManager.Instance.World;
+    }
+
     private void Update()
     {
         currentAttackCoolTime -= Time.deltaTime;
@@ -113,6 +149,8 @@ public class Player : MonoBehaviour
     {
         // 물리 프레임마다 inputDirection방향으로 초당 speed만큼 이동
         rigid.MovePosition(rigid.position + Time.fixedDeltaTime * currentSpeed * inputDirection);
+    
+        CurrentMap = world.WorldToGrid(rigid.position); // 플레이어가 있는 맵 설정
     }
     private void OnEnable()
     {

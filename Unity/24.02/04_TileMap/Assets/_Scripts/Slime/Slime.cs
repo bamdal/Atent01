@@ -181,7 +181,8 @@ public class Slime : RecycleObject
     {
         if (isMoveActivate)
         {
-            if (path.Count > 0 && pathWaitTime < MaxPathWaitTime)
+            // 경로가 있고 남은 경로가 있고 오래 기다리지 않았을때
+            if (path != null && path.Count > 0 && pathWaitTime < MaxPathWaitTime)
             {
                 
                 // path의 첫번째 위치로 계속 이동
@@ -240,7 +241,8 @@ public class Slime : RecycleObject
 
     protected override void OnDisable()
     {
-        path.Clear();
+        if(path != null)
+            path.Clear();
         pathLine.ClearPath();
 
         base.OnDisable();
@@ -272,7 +274,7 @@ public class Slime : RecycleObject
     /// <summary>
     /// 비활성화 되면서 풀로 되돌린다
     /// </summary>
-    private void ReturnToPool()
+    public void ReturnToPool()
     {
         Current = null; 
         transform.SetParent(pool);
@@ -369,9 +371,12 @@ public class Slime : RecycleObject
         // 목적지까지의 경로 저장
         // 경로를 그리기
         path = AStar.PathFine(map, GridPosition, destination);
+        //pathLine.DrawPath(map, path);
+        ShowPath(GameManager.Instance.showSlimePath);
 
-        pathLine.DrawPath(map, path);
     }
+
+
 
     /// <summary>
     /// 목적지에 도착했을 때 실행되는 함수
@@ -379,6 +384,24 @@ public class Slime : RecycleObject
     void OnDestinationArrive()
     {
         SetDestination(map.GetRandomMoveablePosition());
+    }
+
+    /// <summary>
+    /// 경로를 보여줄지 말지 결정하는 함수
+    /// </summary>
+    /// <param name="isShow">true면 보여주고 false면 안보여 준다</param>
+    public void ShowPath(bool isShow = true)
+    {
+        //pathLine.gameObject.SetActive(isShow);
+        if (isShow)
+        {
+            pathLine.DrawPath(map, path);
+
+        }
+        else
+        {
+            pathLine.ClearPath();
+        }
     }
 
 #if UNITY_EDITOR
