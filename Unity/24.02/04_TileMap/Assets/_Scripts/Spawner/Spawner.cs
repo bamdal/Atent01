@@ -42,18 +42,23 @@ public class Spawner : MonoBehaviour
     /// </summary>
     MapArea map;
 
-
+    /// <summary>
+    /// 플레이어
+    /// </summary>
+    Player player;
 
     private void Start()
     {
         map = transform.GetComponentInParent<MapArea>();
         spwanAreaList = map.CalcSpawnArea(this);
+        player = GameManager.Instance.Player;
     }
 
     private void Update()
     {
         if(count < capacity)                // 캐퍼시티 확인후
         {
+            
             elapsedTime += Time.deltaTime;
             if(elapsedTime > interval)      // 인터벌 확인
             {
@@ -75,6 +80,8 @@ public class Spawner : MonoBehaviour
             slime.onDie += () =>                            // 죽었을 때 실행될 함수 등록
             {
                 count--;    // count 감소
+                player.MonsterKill(slime.lifeTimeBonus);
+
             };
             slime.transform.SetParent(transform);
             count++;

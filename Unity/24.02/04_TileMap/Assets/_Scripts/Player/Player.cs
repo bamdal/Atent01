@@ -98,12 +98,65 @@ public class Player : MonoBehaviour
         
     }
 
+
     /// <summary>
     /// 플레이어가 있는 맵이 변경되면 불리는 델리게이트
     /// </summary>
     public Action<Vector2Int> onMapChange;
 
+
     WorldManager world;
+
+    /// <summary>
+    /// 플레이어의 최대 수명
+    /// </summary>
+    public float maxLifeTime = 10.0f;
+
+    /// <summary>
+    /// 플레이어의 현재 수명
+    /// </summary>
+    float lifeTime;
+
+    /// <summary>
+    /// 수명을 확인하고 변경되었을 대의 처리를 하는 프로퍼티
+    /// </summary>
+    float LifeTime 
+    {
+        get => lifeTime;
+        set 
+        { 
+            if(lifeTime != value)
+            {
+                lifeTime = value;   // 값을 설정
+
+                lifeTime = Mathf.Clamp(lifeTime, 0.0f, maxLifeTime);    // 일정 범위를 벗어나지 않게함
+                onLifeTimeChange?.Invoke(lifeTime/ maxLifeTime);        // 값이 변경되었음을 알림
+
+            }
+            
+        }
+    }
+
+
+    /// <summary>
+    /// 플레이어의 수명이 변경되었을 때 실행될 델리게이트(flaot : lifetime/maxlifetime)
+    /// </summary>
+    public Action<float> onLifeTimeChange;
+
+    int killCount = 0;
+
+    int KillCount
+    {
+        get => killCount;
+        set
+        {
+            if (killCount != value)
+            {
+                killCount = value;
+            }
+        }
+    }
+
 
     private void Awake()
     {
@@ -133,6 +186,8 @@ public class Player : MonoBehaviour
             attackTargetList.Remove(slime); // 리스트에서 제거하고
             slime.ShowOutline(false);       // 아웃라인을 끈다
         };
+
+        LifeTime = maxLifeTime;
     }
 
     private void Start()
@@ -143,6 +198,7 @@ public class Player : MonoBehaviour
     private void Update()
     {
         currentAttackCoolTime -= Time.deltaTime;
+        LifeTime -= Time.deltaTime;
     }
 
     private void FixedUpdate()
@@ -264,6 +320,16 @@ public class Player : MonoBehaviour
     void AttackNotVaild()
     {
         isAttackVaild = false;
+    }
+
+    /// <summary>
+    /// 몬스터를 잡았을 때 실행할 함수
+    /// </summary>
+    /// <param name="bonus">몬스터 처리 보너스 (수명추가)</param>
+    public void MonsterKill(float bonus)
+    {
+        LifeTime += bonus;
+        killCount++;
     }
 }
 // 플레이어가 공격하기

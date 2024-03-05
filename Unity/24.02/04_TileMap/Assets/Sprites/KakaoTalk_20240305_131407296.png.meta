@@ -1,0 +1,420 @@
+fileFormatVersion: 2
+guid: a018b171d9ed7b5428247d8cf5f2be88
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 12
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 18
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Server
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Number_0
+      rect:
+        serializedVersion: 2
+        x: 496
+        y: 434
+        width: 12
+        height: 18
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b6183de873349444fb78662eb56bc8b3
+      internalID: 2040282176
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Number_2
+      rect:
+        serializedVersion: 2
+        x: 292
+        y: 334
+        width: 12
+        height: 18
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ef4b7ee37d4fee24b9d06d560ee8c1d7
+      internalID: 1646090702
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Number_3
+      rect:
+        serializedVersion: 2
+        x: 306
+        y: 334
+        width: 12
+        height: 18
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 89c87c43eaf173e44885e16849e8ab57
+      internalID: 885753414
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Number_4
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 334
+        width: 12
+        height: 18
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e6a6d0576157c91448e5356fb9a74585
+      internalID: 39275951
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Number_5
+      rect:
+        serializedVersion: 2
+        x: 334
+        y: 334
+        width: 12
+        height: 18
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 145c2430bcbe1ac4a883682a357c3abb
+      internalID: -1007923801
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Number_6
+      rect:
+        serializedVersion: 2
+        x: 292
+        y: 310
+        width: 12
+        height: 18
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 65312ec2b46e49649ab06e1f8b9e397f
+      internalID: 2059604576
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Number_7
+      rect:
+        serializedVersion: 2
+        x: 306
+        y: 310
+        width: 12
+        height: 18
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 775c7ceb72c853b40bd0c254ce3e201e
+      internalID: -1718504592
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Number_8
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 310
+        width: 12
+        height: 18
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1a3b337f785b2464e9d37c777738a8be
+      internalID: 1893479931
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Number_9
+      rect:
+        serializedVersion: 2
+        x: 334
+        y: 310
+        width: 12
+        height: 18
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 60c8fc5e6e1c7ff43a73d41261ce17c2
+      internalID: -406173255
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Number_1
+      rect:
+        serializedVersion: 2
+        x: 136
+        y: 39
+        width: 8
+        height: 18
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a78fc7cce4a8e1d43b3c09838465dd28
+      internalID: 1624755515
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    nameFileIdTable:
+      KakaoTalk_20240305_131407296_0: 614876362
+      KakaoTalk_20240305_131407296_1: 1901215658
+      KakaoTalk_20240305_131407296_10: 490314322
+      KakaoTalk_20240305_131407296_11: -583421543
+      KakaoTalk_20240305_131407296_12: 81481233
+      KakaoTalk_20240305_131407296_13: -239209397
+      KakaoTalk_20240305_131407296_15: 1314877535
+      KakaoTalk_20240305_131407296_16: 148699267
+      KakaoTalk_20240305_131407296_17: -1837556682
+      KakaoTalk_20240305_131407296_18: 1636694194
+      KakaoTalk_20240305_131407296_19: -650426374
+      KakaoTalk_20240305_131407296_2: -2106647575
+      KakaoTalk_20240305_131407296_20: -1513361585
+      KakaoTalk_20240305_131407296_21: -215584866
+      KakaoTalk_20240305_131407296_22: 1577763683
+      KakaoTalk_20240305_131407296_23: -1019950139
+      KakaoTalk_20240305_131407296_24: 1961847348
+      KakaoTalk_20240305_131407296_25: 1277290682
+      KakaoTalk_20240305_131407296_26: 496454346
+      KakaoTalk_20240305_131407296_27: 482192034
+      KakaoTalk_20240305_131407296_28: 909697921
+      KakaoTalk_20240305_131407296_29: -758360947
+      KakaoTalk_20240305_131407296_3: 661750477
+      KakaoTalk_20240305_131407296_30: 24423347
+      KakaoTalk_20240305_131407296_31: 185659463
+      KakaoTalk_20240305_131407296_32: 768541360
+      KakaoTalk_20240305_131407296_33: 1093633317
+      KakaoTalk_20240305_131407296_34: 321035636
+      KakaoTalk_20240305_131407296_35: 881212491
+      KakaoTalk_20240305_131407296_4: -91386327
+      KakaoTalk_20240305_131407296_42: -1806075655
+      KakaoTalk_20240305_131407296_43: -230860210
+      KakaoTalk_20240305_131407296_44: 1802222626
+      KakaoTalk_20240305_131407296_45: -529574178
+      KakaoTalk_20240305_131407296_46: -213816388
+      KakaoTalk_20240305_131407296_47: 1392744412
+      KakaoTalk_20240305_131407296_48: -315925735
+      KakaoTalk_20240305_131407296_49: 2080963158
+      KakaoTalk_20240305_131407296_5: 2007998503
+      KakaoTalk_20240305_131407296_50: -542895337
+      KakaoTalk_20240305_131407296_51: 1824855155
+      KakaoTalk_20240305_131407296_52: 1533023777
+      KakaoTalk_20240305_131407296_53: -1436387593
+      KakaoTalk_20240305_131407296_54: -1567975493
+      KakaoTalk_20240305_131407296_55: 2064864563
+      KakaoTalk_20240305_131407296_56: -1823817166
+      KakaoTalk_20240305_131407296_57: 970861249
+      KakaoTalk_20240305_131407296_58: -242380732
+      KakaoTalk_20240305_131407296_59: 1084851136
+      KakaoTalk_20240305_131407296_6: 1078419965
+      KakaoTalk_20240305_131407296_60: -330875146
+      KakaoTalk_20240305_131407296_61: 1750083971
+      KakaoTalk_20240305_131407296_62: 862543801
+      KakaoTalk_20240305_131407296_63: -1472082440
+      KakaoTalk_20240305_131407296_64: -481501560
+      KakaoTalk_20240305_131407296_65: -714496301
+      KakaoTalk_20240305_131407296_66: -313827792
+      KakaoTalk_20240305_131407296_67: 878400187
+      KakaoTalk_20240305_131407296_68: -78147784
+      KakaoTalk_20240305_131407296_69: -327353038
+      KakaoTalk_20240305_131407296_7: -1340487311
+      KakaoTalk_20240305_131407296_70: 298655166
+      KakaoTalk_20240305_131407296_72: 1386875249
+      KakaoTalk_20240305_131407296_73: 260195923
+      KakaoTalk_20240305_131407296_74: 1238690208
+      KakaoTalk_20240305_131407296_75: -2131606303
+      KakaoTalk_20240305_131407296_76: 1704041669
+      KakaoTalk_20240305_131407296_77: 1526873637
+      KakaoTalk_20240305_131407296_78: -2133923011
+      KakaoTalk_20240305_131407296_79: 967753265
+      KakaoTalk_20240305_131407296_8: 652500273
+      KakaoTalk_20240305_131407296_80: -234098744
+      KakaoTalk_20240305_131407296_9: -1326482124
+      Number_0: 2040282176
+      Number_1: 1624755515
+      Number_2: 1646090702
+      Number_3: 885753414
+      Number_4: 39275951
+      Number_5: -1007923801
+      Number_6: 2059604576
+      Number_7: -1718504592
+      Number_8: 1893479931
+      Number_9: -406173255
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
