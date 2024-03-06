@@ -128,22 +128,43 @@ public class Player : MonoBehaviour
             if(lifeTime != value)
             {
                 lifeTime = value;   // 값을 설정
+                if (isAlive && lifeTime < 0.0f)  // 살아있는데 수명이 0 미만이면 사망
+                {
+                    Die();
+                }
+                else
+                {
+                    // 살아 있으며 일반 처리
+                    lifeTime = Mathf.Clamp(lifeTime, 0.0f, maxLifeTime);    // 일정 범위를 벗어나지 않게함
+                    onLifeTimeChange?.Invoke(lifeTime / maxLifeTime);        // 값이 변경되었음을 알림
 
-                lifeTime = Mathf.Clamp(lifeTime, 0.0f, maxLifeTime);    // 일정 범위를 벗어나지 않게함
-                onLifeTimeChange?.Invoke(lifeTime/ maxLifeTime);        // 값이 변경되었음을 알림
 
+                }
             }
             
         }
     }
-
+    /// <summary>
+    /// 전체 플레이 타임
+    /// </summary>
+    float totalPlayTime = 0.0f;
 
     /// <summary>
     /// 플레이어의 수명이 변경되었을 때 실행될 델리게이트(flaot : lifetime/maxlifetime)
     /// </summary>
     public Action<float> onLifeTimeChange;
 
-    int killCount = 0;
+    /// <summary>
+    /// 플레이어가 죽었음을 알리는 델리게이트(float: 전체 플레이시간, int : 킬카운트)
+    /// </summary>
+    public Action<float,int> onDie;
+
+    bool isAlive = true;
+
+    /// <summary>
+    /// 잡은 슬라임 수
+    /// </summary>
+    int killCount = -1;
 
     int KillCount
     {
@@ -153,10 +174,12 @@ public class Player : MonoBehaviour
             if (killCount != value)
             {
                 killCount = value;
+                onKillCountChange?.Invoke(killCount);
             }
         }
     }
 
+    public Action<int> onKillCountChange;
 
     private void Awake()
     {
@@ -193,12 +216,15 @@ public class Player : MonoBehaviour
     private void Start()
     {
         world = GameManager.Instance.World;
+        KillCount = 0;
+ 
     }
 
     private void Update()
     {
         currentAttackCoolTime -= Time.deltaTime;
         LifeTime -= Time.deltaTime;
+        totalPlayTime += Time.deltaTime;
     }
 
     private void FixedUpdate()
@@ -329,8 +355,30 @@ public class Player : MonoBehaviour
     public void MonsterKill(float bonus)
     {
         LifeTime += bonus;
-        killCount++;
+        KillCount++;
+
     }
+
+    /// <summary>
+    /// 플레이어가 죽었을 때 처리할 일을 처리하는 함수
+    /// </summary>
+    void Die()
+    {
+        isAlive = false;                            // 죽었다고 표시
+        LifeTime = 0.0f;                            // 수명을 0으로 정리
+        onLifeTimeChange?.Invoke(0);                // 수명변화를 알리기
+        inputActions.Player.Disable();              // 플레이어 입력 정지
+        onDie?.Invoke(totalPlayTime, KillCount);    // 사망 알리기
+
+    }
+
+#if UNITY_EDITOR
+
+    public void Test_Die()
+    {
+        Die();
+    }
+#endif
 }
 // 플레이어가 공격하기
 // - 애니메이션만 재생

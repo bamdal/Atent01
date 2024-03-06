@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 
 public class Test_Seemless : TestBase
 {
+#if UNITY_EDITOR
     [Range(0,2)]
     public int x = 0;
 
@@ -36,5 +37,5 @@ public class Test_Seemless : TestBase
     {
         world.TestUnloadAllScene();
     }
-
+#endif
 }

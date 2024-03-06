@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 
 public class Test_SlimePool : TestBase
 {
+#if UNITY_EDITOR
     protected override void OnTest1(InputAction.CallbackContext context)
     {
         Factory.Instance.GetSlime(new(Random.Range(-8, 8), Random.Range(-4, 4)));
@@ -19,4 +20,5 @@ public class Test_SlimePool : TestBase
             slime.Test_Die();
         }
     }
+#endif
 }
