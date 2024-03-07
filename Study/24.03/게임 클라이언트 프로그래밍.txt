@@ -30,6 +30,34 @@ C#
  - NullReferenceException
 
 
+오브젝트 찾기
+ - 이름 GameObject obj1 = GameObject.Find("이름");		//이름으로 찾기
+
+ - 태그 GameObject obj2 = GameObject.FindWithTag("태그");	//태그로 찾기 - 함수 이름만 줄여놓은것
+	GameObject obj3 = GameObject.FindGameObjectWithTag("태그");	//태그로 찾기
+	GameObject[] obj4 = GameObject.FindGameObjectsWithTag("태그");	//같은 태그 모두 찾기
+
+ - 타입 GameObject obj5 = GameObject.FindAnyObjectByType<GameObject>();	//특정 타임으로 찾기
+									(아무거나 한개라 뭐가 나올지 모름)
+	GameObject obj6 = GameObject.FindFirstObjectByType<GameObject>();	//Any보단 느리지만 타입중에 첫번째것을 가져옴
+	// 특정타임 모두를 가져옴
+	GameObject[] obj7 = GameObject.FindObjectsByType<GameObject>(FindObjectsInactive.Exclude, FindObjectSortType.None);
+	// FindObjectOfType : 비권장
+
+
+컴포넌트 찾기 
+ - Transfor t = GetComponent<Tramsform>();	// == this.transform;
+   this.gameObject.AddComponent<Test>();	// 컴포넌트 추가하기
+
+터레인(Terrain)
+ - 높이맵(Height Map)
+ - 거대 지형을 쉽게 만들 수 있다.
+ - 적은 메모리로 넓은 지형 표현 가능
+ - 지형 구조가 단조롭다(동굴, 절벽같은 급경사 표현 불가능)
+
+
+
+
 
 
 
