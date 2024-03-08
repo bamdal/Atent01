@@ -19,5 +19,8 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
-  
+    protected override void OnInitialize()
+    {
+        player = FindAnyObjectByType<Player>();
+    }
 }

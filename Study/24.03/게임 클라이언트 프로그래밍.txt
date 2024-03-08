@@ -55,6 +55,52 @@ C#
  - 적은 메모리로 넓은 지형 표현 가능
  - 지형 구조가 단조롭다(동굴, 절벽같은 급경사 표현 불가능)
 
+Resources 폴더 사용하기
+ Resources.Load<Sprite>("경로");	// 리소스 폴더가 몇개있는 하나로 취급해서 불러오고 안에 폴더가 추가로 있다면 추가로 경로작성
+ Resources파일에 있는건 게임 시작시 메모리에 담기기 때문에 메모리관리가 복잡해지고 시작 시 로딩이 길어진다.
+
+
+InputManager : 매 프레임 마다 키 입력 상태를 확인하고 필요한 처리를 수행, 
+		Polling 방식 -> Busy Wait 아무것도 안하는데 바쁨(성능저하 + CPU가 sleep 상태로 갈 수가 없음)
+ Input.GetKeyDown(KeyCode.w)
+ Input.GetButton("Jump') // 스페이스키가 눌려져 있는지
+			// Project Setting -> Input Manager항목에 버튼 이름들이 어떤 키와 연결되어 있는지 설정되어 있음
+ Input.GetAxis("Horizontal") // 1, 0, -1 의 값이 나오고 설정된 버튼으로 사용
+
+ InputManager 단점 : Update()함수에 들어가서 매 프레임 마다 버튼이 눌러졌는지 확인을 하기에 비효율적임
+
+
+InputSystem : Event-Driven 방식으로 구현 -> 이벤트가 생기면 실행
+
+
+Life Cycle 기억
+유니티 이벤트 함수
+ - Awake -> 게임오브젝트가 씬에 추가되는 순간
+ - OnEnable -> 오브젝트가 씬에 보일때
+ - Start -> 업데이트 직전
+
+
+ - Update -> 매 프레임 마다
+ - LateUpdate -> 모든 업데이트들이 끝났을때
+ - FixedUpdate -> Fixed Timestep가 설정한 값에 따라 일정하게 호출
+
+ - OnCollisionEnter
+ - OnCollisionStay
+ - OnCollisionExit
+
+ - OnTriggerEnter
+ - OnCollisionStay
+ - OnCollisionExit
+
+메카님(Mecanim) -> 애니메이션 시스템
+
+애니메이션 에셋
+ - 애니메이터 컨트롤러 : 상태머신을 이용해 어떤 애니메이션을 재생할지를 결정하게 해주는 에셋
+ - 애니메이션 클립 : 실제 애니메이션 동작을 저장해 놓은 에셋
+ - 아바타 : 인강형 애니메이션 리타겟팅을 위한 본(bone)의 매핑정보를 저장한다.
+
+
+
 
 
 
