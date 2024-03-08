@@ -114,6 +114,34 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Effect"",
+            ""id"": ""d82c068c-7b71-4fd1-b8fe-39e94e483919"",
+            ""actions"": [
+                {
+                    ""name"": ""PointerMove"",
+                    ""type"": ""Value"",
+                    ""id"": ""2a60a973-8033-4048-8c42-c317ef4f30e2"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""df023a7d-7429-4ee7-865b-eccab57c43bc"",
+                    ""path"": ""<Mouse>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PointerMove"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -139,6 +167,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
         m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
         m_Player_MoveModeChange = m_Player.FindAction("MoveModeChange", throwIfNotFound: true);
+        // Effect
+        m_Effect = asset.FindActionMap("Effect", throwIfNotFound: true);
+        m_Effect_PointerMove = m_Effect.FindAction("PointerMove", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -250,6 +281,52 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         }
     }
     public PlayerActions @Player => new PlayerActions(this);
+
+    // Effect
+    private readonly InputActionMap m_Effect;
+    private List<IEffectActions> m_EffectActionsCallbackInterfaces = new List<IEffectActions>();
+    private readonly InputAction m_Effect_PointerMove;
+    public struct EffectActions
+    {
+        private @PlayerInputActions m_Wrapper;
+        public EffectActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
+        public InputAction @PointerMove => m_Wrapper.m_Effect_PointerMove;
+        public InputActionMap Get() { return m_Wrapper.m_Effect; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(EffectActions set) { return set.Get(); }
+        public void AddCallbacks(IEffectActions instance)
+        {
+            if (instance == null || m_Wrapper.m_EffectActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_EffectActionsCallbackInterfaces.Add(instance);
+            @PointerMove.started += instance.OnPointerMove;
+            @PointerMove.performed += instance.OnPointerMove;
+            @PointerMove.canceled += instance.OnPointerMove;
+        }
+
+        private void UnregisterCallbacks(IEffectActions instance)
+        {
+            @PointerMove.started -= instance.OnPointerMove;
+            @PointerMove.performed -= instance.OnPointerMove;
+            @PointerMove.canceled -= instance.OnPointerMove;
+        }
+
+        public void RemoveCallbacks(IEffectActions instance)
+        {
+            if (m_Wrapper.m_EffectActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IEffectActions instance)
+        {
+            foreach (var item in m_Wrapper.m_EffectActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_EffectActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public EffectActions @Effect => new EffectActions(this);
     private int m_KMSchemeIndex = -1;
     public InputControlScheme KMScheme
     {
@@ -263,5 +340,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     {
         void OnMove(InputAction.CallbackContext context);
         void OnMoveModeChange(InputAction.CallbackContext context);
+    }
+    public interface IEffectActions
+    {
+        void OnPointerMove(InputAction.CallbackContext context);
     }
 }
