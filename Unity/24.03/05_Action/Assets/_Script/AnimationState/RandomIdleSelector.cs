@@ -5,6 +5,8 @@ using UnityEngine;
 public class RandomIdleSelector : StateMachineBehaviour
 {
     readonly int IdleSelect_Hash = Animator.StringToHash("IdleSelect");
+    public int test = -1;
+    int prevSelect =3;
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
@@ -18,24 +20,35 @@ public class RandomIdleSelector : StateMachineBehaviour
     int RandomSelect()
     {
         int select = 0; // 80%
-        float num = Random.value;
 
-        if (num < 0.05f)
+        if (prevSelect == 0)    // 이전에 0일때만 특수 Idle 재생
         {
-            select = 4; // 5%
+            float num = Random.value;
+
+            if (num < 0.05f)
+            {
+                select = 4; // 5%
+            }
+            else if (num < 0.1f)
+            {
+                select = 3; // 5%
+            }
+            else if (num < 0.15f)
+            {
+                select = 2; // 5%
+            }
+            else if (num < 0.2f)
+            {
+                select = 1; // 5%
+            }
         }
-        else if (num < 0.1f)
+
+        if (test != -1)
         {
-            select = 3; // 5%
+            select = test;
         }
-        else if (num < 0.15f)
-        {
-            select = 2; // 5%
-        }
-        else if (num < 0.2f)
-        {
-            select = 1; // 5%
-        }
+
+        prevSelect = select;
 
         return select;
     }

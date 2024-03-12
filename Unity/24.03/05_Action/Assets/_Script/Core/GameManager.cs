@@ -7,6 +7,17 @@ public class GameManager : Singleton<GameManager>
 {
     Player player;
 
+    ItemDataManager itemDataManager;
+
+    public ItemDataManager ItemDataManager => itemDataManager;
+
+
+    protected override void OnPreInitialize()
+    {
+        base.OnPreInitialize();
+        itemDataManager = GetComponent<ItemDataManager>();
+    }
+
     public Player Player
     {
         get
