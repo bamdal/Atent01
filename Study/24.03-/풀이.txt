@@ -1,0 +1,76 @@
+1-1 GameObject target = GameObject.Find("Player");
+1-2 GameObject target = GameObject.FindGameObjectWithTag("Player");
+
+2-1 Character target = GameObject.FindObjectOfType<Character>();
+	Character target = GameObject.FindObjectByType<Character>();
+	Character target = GameObject.FindFirstObjectByType<Character>();
+
+2-2 Character[] targets = GameObject.FindObjectsOfType<Character>();
+	Character[] targets = GameObject.FindObjectsByType<Character>(FindObjectSortMode.None);
+
+3-1 Terrain
+3-2 Height Map
+
+4-1 Resources
+4-2 Sprite image = Resources.Load<Sprite>("Forest");
+
+5-1 이벤트
+5-2 Event-Driven
+
+6-1 Console
+6-2 Debug.Log("Click");
+
+1. 
+void OnCollisionEnter(Collison collision)
+{
+	Destrory(this.gameObject,3.0f);
+}
+
+2. 배열만 메모리를 할당학 배열의 각 엘레먼트는 할당되지 않은 상황에서 맴버에 접근을 했으므로 nullReferenceException이 발생
+
+3. A클래스의 DoWork함수는 접근제한자가 private이다 B클래스에서 사용하려 했으므로 컴파일에러가 발생한다.
+
+4. Hello만 출력
+
+5. 심리스 설명 - 로딩해제에 대한 설명도 필수 
+  현제 플레이어가 위치하는 맵과 플레이어가 빠르게 이동할 가능성이 있는 맵을 로딩
+  플레이어가 가거나 볼 가능성이 있는 맵들은 백그라운드에서 로딩
+  플레이어가 기거나 볼 가능성이 없는 맵들은 백그라운드에서 로딩 해제
+
+6. private void OnTriggerEnter(Collider other)
+{
+	if(other.CompareTag("Player"))
+	{
+	Debug.Log("Hello");
+	}
+}
+
+7. 정확한 시간 단위로 실행시키기 위해 Rigidbody로 이동할 때 FixedUpdate를 쓴다
+
+8. Height Map
+ 지형을 표현할 텍스쳐 파일을 준비
+ 텍스쳐의 픽셀 하나당 정점 하나를 생성한다
+ 픽셀의 위치(텍스쳐에서 가로, 세로)를 정점의 X,Z로 변경
+ 픽셀의 색상을 정점의 y로 변경
+ 정점을 연결해서 메시를 생성
+
+9. 마우스 피킹에 대해 설명
+ - 마우스를 이용해서 3D 월드 상의 오브젝트를 선택하는 기법
+ - 마우스커서의 스크린 좌표를 월드좌표로 변환한다음 Ray를 생성해서 Raycast를 수행한 다음 Ray에 닿은 오브젝트가 있는지 판별
+
+10. 메모리 풀
+  성능문제(할당과 해제는 무거운 연산이라 자주할 경우 실시간 성능에 문제가 생긴다)
+  단편화 문제 해결
+
+11. 태그 확인할때 == 대신 CompareTag
+ 문자열은 == 연산할때 가비지 생성
+ CompareTag 함수가 컴파일러에서 적은수의 CIL을 생성하도록 설계 되어 속도가 빠르다
+ CompareTag는 가비지가 발생하지 않는다
+
+12. 정수비교와 문자열 비교 
+ 정수 비교가 유리
+ 
+
+
+
+

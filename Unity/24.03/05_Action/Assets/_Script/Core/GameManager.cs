@@ -9,7 +9,7 @@ public class GameManager : Singleton<GameManager>
 
     ItemDataManager itemDataManager;
 
-    public ItemDataManager ItemDataManager => itemDataManager;
+    public ItemDataManager ItemData => itemDataManager;
 
 
     protected override void OnPreInitialize()
