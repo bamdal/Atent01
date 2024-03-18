@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 
-public class InvenSlotUI : SlotUI_Base, IBeginDragHandler, IEndDragHandler, IDragHandler
+public class InvenSlotUI : SlotUI_Base, IBeginDragHandler, IEndDragHandler, IDragHandler, IPointerClickHandler
 {
 
     /// <summary>
@@ -23,6 +23,11 @@ public class InvenSlotUI : SlotUI_Base, IBeginDragHandler, IEndDragHandler, IDra
     /// 드래그 종료를 알리는 델리게이트(uint: 드래그가 끝난 슬롯의 인덱스, bool : 슬롯에서 끝났으면 true 아니면 false
     /// </summary>
     public Action<uint, bool> onDragEnd;
+
+    /// <summary>
+    /// 마우스 클릭을 알리는 델리게이트(uint : 클릭이 된 슬롯의 인덱스
+    /// </summary>
+    public Action<uint> onClick;
 
     protected override void Awake()
     {
@@ -86,6 +91,8 @@ public class InvenSlotUI : SlotUI_Base, IBeginDragHandler, IEndDragHandler, IDra
         }
     }
 
-
-
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        onClick?.Invoke(Index);
+    }
 }
