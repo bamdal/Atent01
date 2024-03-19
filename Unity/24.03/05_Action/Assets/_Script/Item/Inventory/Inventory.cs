@@ -484,5 +484,10 @@ public class Inventory
 
         Debug.Log(printText);
     }
+
+    public ItemData SlotsItemData(uint index)
+    {
+        return slots[index].ItemData;
+    }
 #endif
 }

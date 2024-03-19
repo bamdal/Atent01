@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 
-public class InvenSlotUI : SlotUI_Base, IBeginDragHandler, IEndDragHandler, IDragHandler, IPointerClickHandler
+public class InvenSlotUI : SlotUI_Base, IBeginDragHandler, IEndDragHandler, IDragHandler, IPointerClickHandler ,IPointerEnterHandler ,IPointerExitHandler, IPointerMoveHandler
 {
 
     /// <summary>
@@ -28,6 +28,21 @@ public class InvenSlotUI : SlotUI_Base, IBeginDragHandler, IEndDragHandler, IDra
     /// 마우스 클릭을 알리는 델리게이트(uint : 클릭이 된 슬롯의 인덱스
     /// </summary>
     public Action<uint> onClick;
+
+    /// <summary>
+    /// 마우스 커서가 슬롯 위로 올라왔다 (uint : 들어간 슬롯의 인덱스)
+    /// </summary>
+    public Action<uint> onPointerEnter;
+
+    /// <summary>
+    /// 마우스 커서가 슬롯위에서 움직인다.(Vector2: 마우스 포인터의 스크린 좌표)
+    /// </summary>
+    public Action onPointerExit;
+
+    /// <summary>
+    /// 움직인 마우스 좌표 위치
+    /// </summary>
+    public Action<Vector2> onPointerMove;
 
     protected override void Awake()
     {
@@ -94,5 +109,20 @@ public class InvenSlotUI : SlotUI_Base, IBeginDragHandler, IEndDragHandler, IDra
     public void OnPointerClick(PointerEventData eventData)
     {
         onClick?.Invoke(Index);
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        onPointerEnter?.Invoke(Index);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        onPointerExit?.Invoke();
+    }
+
+    public void OnPointerMove(PointerEventData eventData)
+    {
+        onPointerMove?.Invoke(eventData.position);
     }
 }
