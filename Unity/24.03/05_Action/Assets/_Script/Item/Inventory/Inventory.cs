@@ -256,6 +256,8 @@ public class Inventory
                             // tempSlot과 toSlot을 스왑
                             SwapSlot(tempSlot, toSlot);
                         }
+
+
                     }
                     else
                     {
@@ -304,7 +306,7 @@ public class Inventory
     /// </summary>
     /// <param name="slotIndex">아이템을 덜어낼 슬롯</param>
     /// <param name="count">덜어낼 개수</param>
-    public void SplitItem(uint slotIndex, uint count)
+    public void DividItem(uint slotIndex, uint count)
     {
         if (IsValidIndex(slotIndex))
         {
@@ -312,6 +314,7 @@ public class Inventory
             count = Math.Min(count, slot.ItemCount);    // count가 슬롯에 들어있는 개수보다 크면 들어있는 개수까지만
 
             TempSlot.AssignSlotItem(slot.ItemData, count);  // 임시 슬롯에 우선 넣고
+            TempSlot.SetFromIndex(slotIndex);               // 나누는 슬롯의 인덱스 입력
             slot.DecreaseSlotItem(count);                   // 목적하던 슬롯에서 빼기
 
         }

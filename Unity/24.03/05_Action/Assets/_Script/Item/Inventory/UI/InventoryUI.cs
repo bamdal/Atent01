@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class InventoryUI : MonoBehaviour
 {
@@ -22,6 +23,11 @@ public class InventoryUI : MonoBehaviour
     /// </summary>
     DetailInfoUI detail;
 
+    /// <summary>
+    /// 아이템 분리창
+    /// </summary>
+    ItemDividerUI divider;
+
     private void Awake()
     {
         Transform child = transform.GetChild(0);
@@ -30,6 +36,8 @@ public class InventoryUI : MonoBehaviour
         TempSlotUI = GetComponentInChildren<TempSlotUI>();
         child = transform.GetChild(2);
         detail = child.GetComponent<DetailInfoUI>();
+        divider = GetComponentInChildren<ItemDividerUI>(true);
+
     }
 
     /// <summary>
@@ -53,8 +61,11 @@ public class InventoryUI : MonoBehaviour
         }
 
         TempSlotUI.InitializeSlot(inven.TempSlot);
-    }
 
+        divider.onOkClick += OnDividerOK;
+        divider.onCancelClick += OnDividerCanecel;
+        divider.Close();
+    }
 
 
     /// <summary>
@@ -110,10 +121,27 @@ public class InventoryUI : MonoBehaviour
     /// <param name="index">클릭한 슬롯의 인덱스</param>
     private void OnSlotClick(uint index)
     {
-        if (!TempSlotUI.InvenSlot.IsEmpty)
+        if (TempSlotUI.InvenSlot.IsEmpty)
+        {
+            bool isShiftPress = (Keyboard.current.shiftKey.ReadValue() > 0);
+            if(isShiftPress)
+            {
+                // 쉬프트가 눌려져 있으면 아이템 분리창 열기
+                OnItemDividerOpen(index);
+
+            }
+            else
+            {
+                // 쉬프트가 안눌려진 상태면 아이템 사용 or 아이템 장비
+            }
+        }
+        else 
         {
             OnItemMoveEnd(index, true); // 슬롯이 클릭되었을 때 실행되니 isSlotEnd는 true
+          
         }
+        
+
     }
 
     /// <summary>
@@ -141,5 +169,43 @@ public class InventoryUI : MonoBehaviour
     {
         detail.MovePosition(screen);
     }
+
+    /// <summary>
+    /// 아이템 분리창 열기
+    /// </summary>
+    /// <param name="index">아이템을 분리할 슬롯의 인덱스</param>
+    void OnItemDividerOpen(uint index)
+    {
+        InvenSlotUI target = slotUIs[index];
+        divider.transform.position = target.transform.position + Vector3.up* 100;
+        if (divider.Open(target.InvenSlot))
+        {
+            detail.IsPause = true;
+
+        }
+
+
+    }
+
+    /// <summary>
+    /// 아이템 분리창의 OK버튼을 눌렀을 때 실행될 함수
+    /// </summary>
+    /// <param name="targetIndex">아이템을 나눌 슬롯</param>
+    /// <param name="dividCount">나눌 개수</param>
+    private void OnDividerOK(uint targetIndex, uint dividCount)
+    {
+        inven.DividItem(targetIndex, dividCount);
+        TempSlotUI.Open();
+    }
+
+    /// <summary>
+    /// 아이템 분리창에서 Cancel을 눌렀을때 실행될 함수
+    /// </summary>
+    private void OnDividerCanecel()
+    {
+        detail.IsPause = false;
+    }
+
+
 
 }
