@@ -18,7 +18,7 @@ public enum ItemCode
 /// </summary>
 public enum ItemSortBy
 {
-    Code,   // 코드기준
+    Code = 0,   // 코드기준
     Name,   // 이름기준
     Price   // 가격기준
 }

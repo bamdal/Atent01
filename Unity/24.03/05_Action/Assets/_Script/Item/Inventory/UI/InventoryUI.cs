@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class InventoryUI : MonoBehaviour
 {
@@ -28,17 +29,54 @@ public class InventoryUI : MonoBehaviour
     /// </summary>
     ItemDividerUI divider;
 
+    /// <summary>
+    /// 인벤 소유자의 돈을 표시하는 패널
+    /// </summary>
+    MoneyPanelUI moneyPanel;
+
+    /// <summary>
+    /// 정렬용 패널
+    /// </summary>
+    SortPanelUI sortPanel;
+
+    PlayerInputActions inputActions;
+
+    CanvasGroup canvasGroup;
+
     private void Awake()
     {
         Transform child = transform.GetChild(0);
         slotUIs = child.GetComponentsInChildren<InvenSlotUI>();
 
         TempSlotUI = GetComponentInChildren<TempSlotUI>();
-        child = transform.GetChild(2);
-        detail = child.GetComponent<DetailInfoUI>();
+        detail = GetComponentInChildren<DetailInfoUI>();
         divider = GetComponentInChildren<ItemDividerUI>(true);
+        moneyPanel = GetComponentInChildren<MoneyPanelUI>();
+        sortPanel = GetComponentInChildren<SortPanelUI>();
+
+        child = transform.GetChild(4);
+        Button close = child.GetComponent<Button>();
+        close.onClick.AddListener(Close);
+
+        inputActions = new PlayerInputActions();
+
+        canvasGroup = GetComponent<CanvasGroup>();  
+    }
+
+    private void OnEnable()
+    {
+        inputActions.Enable();
+        inputActions.UI.InvenOnOff.performed += OnInvenOnOff;
 
     }
+
+    private void OnDisable()
+    {
+        inputActions.UI.InvenOnOff.performed -= OnInvenOnOff;
+        inputActions.Disable();
+    }
+
+
 
     /// <summary>
     /// 인벤토리 초기화용 함수
@@ -65,6 +103,21 @@ public class InventoryUI : MonoBehaviour
         divider.onOkClick += OnDividerOK;
         divider.onCancelClick += OnDividerCanecel;
         divider.Close();
+
+        sortPanel.onSortRequest += (by) =>
+        {
+            bool isAcending = true;
+            switch(by)
+            {
+                case ItemSortBy.Price:  // 가격만 내림차순으로 실행
+                    isAcending = false;
+                    break;
+            }
+            inven.MergeItems();
+            inven.SlotSorting(by, isAcending);   // 정렬 패널에서 정렬 요청이 오면 실행
+
+        };
+        
     }
 
 
@@ -206,6 +259,40 @@ public class InventoryUI : MonoBehaviour
         detail.IsPause = false;
     }
 
+    /// <summary>
+    /// 인벤토리를 여는 함수
+    /// </summary>
+    void Open()
+    {
+        canvasGroup.alpha = 1.0f;
+        canvasGroup.interactable = true;
+        canvasGroup.blocksRaycasts = true;
+    }
 
+    /// <summary>
+    /// 인벤토리를 닫는 함수
+    /// </summary>
+    void Close()
+    {
+        canvasGroup.alpha = 0.0f;
+        canvasGroup.interactable = false;
+        canvasGroup.blocksRaycasts = false;
+    }
 
+    private void OnInvenOnOff(InputAction.CallbackContext context)
+    {
+        // 열려 있으면 닫고 닫혀 있으면 열기
+        if (context.performed)
+        {
+            if (canvasGroup.alpha > 0.0f)
+            {
+                Close();
+               
+            }
+            else
+            {
+                Open();
+            }
+        }
+    }
 }

@@ -296,8 +296,9 @@ public class Inventory
         ItemData tempData = slotA.ItemData;
         uint tempCount = slotA.ItemCount;
 
-        slotA.AssignSlotItem(slotB.ItemData, slotB.ItemCount, false);
-        slotB.AssignSlotItem(tempData, tempCount, false);
+        bool tempEquip = slotA.IsEquipped;
+        slotA.AssignSlotItem(slotB.ItemData, slotB.ItemCount, slotB.IsEquipped);
+        slotB.AssignSlotItem(tempData, tempCount, tempEquip);
     }
 
 
@@ -450,6 +451,32 @@ public class Inventory
         }
 
         return result;
+    }
+
+    /// <summary>
+    /// 인벤토리에 있는 같은 종류의 아이템을 최대한 합치는 작업을 하는 함수
+    /// </summary>
+    public void MergeItems()
+    {
+        uint count = (uint)slots.Length - 1;
+        for(uint i = 0; i < count; i++)
+        {
+            InvenSlot target = slots[i];
+            for (uint j = count; j > i; j--)
+            {
+                if (target.ItemData == slots[j].ItemData)   // 아이템 종류가 같으면
+                {
+                    MoveItem(j, i); // j에있는것을 i에 넣기
+                    if (!slots[j].IsEmpty)
+                    {
+                        // 남은 아이템이 있으면 i의 다음 슬롯에다가 교체 해둔다
+                        SwapSlot(slots[i + 1], slots[j]);
+                        break;
+                    }
+                }
+            }
+
+        }
     }
 
 #if UNITY_EDITOR
