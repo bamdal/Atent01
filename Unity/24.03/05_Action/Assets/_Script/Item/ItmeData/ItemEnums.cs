@@ -9,7 +9,10 @@ public enum ItemCode
 {
     Ruby = 0,
     Emerald = 1,
-    Sapphire = 2
+    Sapphire = 2,
+    CopperCoin = 3,
+    SilverCoin = 4,
+    GoldCoin = 5
 
 }
 

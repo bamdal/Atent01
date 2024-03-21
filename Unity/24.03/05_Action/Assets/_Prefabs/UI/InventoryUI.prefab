@@ -33,12 +33,12 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6850819939116390864}
-  - {fileID: 2641464505437560309}
   - {fileID: 2988111898440132474}
   - {fileID: 1067463453441545255}
   - {fileID: 6664941630513372268}
   - {fileID: 5135745596758834953}
   - {fileID: 1375913699761721}
+  - {fileID: 2641464505437560309}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
@@ -104,9 +104,9 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5990981037068911546}
   m_Enabled: 1
-  m_Alpha: 1
-  m_Interactable: 1
-  m_BlocksRaycasts: 1
+  m_Alpha: 0
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
 --- !u!1001 &237843679499173482
 PrefabInstance:

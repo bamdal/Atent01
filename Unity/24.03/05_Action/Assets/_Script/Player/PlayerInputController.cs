@@ -15,8 +15,18 @@ public class PlayerInputController : MonoBehaviour
     /// 이동 입력 전달하는 델리게이트(파라메터 : 이동방향,true면 눌렀다)
     /// </summary>
     public Action<Vector2,bool> onMove;
+
+    /// <summary>
+    /// 이동 모드 변경 입력을 전달하는 델리게이트
+    /// </summary>
     public Action onMoveModeChange;
+
+    /// <summary>
+    /// 공격을 알리는 델리게이트
+    /// </summary>
     public Action onAttack;
+
+    public Action onItemPickup;
 
     private void Awake()
     {
@@ -30,6 +40,7 @@ public class PlayerInputController : MonoBehaviour
         inputActions.Player.Move.canceled += OnMove;
         inputActions.Player.MoveModeChange.performed += OnMoveModeChange;
         inputActions.Player.Attack.performed += OnAttack;
+        inputActions.Player.Pickup.performed += OnPickup;
 
     }
 
@@ -37,6 +48,7 @@ public class PlayerInputController : MonoBehaviour
 
     private void OnDisable()
     {
+        inputActions.Player.Pickup.performed -= OnPickup;
         inputActions.Player.Attack.performed -= OnAttack;
         inputActions.Player.MoveModeChange.performed -= OnMoveModeChange;
         inputActions.Player.Move.canceled -= OnMove;
@@ -72,5 +84,8 @@ public class PlayerInputController : MonoBehaviour
         onAttack?.Invoke();
        
     }
-
+    private void OnPickup(InputAction.CallbackContext context)
+    {
+        onItemPickup?.Invoke(); 
+    }
 }

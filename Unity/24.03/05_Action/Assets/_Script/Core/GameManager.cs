@@ -11,6 +11,9 @@ public class GameManager : Singleton<GameManager>
 
     public ItemDataManager ItemData => itemDataManager;
 
+    InventoryUI inventoryUI;
+
+    public InventoryUI InventoryUI => inventoryUI;
 
     protected override void OnPreInitialize()
     {
@@ -33,5 +36,6 @@ public class GameManager : Singleton<GameManager>
     protected override void OnInitialize()
     {
         player = FindAnyObjectByType<Player>();
+        inventoryUI = FindAnyObjectByType<InventoryUI>(); // FindAnyObjectByType이 제일 빠름
     }
 }

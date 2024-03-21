@@ -4,6 +4,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Windows;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 public class Player : MonoBehaviour
 {
     /// <summary>
@@ -108,6 +112,34 @@ public class Player : MonoBehaviour
 
     Action<bool> onWeaponEffectEnable;
 
+    /// <summary>
+    /// 아이템을 줏을 수 있는 거리 (아이템을 버릴 수 있는 최대 거리)
+    /// </summary>
+    public float ItemPickupRange = 2.0f;
+
+    /// <summary>
+    /// 플레이어가 가진 인벤토리
+    /// </summary>
+    Inventory inven;
+
+    public Inventory Inventory => inven;
+
+    int money = 0;
+
+    public Action<int> onMoneyChange;
+    public int Money
+    {
+        get => money;
+        set
+        {
+            if(money != value)
+            {
+                money = value;
+                onMoneyChange?.Invoke(money);
+            }
+        }
+    }
+
     private void Awake()
     {
         weaponParent = GameObject.Find("weapon_r");
@@ -121,13 +153,17 @@ public class Player : MonoBehaviour
         inputController.onMove += OnMoveInput;
         inputController.onMoveModeChange += OnMoveModeChangeInput;
         inputController.onAttack += OnAttackInput;
-
+        inputController.onItemPickup += OnItemPickInput;
 
     }
 
     private void Start()
     {
-  
+        inven = new Inventory(this);    // itemDataManager가 게임매니저에 있어서 반드시 start에 있어야함
+        if(GameManager.Instance.InventoryUI != null)
+        {
+            GameManager.Instance.InventoryUI.InitializeInventory(Inventory);    // 인벤토리와 내 UI를 연결
+        }
 
         Weapon weapon = weaponParent.GetComponentInChildren<Weapon>();
         onWeaponEffectEnable = weapon.EffectEnable;
@@ -247,5 +283,43 @@ public class Player : MonoBehaviour
     {
         onWeaponEffectEnable?.Invoke(isShow);
     }
+
+    /// <summary>
+    /// 주변에 있는 아이템을 습득하는 함수
+    /// </summary>
+    private void OnItemPickInput()
+    {
+        // 주변에 있는 Item 레이어의 콜라이더 전부 찾기
+        Collider[] itemColliders = Physics.OverlapSphere(transform.position, ItemPickupRange, LayerMask.GetMask("Item"));
+        foreach (Collider collider in itemColliders)
+        {
+            ItemObject item = collider.GetComponent<ItemObject>();
+
+            IConsumable consumItem = item.ItemData as IConsumable;
+            if (consumItem == null)
+            {
+                // 일반 아이템
+                if (Inventory.AddItem(item.ItemData.code))  // 인벤토리 추가 시도
+                {
+                    item.End();                      // 아이템 제거
+                }
+
+            }
+            else
+            {
+                consumItem.Consume(gameObject);
+                item.End();
+            }
+        }
+    }
+
+
+#if UNITY_EDITOR
+    private void OnDrawGizmos()
+    {
+        Handles.color = Color.blue;
+        Handles.DrawWireDisc(transform.position, Vector3.up, ItemPickupRange,2.0f);
+    }
+#endif
 }
 
