@@ -12,7 +12,9 @@ public enum ItemCode
     Sapphire = 2,
     CopperCoin = 3,
     SilverCoin = 4,
-    GoldCoin = 5
+    GoldCoin = 5,
+    Food = 6,
+    Drink =7
 
 }
 
