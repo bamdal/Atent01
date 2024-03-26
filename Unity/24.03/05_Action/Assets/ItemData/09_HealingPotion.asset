@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5946d2a675dc5084d98a73a9f9515ed2, type: 3}
+  m_Name: 09_HealingPotion
+  m_EditorClassIdentifier: 
+  code: 8
+  itemName: "\uD790\uB9C1\uD3EC\uC158"
+  itemDescription: "\uBE68\uAC04 \uC0C9\uC18C \uD0C4 \uBB3C"
+  itemIcon: {fileID: 21300000, guid: 7b3876a2b72c44540a4bbd5aaba9e506, type: 3}
+  price: 1000
+  maxStackCount: 5
+  healRatio: 0.3
+  tickRegen: 4
+  tickInterval: 0.4
+  tickCount: 5

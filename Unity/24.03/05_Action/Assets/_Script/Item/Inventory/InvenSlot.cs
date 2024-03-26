@@ -79,7 +79,7 @@ public class InvenSlot
     public bool IsEquipped
     {
         get => isEquipped;
-        private set
+        set
         {
             isEquipped = value;
             onSlotItemChange?.Invoke();
@@ -191,7 +191,15 @@ public class InvenSlot
     /// <param name="target">아이템의 효과를 받을 대상</param>
     public void UseItem(GameObject target)
     {
-
+        IUsable usable = ItemData as IUsable;   // IUsable을 상속받았는지 확인
+        if (usable != null)                     // 상속 받았으면
+        {
+            if (usable.Use(target))             // 아이템 사용 시도
+            {
+                DecreaseSlotItem();             // 성공적으로 사용했으면 개수 1개 감소
+            }
+            
+        }
     }
 
     /// <summary>
@@ -200,7 +208,11 @@ public class InvenSlot
     /// <param name="target">아이템을 장비할 대상</param>
     public void EquipItem(GameObject target)
     {
-
+        IEquipable equipable = ItemData as IEquipable;
+        if (equipable != null)
+        {
+            equipable.ToggleEquip(target,this);
+        }
     }
 }
 

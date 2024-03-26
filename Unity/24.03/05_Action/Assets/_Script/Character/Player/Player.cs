@@ -8,7 +8,7 @@ using UnityEngine.Windows;
 using UnityEditor;
 #endif
 
-public class Player : MonoBehaviour, IHealth, IMana
+public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget
 {
     /// <summary>
     /// 걷는 속도
@@ -74,12 +74,12 @@ public class Player : MonoBehaviour, IHealth, IMana
     /// <summary>
     /// 무기 장비할 트랜스폼
     /// </summary>
-    GameObject weaponParent;
+    Transform weaponParent;
 
     /// <summary>
     /// 방패 장비할 트랜스폼
     /// </summary>
-    GameObject shieldParent;
+    Transform shiledParent;
 
     PlayerInputController inputController;
 
@@ -228,10 +228,46 @@ public class Player : MonoBehaviour, IHealth, IMana
     /// </summary>
     public Action<float> onManaChange { get; set; }
 
+    /// <summary>
+    /// 장비 아이템의 부위별 장비 사태(장착한 아이템이 있는 슬롯을 가지고 있음 , null이면 장비되어있지 않음)
+    /// </summary>
+    InvenSlot[] partsSlot;
+
+    /// <summary>
+    /// 장비 아이템 부위별 슬롯 확인 용 인덱스
+    /// </summary>
+    /// <param name="part">확인할 종류</param>
+    /// <returns>null이면 장비되어 있지 않음. null이 아니면 해당 슬롯에 있는 아이템이 장비되어 있음</returns>
+    public InvenSlot this[EquipType part]
+    {
+        get => partsSlot[(int)part];
+        set
+        {
+            partsSlot[(int)part] = value;
+        }
+    }
+
+
+
     private void Awake()
     {
-        weaponParent = GameObject.Find("weapon_r");
-        shieldParent = GameObject.Find("weapon_l"); 
+        Transform child = transform.GetChild(2);    // root
+        child = child.GetChild(0);                  // pelvis
+        child = child.GetChild(0);                  // spine1
+        child = child.GetChild(0);                  // spine2
+
+        Transform spine3 = child.GetChild(0);       // spine3
+        weaponParent = spine3.GetChild(2);          // clavicle_r
+        weaponParent = weaponParent.GetChild(1);    // upperarm_r
+        weaponParent = weaponParent.GetChild(0);    // lowerarm_r
+        weaponParent = weaponParent.GetChild(0);    // hand_r
+        weaponParent = weaponParent.GetChild(2);    // weapon_r
+
+        shiledParent = spine3.GetChild(1);          // clavicle_l
+        shiledParent = shiledParent.GetChild(1);    // upperarm_l
+        shiledParent = shiledParent.GetChild(0);    // lowerarm_l
+        shiledParent = shiledParent.GetChild(0);    // hand_l
+        shiledParent = shiledParent.GetChild(2);    // weapon_l
 
 
         animator = GetComponent<Animator>();
@@ -242,6 +278,8 @@ public class Player : MonoBehaviour, IHealth, IMana
         inputController.onMoveModeChange += OnMoveModeChangeInput;
         inputController.onAttack += OnAttackInput;
         inputController.onItemPickup += OnItemPickInput;
+
+        partsSlot = new InvenSlot[Enum.GetValues(typeof(EquipType)).Length];    // Enum을 Enum.GetValues로 배열로 가져와서 개수를 센다
 
     }
 
@@ -359,8 +397,9 @@ public class Player : MonoBehaviour, IHealth, IMana
     /// <param name="isShow"></param>
     public void ShowWeaponAndShield(bool isShow = true)
     {
-        weaponParent.transform.GetChild(0).gameObject.SetActive(isShow);
-        shieldParent.transform.GetChild(0).gameObject.SetActive(isShow);
+
+        weaponParent.gameObject.SetActive(isShow);
+        shiledParent.gameObject.SetActive(isShow);
     }
 
     /// <summary>
@@ -515,8 +554,66 @@ public class Player : MonoBehaviour, IHealth, IMana
 
     }
 
+    /// <summary>
+    /// 플레이어가 아이템을 장비하는 함수
+    /// </summary>
+    /// <param name="part">장비할 부위</param>
+    /// <param name="slot">장비할 아이템이 들어있는 슬롯</param>
+    public void EquipItem(EquipType part, InvenSlot slot)
+    {
+        ItemData_Equip equip = slot.ItemData as ItemData_Equip;
+        if(equip != null)   // 장비 가능한 아이템인지 확인
+        {
+            Transform partParent = GetEquipParentTransform(part);
+            GameObject obj = Instantiate(equip.equipPrefab,partParent); // 아이템을 생성하고
+            partsSlot[(int)part] = slot;    // 기록하고 
+            this[part] = slot;
+            slot.IsEquipped = true;         // 장비했다고 표시
+        }
+    }
 
+    /// <summary>
+    /// 플레이어가 장비를 해제하는 함수
+    /// </summary>
+    /// <param name="part">아이템을 장비 해제할 부위</param>
+    public void UnEquipItem(EquipType part)
+    {
+        InvenSlot slot = partsSlot[(int)part];
+        if (slot != null)   // 장비 되어 있는 위치인지 확인
+        {
+            Transform partParent = GetEquipParentTransform(part);   // 해당 부위 부모 아래쪽에 있는 모든 오브젝트 삭제
+            while (partParent.childCount > 0)
+            {
+                Transform child = partParent.GetChild(0);
+                child.SetParent(null);
+                Destroy(child.gameObject);
+            }
+            slot.IsEquipped = false;        // 해제했다고 표시
+            this[part] = null; 
+            partsSlot[(int)part] = null;    // 슬롯 비우기
+        }
 
+    }
+
+    /// <summary>
+    /// 장비가 붙을 부모 트랜스폰 찾는 함수
+    /// </summary>
+    /// <param name="part">장비 종류</param>
+    /// <returns>장비의 부모 트랜스폼</returns>
+    public Transform GetEquipParentTransform(EquipType part)
+    {
+        Transform result = null;
+        switch (part)
+        {
+            case EquipType.Weapon:
+                result = weaponParent;
+                break;
+            case EquipType.Shield:
+                result = shiledParent;
+                break;
+        }
+        return result;
+    }
 
 #if UNITY_EDITOR
     private void OnDrawGizmos()
@@ -524,6 +621,8 @@ public class Player : MonoBehaviour, IHealth, IMana
         Handles.color = Color.blue;
         Handles.DrawWireDisc(transform.position, Vector3.up, ItemPickupRange,2.0f);
     }
+
+
 
 
 

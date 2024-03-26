@@ -109,6 +109,7 @@ public class InvenSlotUI : SlotUI_Base, IBeginDragHandler, IEndDragHandler, IDra
     public void OnPointerClick(PointerEventData eventData)
     {
         onClick?.Invoke(Index);
+    
     }
 
     public void OnPointerEnter(PointerEventData eventData)

@@ -45,7 +45,7 @@ public class Test_PlayerHP : TestBase
     }
     protected override void OnTest5(InputAction.CallbackContext context)
     {
-        Factory.Instance.MakeItem(ItemCode.Drink);
+        Factory.Instance.MakeItem(ItemCode.ManaPotion);
     }
 }
 

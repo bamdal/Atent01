@@ -189,6 +189,7 @@ public class InventoryUI : MonoBehaviour
     /// <param name="index">클릭한 슬롯의 인덱스</param>
     private void OnSlotClick(uint index)
     {
+        Debug.Log("클릭");
         if (TempSlotUI.InvenSlot.IsEmpty)
         {
             bool isShiftPress = (Keyboard.current.shiftKey.ReadValue() > 0);
@@ -196,11 +197,21 @@ public class InventoryUI : MonoBehaviour
             {
                 // 쉬프트가 눌려져 있으면 아이템 분리창 열기
                 OnItemDividerOpen(index);
-
+       
             }
             else
             {
                 // 쉬프트가 안눌려진 상태면 아이템 사용 or 아이템 장비
+                if (inven[index].ItemData is IUsable)
+                {
+                    inven[index].UseItem(Owner.gameObject);
+                }
+
+                if (inven[index].ItemData is IEquipable)
+                {
+                    inven[index].EquipItem(Owner.gameObject);
+                }
+             
             }
         }
         else 

@@ -313,7 +313,7 @@ Transform:
   m_GameObject: {fileID: 529739105272353958}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7093532, y: 0, z: 0, w: 0.7048532}
-  m_LocalPosition: {x: -0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2357,9 +2357,9 @@ Transform:
   m_Children:
   - {fileID: 2904603574403193491}
   - {fileID: 913764501968598164}
+  - {fileID: 7304335454121833422}
   - {fileID: 9113269378320608537}
   - {fileID: 8847452247031819795}
-  - {fileID: 7304335454121833422}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &531202791594899404
@@ -2374,9 +2374,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8192b04192fd7704ea74ab69ef9d5716, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkSpeed: 3
-  runSpeed: 5
-  turnSpeed: 10
 --- !u!114 &3188805243911221485
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2389,6 +2386,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13ea2e6ca006af6488f34c8659031fb1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  walkSpeed: 3
+  runSpeed: 5
+  maxCoolTime: 0.3
+  turnSpeed: 10
+  ItemPickupRange: 2
 --- !u!95 &1416976486399525621
 Animator:
   serializedVersion: 5

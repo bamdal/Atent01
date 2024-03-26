@@ -45,6 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5fb17c95c98d7e4f942500c398bbc7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  noisePower: 0.5
 --- !u!1001 &4056981061047735812
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -53,6 +54,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6614946704106888017}
     m_Modifications:
+    - target: {fileID: 900606807471669548, guid: 985cafc4a710a6445a1a0cadbea8035a,
+        type: 3}
+      propertyPath: poolSize
+      value: 16
+      objectReference: {fileID: 0}
     - target: {fileID: 3841834999112401507, guid: 985cafc4a710a6445a1a0cadbea8035a,
         type: 3}
       propertyPath: m_LocalPosition.x

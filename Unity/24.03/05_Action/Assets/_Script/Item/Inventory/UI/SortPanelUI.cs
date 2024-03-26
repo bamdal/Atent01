@@ -18,6 +18,7 @@ public class SortPanelUI : MonoBehaviour
         run.onClick.AddListener(() =>
         {
             onSortRequest?.Invoke((ItemSortBy)dropdown.value);
+            
         });
 
     }
