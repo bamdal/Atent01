@@ -289,16 +289,42 @@ public class Inventory
     /// <summary>
     /// 슬롯 스왑용 함수
     /// </summary>
-    /// <param name="slotA"></param>
-    /// <param name="slotB"></param>
-    void SwapSlot(InvenSlot slotA, InvenSlot slotB)
+    /// <param name="from"></param>
+    /// <param name="to"></param>
+    void SwapSlot(InvenSlot from, InvenSlot to)
     {
-        ItemData tempData = slotA.ItemData;
-        uint tempCount = slotA.ItemCount;
+        ItemData tempData = from.ItemData;
+        uint tempCount = from.ItemCount;
+        bool tempEquip = from.IsEquipped;
 
-        bool tempEquip = slotA.IsEquipped;
-        slotA.AssignSlotItem(slotB.ItemData, slotB.ItemCount, slotB.IsEquipped);
-        slotB.AssignSlotItem(tempData, tempCount, tempEquip);
+        from.AssignSlotItem(to.ItemData, to.ItemCount, to.IsEquipped);
+        if (from.IsEquipped)
+        {
+            ItemData_Equip equipData = from.ItemData as ItemData_Equip;
+            if (from == TempSlot)
+            {
+                Owner[equipData.EquipType] = slots[TempSlot.FromIndex];
+            }
+            else
+            {
+                Owner[equipData.EquipType] = from;  // 장비한 슬롯 다시 재설정
+
+            }
+        }
+        to.AssignSlotItem(tempData, tempCount, tempEquip);
+        if (to.IsEquipped)
+        {
+            ItemData_Equip equipData = to.ItemData as ItemData_Equip;
+            if (to == TempSlot)
+            {
+                Owner[equipData.EquipType] = slots[TempSlot.FromIndex];
+            } 
+            else
+            {
+                Owner[equipData.EquipType] = to;  // 장비한 슬롯 다시 재설정
+
+            }
+        }
     }
 
 

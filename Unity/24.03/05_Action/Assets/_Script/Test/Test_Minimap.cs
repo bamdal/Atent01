@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Test_Equip : TestBase
+public class Test_Minimap : TestBase
 {
 #if UNITY_EDITOR
 
@@ -13,6 +13,7 @@ public class Test_Equip : TestBase
         Factory.Instance.MakeItem(ItemCode.OldSword);
         Factory.Instance.MakeItem(ItemCode.KiteShield);
         Factory.Instance.MakeItem(ItemCode.RoundShield);
+        Factory.Instance.MakeItems(ItemCode.HealingPotion,10);
     }
 #endif
 }

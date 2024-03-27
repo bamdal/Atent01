@@ -19,7 +19,9 @@ public enum ItemCode : byte // 256 -> 2^8 개수 제한
     ManaPotion = 9,
     IronSword = 10,
     SilverSword = 11,
-    OldSword = 12
+    OldSword = 12,
+    KiteShield = 13,
+    RoundShield = 14
 
 
 }

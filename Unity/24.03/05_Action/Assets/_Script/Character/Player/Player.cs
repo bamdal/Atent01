@@ -115,6 +115,11 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget
     Action<bool> onWeaponEffectEnable;
 
     /// <summary>
+    /// 무기 콜라이더를 켜고 끄는 신호를 보내는 델리게이트
+    /// </summary>
+    Action<bool> onWeaponBladEnable;
+
+    /// <summary>
     /// 아이템을 줏을 수 있는 거리 (아이템을 버릴 수 있는 최대 거리)
     /// </summary>
     public float ItemPickupRange = 2.0f;
@@ -246,7 +251,16 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget
             partsSlot[(int)part] = value;
         }
     }
+    // 플레이어 공격력 방어력
+    float baseAttackPower = 5.0f;
+    float baseDefencePower = 1.0f;
+    float attackPower = 5.0f;
 
+    public float AttackPower => attackPower;
+
+    float defencePower = 1.0f;
+
+    public float DefencePower => defencePower;
 
 
     private void Awake()
@@ -291,8 +305,8 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget
             GameManager.Instance.InventoryUI.InitializeInventory(Inventory);    // 인벤토리와 내 UI를 연결
         }
 
-        Weapon weapon = weaponParent.GetComponentInChildren<Weapon>();
-        onWeaponEffectEnable = weapon.EffectEnable;
+        //Weapon weapon = weaponParent.GetComponentInChildren<Weapon>();
+        //onWeaponEffectEnable = weapon.EffectEnable;
 
     }
 
@@ -566,9 +580,24 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget
         {
             Transform partParent = GetEquipParentTransform(part);
             GameObject obj = Instantiate(equip.equipPrefab,partParent); // 아이템을 생성하고
-            partsSlot[(int)part] = slot;    // 기록하고 
             this[part] = slot;
             slot.IsEquipped = true;         // 장비했다고 표시
+
+            switch (part)
+            {
+                case EquipType.Weapon:
+                    Weapon weapon = obj.GetComponentInChildren<Weapon>();
+                    onWeaponEffectEnable = weapon.EffectEnable;
+                    onWeaponBladEnable = weapon.BladeColliderEnable;
+
+                    ItemData_Weapon weaponData = equip as ItemData_Weapon;
+                    attackPower = baseAttackPower + weaponData.attackPower;
+                    break;
+                case EquipType.Shield:
+                    ItemData_Shield shieldData = equip as ItemData_Shield;
+                    defencePower = baseDefencePower + shieldData.defencePower;
+                    break;
+            }
         }
     }
 
@@ -589,8 +618,19 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget
                 Destroy(child.gameObject);
             }
             slot.IsEquipped = false;        // 해제했다고 표시
-            this[part] = null; 
-            partsSlot[(int)part] = null;    // 슬롯 비우기
+            this[part] = null;
+
+            switch (part)
+            {
+                case EquipType.Weapon:
+                    onWeaponEffectEnable = null;
+                    onWeaponBladEnable = null;
+                    attackPower = baseAttackPower;
+                    break;
+                case EquipType.Shield:
+                    defencePower = baseDefencePower;
+                    break;
+            }
         }
 
     }
@@ -613,6 +653,22 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget
                 break;
         }
         return result;
+    }
+
+    /// <summary>
+    /// 무기의 콜라이더를 켜라는 신호를 보내는 함수 (애니메이션 이벤트용)
+    /// </summary>
+    void WeaponBladeEnable()
+    {
+        onWeaponBladEnable?.Invoke(true);
+    }
+
+    /// <summary>
+    /// 무기의 콜라이더를 끄라는 신호를 보내는 함수 (애니메이션 이벤트용)
+    /// </summary>
+    void WeaponBladeDisable()
+    {
+        onWeaponBladEnable?.Invoke(false);
     }
 
 #if UNITY_EDITOR
