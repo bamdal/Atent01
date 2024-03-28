@@ -70,6 +70,7 @@ public class Inventory
         for (uint i = 0; i < size; i++)
         {
             slots[i] = new InvenSlot(i);
+            slots[i].onItemEquip += owner.OnItemEquip;
         }
         tempSlot = new InvenTempSlot(tempSlotIndex);
         itemDataManager = GameManager.Instance.ItemData;    // 타이밍 조심 start에서 사용

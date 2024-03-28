@@ -57,6 +57,13 @@ public class TempSlotUI : SlotUI_Base
             Ray ray = Camera.main.ScreenPointToRay(screenPosition);
             if (Physics.Raycast(ray, out RaycastHit hitInfo, 1000.0f, LayerMask.GetMask("Ground")))
             {
+                // 장비중인 아이템이면 버리기 전에 장비 해제
+                if (InvenSlot.IsEquipped)
+                {
+                    ItemData_Equip itemData = InvenSlot.ItemData as ItemData_Equip;
+                    owner.UnEquipItem(itemData.EquipType);
+                }
+
                 // Ground레이어에 있는 콜라이더랑 체크
                 Ray MakeY = new Ray(new Vector3(hitInfo.point.x, 999, hitInfo.point.z), -Vector3.up);
                 Vector3 dropPosition = hitInfo.point;

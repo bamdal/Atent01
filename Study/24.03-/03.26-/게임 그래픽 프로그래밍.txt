@@ -37,10 +37,20 @@ Unity 셰이더용 언어
  - 지오메트리 셰이더
   - 정점 셰이더가 수행된 이후 추가적으로 점, 선, 삼각형 같은 프리미티브를 생성
 
+랜더링 
+ - 3D월드를 이미지로 변환하는 작업
 
+랜더링 파이프라인
+ - 3D 오브젝트들로 구성된 월드를 디스플레이에서 출력하기 위해 2차원 래스터 이미지로 변경하는 단계적인 작업
 
+Built-in(내장) : 기존의 유니티 랜더링 파이프라인
+SRP(Scriptable Rendering Pipeline) - URP, HDRP
 
+Forward Rendering : 고전적인 랜더링 (Diffuse - 난반사, Specular, Ambient 로 색표현)
+  -> 조명이 개수에 비례해서 부하가 n승으로 늘어남, 매우 안정적
+Physically Based Rendering : 물리기반 랜더링(Albedo,Metalic,Smoothness)
 
+post-processing - 랜더링후 이미지 후처리 역할
 
-
-
+LOD(Level of Detail)
+ - 3D오브젝트를 표현할 때 가까이 있으면 하이 폴리곤 모델을 사용하고 멀어질수록 로우 폴리곤 모델을 사용하는 기법
