@@ -8,7 +8,7 @@ using UnityEngine.Windows;
 using UnityEditor;
 #endif
 
-public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget
+public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget, IBattler
 {
     /// <summary>
     /// 걷는 속도
@@ -172,7 +172,7 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget
                     Die();
                 }
                 hp = Mathf.Clamp(hp, 0, MaxHP);     // 최소 최대 사이로 숫자 유지
-                onHealthChange?.Invoke(hp/MaxHP);   // 델리게이트로 HP변화 알림
+                onHealthChange?.Invoke(hp / MaxHP);   // 델리게이트로 HP변화 알림
                 Debug.Log($"{this.gameObject.name} HP : {hp}");
             }
         }
@@ -205,21 +205,21 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget
     /// </summary>
     float mp = 150.0f;
 
-    public float MP 
+    public float MP
     {
         get => mp;
         set
-        { 
+        {
             if (IsAlive)
             {
                 mp = value;
                 mp = Mathf.Clamp(mp, 0, MaxMP);
-                onManaChange?.Invoke(mp/MaxMP);
+                onManaChange?.Invoke(mp / MaxMP);
                 Debug.Log($"{this.gameObject.name} Mana {mp}");
             }
 
         }
-    }          
+    }
 
     /// <summary>
     /// 플레이어의 최대 마나
@@ -300,7 +300,7 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget
     private void Start()
     {
         inven = new Inventory(this);    // itemDataManager가 게임매니저에 있어서 반드시 start에 있어야함
-        if(GameManager.Instance.InventoryUI != null)
+        if (GameManager.Instance.InventoryUI != null)
         {
             GameManager.Instance.InventoryUI.InitializeInventory(Inventory);    // 인벤토리와 내 UI를 연결
         }
@@ -379,7 +379,7 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget
             coolTime = maxCoolTime;
         }
 
-        
+
 
     }
 
@@ -467,7 +467,7 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget
     /// <param name="duration">전체 회복시간</param>
     public void HealthRegenerate(float totalRegen, float duration)
     {
-        StartCoroutine(RegenCoroutine(totalRegen, duration,true));
+        StartCoroutine(RegenCoroutine(totalRegen, duration, true));
     }
 
 
@@ -483,7 +483,7 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget
     /// <param name="totalTickCount">전체 틱 수</param>
     public void HealthRegenerateByTick(float tickRegen, float tickInterval, uint totalTickCount)
     {
-        StartCoroutine(RegenByTickCoroutine(tickRegen, tickInterval, totalTickCount,true));
+        StartCoroutine(RegenByTickCoroutine(tickRegen, tickInterval, totalTickCount, true));
     }
 
     /// <summary>
@@ -493,7 +493,7 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget
     /// <param name="duration">전체 회복시간</param>
     public void ManaRegenerate(float totalRegen, float duration)
     {
-        StartCoroutine(RegenCoroutine(totalRegen, duration,false));
+        StartCoroutine(RegenCoroutine(totalRegen, duration, false));
     }
 
 
@@ -506,7 +506,7 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget
     /// <param name="totalTickCount">전체 틱 수</param>
     public void ManaRegenerateByTick(float tickRegen, float tickInterval, uint totalTickCount)
     {
-        StartCoroutine(RegenByTickCoroutine(tickRegen, tickInterval, totalTickCount,false));
+        StartCoroutine(RegenByTickCoroutine(tickRegen, tickInterval, totalTickCount, false));
     }
 
     /// <summary>
@@ -576,10 +576,10 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget
     public void EquipItem(EquipType part, InvenSlot slot)
     {
         ItemData_Equip equip = slot.ItemData as ItemData_Equip;
-        if(equip != null)   // 장비 가능한 아이템인지 확인
+        if (equip != null)   // 장비 가능한 아이템인지 확인
         {
             Transform partParent = GetEquipParentTransform(part);
-            GameObject obj = Instantiate(equip.equipPrefab,partParent); // 아이템을 생성하고
+            GameObject obj = Instantiate(equip.equipPrefab, partParent); // 아이템을 생성하고
             this[part] = slot;
             slot.IsEquipped = true;         // 장비했다고 표시
 
@@ -588,7 +588,7 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget
                 case EquipType.Weapon:
                     Weapon weapon = obj.GetComponentInChildren<Weapon>();
                     onWeaponEffectEnable = weapon.EffectEnable;
-                    onWeaponBladEnable = weapon.BladeColliderEnable;
+                    onWeaponBladEnable = weapon.BladeVolumeEnable;
 
                     ItemData_Weapon weaponData = equip as ItemData_Weapon;
                     attackPower = baseAttackPower + weaponData.attackPower;
@@ -681,12 +681,29 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget
         this[equip.EquipType] = slot;
     }
 
+    public void Attack(IBattler target)
+    {
+        target.Defence(AttackPower);
+    }
+
+    public void Defence(float damage)
+    {
+        if (IsAlive)
+        {
+            HP -= Mathf.Max(0, damage - DefencePower);   // 0 이하로는 데미지가 내려가지 않는다
+
+        }
+
+    }
+
+
 #if UNITY_EDITOR
     private void OnDrawGizmos()
     {
         Handles.color = Color.blue;
-        Handles.DrawWireDisc(transform.position, Vector3.up, ItemPickupRange,2.0f);
+        Handles.DrawWireDisc(transform.position, Vector3.up, ItemPickupRange, 2.0f);
     }
+
 
 
 

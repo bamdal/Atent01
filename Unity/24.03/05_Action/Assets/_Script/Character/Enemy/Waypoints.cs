@@ -8,30 +8,43 @@ using UnityEngine;
 public class Waypoints : MonoBehaviour
 {
 
-    public Transform Current
-    {
-        get
-        {
-            Transform result = waypoint[index];
-            NextToIndex();
-            Debug.Log(result);
-            return result;
-        }
+    /// <summary>
+    /// 웨이포인트의 지점들
+    /// </summary>
+    Transform[] children;
 
-    }
+    /// <summary>
+    /// 다음 목적지의 인덱스
+    /// </summary>
+    int index = 0;
 
-    uint index = 0;
-    public Transform[] waypoint;
+    /// <summary>
+    /// 다음 목적지의 위치
+    /// </summary>
+    public Vector3 NextTarget => children[index].position;
+
+
+
 
     private void Awake()
     {
-        
+        // 자식들을 전부 웨이포인트로 사용
+        children = new Transform[transform.childCount];
+        for(int i = 0; i < children.Length; i++)
+        {
+            children[i] = transform.GetChild(i);
+        }
     }
 
-
-    void NextToIndex()
+    /// <summary>
+    /// 다음 웨이포인트를 설정하는 함수
+    /// </summary>
+    public void StepNextWaypoint()
     {
         index++;
-        index %= (uint)waypoint.Length;
+        index %= children.Length;
     }
+
+
+
 }

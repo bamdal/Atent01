@@ -5,7 +5,8 @@ using UnityEngine;
 
 public enum PoolObjectType
 {
-    Item
+    Item,
+    HitEffect
 }
 
 public class Factory : Singleton<Factory>
@@ -16,6 +17,7 @@ public class Factory : Singleton<Factory>
     public float noisePower = 0.5f;
 
     ItemPool itemPool;
+    HitEffectPool hitEffectPool;
 
     protected override void OnInitialize()
     {
@@ -27,6 +29,9 @@ public class Factory : Singleton<Factory>
         itemPool = GetComponentInChildren<ItemPool>(true);
         if(itemPool != null )
             itemPool.Initialize();
+        hitEffectPool = GetComponentInChildren<HitEffectPool>(true);
+        if (hitEffectPool != null )
+            hitEffectPool.Initialize();
     }
 
     public GameObject GetObject(PoolObjectType type, Vector3? position = null, Vector3? euler = null)
@@ -36,6 +41,9 @@ public class Factory : Singleton<Factory>
         {
             case PoolObjectType.Item:
                 result = itemPool.GetObject(position, euler).gameObject;
+                break;
+            case PoolObjectType.HitEffect:
+                result = hitEffectPool.GetObject(position,euler).gameObject;
                 break;
             default:
                 break;
@@ -123,6 +131,16 @@ public class Factory : Singleton<Factory>
         }
 
         return items;
+    }
+
+    /// <summary>
+    /// 히트 이펙트를 생성하는 함수
+    /// </summary>
+    /// <param name="position">생성될 위치</param>
+    /// <returns>소환된 오브젝트</returns>
+    public GameObject GetHitEffect(Vector3? position)
+    {
+        return hitEffectPool.GetObject(position).gameObject;
     }
 }
 

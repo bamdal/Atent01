@@ -3,9 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 public class Enemy : MonoBehaviour, IBattler, IHealth
 {
+    /// <summary>
+    /// 적이 가질수 있는 상태의종류
+    /// </summary>
     protected enum EnemyState
     {
         Wait = 0,   // 대기
@@ -15,6 +21,9 @@ public class Enemy : MonoBehaviour, IBattler, IHealth
         Dead        // 사망
     }
 
+    /// <summary>
+    /// 적의 현재 상태
+    /// </summary>
     EnemyState state = EnemyState.Patrol;
 
     /// <summary>
@@ -32,7 +41,7 @@ public class Enemy : MonoBehaviour, IBattler, IHealth
                 {
                     case EnemyState.Wait:
                         // 일정 시간 대기
-                        Debug.Log("대기");
+                        //Debug.Log("대기");
                         agent.isStopped = true;                 // agent 정지 
                         agent.velocity = Vector3.zero;          // agnet에 남아있던 운동량 제거
                         animator.SetTrigger(anim_StopToHash);   // 애니메이션 정지
@@ -40,13 +49,17 @@ public class Enemy : MonoBehaviour, IBattler, IHealth
                         onStateUpdate = Update_Wait;            // 대기 상태용 업데이트 함수
                         break;
                     case EnemyState.Patrol:
-                        Debug.Log("패트롤");
-                        agent.isStopped = false;
-                        agent.destination = waypointTarget.position;
-                        animator.SetTrigger(anim_MoveToHash);
-                        onStateUpdate = Update_Patrol;
+                        //Debug.Log("패트롤");
+                        agent.isStopped = false;                        // agnet다시 켜기
+                        agent.SetDestination(waypoints.NextTarget);     // 목적지 지정(웨이포인트 지점)
+                        animator.SetTrigger(anim_MoveToHash);           // 애니메이션 재생
+                        onStateUpdate = Update_Patrol;                  // 추적용 업데이트 함수
                         break;
                     case EnemyState.Chase:
+                        agent.isStopped = false;                        // agnet다시 켜기
+            
+                        animator.SetTrigger(anim_MoveToHash);           // 애니메이션 재생
+
                         onStateUpdate = Update_Chase;
                         break;
                     case EnemyState.Attack:
@@ -80,7 +93,7 @@ public class Enemy : MonoBehaviour, IBattler, IHealth
         set
         {
             waitTimer = value;
-            
+
             if (waitTimer < 0.0f)
             {
                 State = EnemyState.Patrol;
@@ -98,10 +111,6 @@ public class Enemy : MonoBehaviour, IBattler, IHealth
     /// </summary>
     public Waypoints waypoints;
 
-    /// <summary>
-    /// 이동할 웨이포인트의 트랜스폼
-    /// </summary>
-    protected Transform waypointTarget = null;
 
     /// <summary>
     /// 원거리 시야범위
@@ -190,9 +199,9 @@ public class Enemy : MonoBehaviour, IBattler, IHealth
     /// <summary>
     /// HP 변경시 실행되는 델리게이트
     /// </summary>
-    public Action<float> onHealthChange { get ; set ; }
+    public Action<float> onHealthChange { get; set; }
 
-    
+
     /// <summary>
     /// 살았는지 죽었는지 확인하기 위한 프로퍼티
     /// </summary>
@@ -208,7 +217,7 @@ public class Enemy : MonoBehaviour, IBattler, IHealth
     {
         public ItemCode code;   //아이템 종류
 
-        [Range(0,1)]
+        [Range(0, 1)]
         public float dropRatio; // 드랍 확률(1.0f -> 100%)
     }
 
@@ -248,41 +257,63 @@ public class Enemy : MonoBehaviour, IBattler, IHealth
     private void Start()
     {
         agent.speed = moveSpeed;
-        if (waypoints == null)
-        {
-            waypointTarget = transform;
-        }
-        else
-        {
-            waypointTarget = waypoints.Current;
-        }
 
         State = EnemyState.Wait;
+        animator.ResetTrigger(anim_StopToHash); // Wait 상태로 설정하면서 Stop트리거가 쌓인것을 제거하기 위해 필요
+
     }
 
     private void Update()
     {
         onStateUpdate();
 
-
     }
 
+    /// <summary>
+    /// wait 상태용 업데이트 함수
+    /// </summary>
     void Update_Wait()
     {
-        WaitTimer -= Time.deltaTime;
+        if (SearchPlayer())
+        {
+            State = EnemyState.Chase;
+        }
+        else
+        {
+            WaitTimer -= Time.deltaTime;    // 기다리는 시간 감소 0되면 Patrol로 변경
+
+            // 다음 목적지를 바라보게 만들기
+            Quaternion look = Quaternion.LookRotation(waypoints.NextTarget - transform.position);
+            transform.rotation = Quaternion.Slerp(transform.rotation, look, Time.deltaTime * 2);
+        }
+
     }
 
+    /// <summary>
+    /// Patrol 상태용 업데이트 함수
+    /// </summary>
     void Update_Patrol()
     {
-        if (agent.remainingDistance < agent.stoppingDistance)
+        if (SearchPlayer())
         {
-            State = EnemyState.Wait;
-            waypointTarget = waypoints.Current;
+            State = EnemyState.Chase;
+        }
+        else if (agent.remainingDistance <= agent.stoppingDistance)   // 도착하면
+        {
+            waypoints.StepNextWaypoint();        // 웨이포인트 다음지점 설정하고
+            State = EnemyState.Wait;             // wait 상태 변경
         }
     }
     void Update_Chase()
     {
+        if (chaseTarget != null)
+        {
+            agent.SetDestination(chaseTarget.position);
 
+        }else
+        {
+            State = EnemyState.Wait;
+        }
     }
 
     void Update_Attack()
@@ -295,19 +326,101 @@ public class Enemy : MonoBehaviour, IBattler, IHealth
 
     }
 
+    /// <summary>
+    /// 시야 범위안에 플레이어가 있는지 없는지 찾는 함수
+    /// </summary>
+    /// <returns>찾았으면 true, 못찾았으면 false</returns>
+    bool SearchPlayer()
+    {
+        bool result = false;
+        chaseTarget = null;
+
+        // 일정 반경(farSightRange)안에 있는 플레이어 찾기
+        Collider[] colliders = Physics.OverlapSphere(transform.position, farSightRange, LayerMask.GetMask("Player"));
+        if (colliders.Length > 0)
+        {
+            //일정 반경(farSightRange)안에 플레이어가 있다
+            Vector3 playerPos = colliders[0].transform.position;   // 0번이 무조건 플레이어다
+            Vector3 toPlayerDir = playerPos - transform.position;   // 적 -> 플레이어 방향벡터
+            if (toPlayerDir.sqrMagnitude <= nearSightRange * nearSightRange+1f)  // 플레이어가 nearSightRange안쪽에 있다
+            {
+                chaseTarget = colliders[0].transform;
+                result = true;
+            }
+            else
+            {
+                if (IsInSightAngle(toPlayerDir) && IsSightClear(toPlayerDir))   // 시야각안 인지 확인후 적과 플레이어 사이를 가리는 오브젝트가 있는지 확인
+                {
+                    chaseTarget = colliders[0].transform;
+                    result = true;
+                }
+            }
+
+        }
+
+
+        return result;
+    }
+
+    /// <summary>
+    /// 시야각(-sightHalfAngle ~ + sightHalfAngle)안에 플레이어가 있는지 없는지 확인하는 함수
+    /// </summary>
+    /// <param name="toTargetDirection">적에서 대상으로 향하는 방향 벡터</param>
+    /// <returns>시야각 안에 있으면 true, 없으면 false</returns>
+    bool IsInSightAngle(Vector3 toTargetDirection)
+    {
+        // 내적으로 각도 구해서 범위 설정
+        // bool result = false;
+        //float dot = Vector3.Dot(transform.forward.normalized, toTargetDirection.normalized);
+        //float Angle = Mathf.Acos(dot) * Mathf.Rad2Deg;
+        //if (Angle < sightHalfAngle)
+        //{
+        //    result = true;
+        //    Debug.Log("시야각에 들어옴");
+        //}
+
+        float angle = Vector3.Angle(transform.forward, toTargetDirection);  // 적의 정면과 플레이어를 바라보는 각도 angle은 무조건 양수
+      
+        return sightHalfAngle > angle;
+    }
+
+    /// <summary>
+    /// 적이 다른 오브젝트에 의해 가려지는지 아닌지 확인하는 함수
+    /// </summary>
+    /// <param name="toTargetDirection">적에서 대상으로 향하는 방향 벡터</param>
+    /// <returns>true면 가려지지않음, false면 가려짐</returns>
+    bool IsSightClear(Vector3 toTargetDirection)
+    {
+        bool result = false;
+        Ray ray = new(transform.position + transform.up * 0.5f, toTargetDirection); // 레이생성 (눈 높이에 맞게 조금 높임)
+        if (Physics.Raycast(ray, out RaycastHit hit, farSightRange))
+        {
+            if (hit.collider.CompareTag("Player"))  // 처음 충돌한게 플레이어면
+            {
+                result = true;                      // 플레이어 발견
+            }
+        }
+
+        return result;
+    }
     public void Attack(IBattler target)
     {
-        throw new System.NotImplementedException();
+        target.Defence(AttackPower);
     }
 
     public void Defence(float damage)
     {
-        throw new System.NotImplementedException();
+        if (IsAlive)
+        {
+            animator.SetTrigger(anim_HitToHash);
+            HP -= Mathf.Max(0, damage - DefencePower);
+            Debug.Log($"{HP}");
+        }
     }
 
     public void Die()
     {
-        throw new NotImplementedException();
+        Debug.Log("사망");
     }
 
     public void HealthRegenerate(float totalRegen, float duration)
@@ -319,4 +432,30 @@ public class Enemy : MonoBehaviour, IBattler, IHealth
     {
         throw new NotImplementedException();
     }
+
+
+#if UNITY_EDITOR
+
+    private void OnDrawGizmos()
+    {
+        bool playerShow = SearchPlayer();
+        Handles.color = playerShow ? Color.red : Color.green;
+        
+        Vector3 forward = transform.forward * farSightRange;
+        Handles.DrawDottedLine(transform.position, transform.position + forward, 2.0f);
+
+        Quaternion q1 = Quaternion.AngleAxis(-sightHalfAngle, transform.up);
+        Handles.DrawLine(transform.position, transform.position + q1 * forward);
+
+        Quaternion q2 = Quaternion.AngleAxis(sightHalfAngle, transform.up);
+        Handles.DrawLine(transform.position, transform.position + q2 * forward);
+
+        Handles.DrawWireArc(transform.position, transform.up, q1 * forward, sightHalfAngle * 2,farSightRange,2.0f);
+
+        Handles.DrawWireDisc(transform.position, transform.up, nearSightRange);
+
+
+    }
+
+#endif
 }
