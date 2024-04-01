@@ -7,7 +7,7 @@ using UnityEngine.AI;
 using UnityEditor;
 #endif
 
-public class Enemy : MonoBehaviour, IBattler, IHealth
+public class Enemy : RecycleObject, IBattler, IHealth
 {
     /// <summary>
     /// 적이 가질수 있는 상태의종류
@@ -66,6 +66,9 @@ public class Enemy : MonoBehaviour, IBattler, IHealth
                         onStateUpdate = Update_Attack;
                         break;
                     case EnemyState.Dead:
+                        agent.isStopped = true;
+                        agent.velocity = Vector3.zero;
+                        animator.SetTrigger(anim_DieToHash);
                         onStateUpdate = Update_Dead;
                         break;
                 }
@@ -107,9 +110,14 @@ public class Enemy : MonoBehaviour, IBattler, IHealth
     public float moveSpeed = 3.0f;
 
     /// <summary>
-    /// 적이 순찰할 웨이포인트
+    /// 적이 순찰할 웨이포인트(public 이지만 private처럼 사용)
     /// </summary>
     public Waypoints waypoints;
+
+    /// <summary>
+    /// 웨이포인트 확인 및 설정용 프로퍼티
+    /// </summary>
+
 
 
     /// <summary>
@@ -219,6 +227,7 @@ public class Enemy : MonoBehaviour, IBattler, IHealth
 
         [Range(0, 1)]
         public float dropRatio; // 드랍 확률(1.0f -> 100%)
+        public uint dropCount;  // 최대 드랍 개수
     }
 
     /// <summary>
@@ -237,6 +246,7 @@ public class Enemy : MonoBehaviour, IBattler, IHealth
     SphereCollider bodyCollider;
     Rigidbody rigid;
     ParticleSystem dieEffect;
+    EnemyHealthBar hpBar;
 
     int anim_MoveToHash = Animator.StringToHash("Move");
     int anim_StopToHash = Animator.StringToHash("Stop");
@@ -244,31 +254,50 @@ public class Enemy : MonoBehaviour, IBattler, IHealth
     int anim_HitToHash = Animator.StringToHash("Hit");
     int anim_DieToHash = Animator.StringToHash("Die");
 
-
+    // 읽기 전용
+    readonly Vector3 EffectResetPosition = new(0.0f, 0.01f, 0.0f);
     private void Awake()
     {
         animator = GetComponent<Animator>();
         agent = GetComponent<NavMeshAgent>();
         bodyCollider = GetComponent<SphereCollider>();
         rigid = GetComponent<Rigidbody>();
-        //dieEffect = GetComponentInChildren<ParticleSystem>();
+        Transform child = transform.GetChild(2);
+        hpBar = child.GetComponent<EnemyHealthBar>();
+        child = transform.GetChild(3);
+        dieEffect = child.GetComponent<ParticleSystem>();
     }
 
-    private void Start()
+    protected override void OnEnable()
     {
-        agent.speed = moveSpeed;
+        base.OnEnable();
 
+        agent.speed = moveSpeed;
+        rigid.isKinematic = true;  // 키네마틱을 꺼서 물리 작용 받기
+        rigid.drag = float.MaxValue;            // 무한대로 되어있던 마찰력을 낮춰서 떨어질 수 있게 하기
         State = EnemyState.Wait;
         animator.ResetTrigger(anim_StopToHash); // Wait 상태로 설정하면서 Stop트리거가 쌓인것을 제거하기 위해 필요
-
+        HP = maxHP;
     }
+
+    protected override void OnDisable()
+    {
+        // 콜라이더 활성화
+
+        bodyCollider.enabled = true;
+        hpBar.gameObject.SetActive(true);      // hpBar 보이게 만들기
+        agent.enabled = true;      // agent가 활성화 되어있으면 항상 네비메쉬 위에 있음
+
+        base.OnDisable();
+    }
+
 
     private void Update()
     {
         onStateUpdate();
 
     }
-
+    
     /// <summary>
     /// wait 상태용 업데이트 함수
     /// </summary>
@@ -306,7 +335,7 @@ public class Enemy : MonoBehaviour, IBattler, IHealth
     }
     void Update_Chase()
     {
-        if (chaseTarget != null)
+        if (SearchPlayer())
         {
             agent.SetDestination(chaseTarget.position);
 
@@ -337,6 +366,7 @@ public class Enemy : MonoBehaviour, IBattler, IHealth
 
         // 일정 반경(farSightRange)안에 있는 플레이어 찾기
         Collider[] colliders = Physics.OverlapSphere(transform.position, farSightRange, LayerMask.GetMask("Player"));
+        Debug.Log(colliders.Length);
         if (colliders.Length > 0)
         {
             //일정 반경(farSightRange)안에 플레이어가 있다
@@ -349,10 +379,17 @@ public class Enemy : MonoBehaviour, IBattler, IHealth
             }
             else
             {
-                if (IsInSightAngle(toPlayerDir) && IsSightClear(toPlayerDir))   // 시야각안 인지 확인후 적과 플레이어 사이를 가리는 오브젝트가 있는지 확인
+                Debug.Log("A");
+                Debug.Log(IsInSightAngle(toPlayerDir));
+                Debug.Log(IsSightClear(toPlayerDir));
+                if (IsInSightAngle(toPlayerDir) )   // 시야각안 인지 확인후 적과 플레이어 사이를 가리는 오브젝트가 있는지 확인
                 {
-                    chaseTarget = colliders[0].transform;
-                    result = true;
+                    if (IsSightClear(toPlayerDir))
+                    {
+                        chaseTarget = colliders[0].transform;
+                        result = true;
+
+                    }
                 }
             }
 
@@ -421,6 +458,65 @@ public class Enemy : MonoBehaviour, IBattler, IHealth
     public void Die()
     {
         Debug.Log("사망");
+        State = EnemyState.Dead;
+        StartCoroutine(DeadSquence());  // 사망연출 시작
+        onDie?.Invoke();                // 죽었다고 알림
+    }
+
+    /// <summary>
+    /// 사망 연출용 코루틴
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator DeadSquence()
+    {
+        // 콜라이더 비활성화
+        bodyCollider.enabled = false;
+
+        // 사망 이펙트 처리
+        dieEffect.Play();                       // 재생 시작
+        dieEffect.transform.SetParent(null);    // 이펙트를 부모에서 분리해서 같이 안 가라앉게 만듬
+
+
+        hpBar.gameObject.SetActive(false);      // hpBar 안보이게 만들기
+
+        yield return new WaitForSeconds(0.5f); // 아이템이 바로 떨어지면 어색해서 약간 대기
+
+
+        // 아이템 드랍
+        MakeDropItems();
+
+        // 사망 애니메이션 끝날때까지 대기
+        yield return new WaitForSeconds(1.0f);
+
+        // 바닥으로 가라 앉기 시작
+        agent.enabled = false;      // agent가 활성화 되어있으면 항상 네비메쉬 위에 있음
+
+        rigid.isKinematic = false;  // 키네마틱을 꺼서 물리 작용 받기
+        rigid.drag = 10;            // 무한대로 되어있던 마찰력을 낮춰서 떨어질 수 있게 하기
+
+        // 충분히 바닥아래로 내려갈때까지 대기
+        yield return new WaitForSeconds(2.0f);
+
+        // 슬라임 삭제
+        dieEffect.transform.SetParent(this.transform);          // 부모 재설정
+        dieEffect.transform.localPosition = EffectResetPosition;    // 위치 리셋
+
+        gameObject.SetActive(false);
+    }
+
+    /// <summary>
+    /// 아이템을 드랍하는 함수
+    /// </summary>
+    void MakeDropItems()
+    {
+        foreach (var item in dropItems)
+        {
+            if (item.dropRatio > UnityEngine.Random.value)  // 확률 체크 후
+            {
+                uint count = (uint)UnityEngine.Random.Range(0, (int)item.dropCount) +1; // 개수 결정
+                Factory.Instance.MakeItems(item.code, count,transform.position,true);   // 실제 생성
+            }
+        }
     }
 
     public void HealthRegenerate(float totalRegen, float duration)

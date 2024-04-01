@@ -6,7 +6,8 @@ using UnityEngine;
 public enum PoolObjectType
 {
     Item,
-    HitEffect
+    HitEffect,
+    Slime
 }
 
 public class Factory : Singleton<Factory>
@@ -18,19 +19,20 @@ public class Factory : Singleton<Factory>
 
     ItemPool itemPool;
     HitEffectPool hitEffectPool;
+    EnemyPool enemyPool;
 
     protected override void OnInitialize()
     {
         base.OnInitialize();
 
- /*      slimePool = GetComponentInChildren<SlimePool>(true);
-        if(slimePool != null)
-            slimePool.Initialize();*/
+        enemyPool = GetComponentInChildren<EnemyPool>(true);
+        if (enemyPool != null)
+            enemyPool.Initialize();
         itemPool = GetComponentInChildren<ItemPool>(true);
-        if(itemPool != null )
+        if (itemPool != null)
             itemPool.Initialize();
         hitEffectPool = GetComponentInChildren<HitEffectPool>(true);
-        if (hitEffectPool != null )
+        if (hitEffectPool != null)
             hitEffectPool.Initialize();
     }
 
@@ -43,7 +45,7 @@ public class Factory : Singleton<Factory>
                 result = itemPool.GetObject(position, euler).gameObject;
                 break;
             case PoolObjectType.HitEffect:
-                result = hitEffectPool.GetObject(position,euler).gameObject;
+                result = hitEffectPool.GetObject(position, euler).gameObject;
                 break;
             default:
                 break;
@@ -51,17 +53,38 @@ public class Factory : Singleton<Factory>
         return result;
     }
 
+    /// <summary>
+    /// 슬라임 하나 생성하는 함수
+    /// </summary>
+    /// <returns>슬라임 게임 오브젝트</returns>
+    public Enemy GetEnemy()
+    {
+        return enemyPool.GetObject();
+    }
 
-    /*    public Slime GetSlime()
-        {
-            return slimePool.GetObject();
-        }
+    /// <summary>
+    /// 슬라임 하나를 생성하는 함수
+    /// </summary>
+    /// <param name="position">소환 위치</param>
+    /// <param name="angle">소환 각도</param>
+    /// <returns>소환된 게임 오브젝트들</returns>
+    public Enemy GetEnemy(Vector3 position, float angle = 0.0f)
+    {
+        return enemyPool.GetObject(position, angle * Vector3.forward);
+    }
 
-        public Slime GetSlime(Vector3 position, float angle = 0.0f)
-        {
-            return slimePool.GetObject(position, angle * Vector3.forward); 
-        }
-    */
+    /// <summary>
+    /// 슬라임 하나를 특정 웨이포인트를 사용하고 특정위치 특정각도로 배치
+    /// </summary>
+    /// <param name="index">목적지 웨이포인트</param>
+    /// <param name="position">소환 위치</param>
+    /// <param name="angle">소환 각도</param>
+    /// <returns>소환된 게임 오브젝트들</returns>
+    public Enemy GetEnemy(int index, Vector3 position, float angle = 0.0f)
+    {
+        return enemyPool.GetObject(index, position, angle * Vector3.forward);
+    }
+
     /// <summary>
     /// 아이템을 하나 생성하는함수
     /// </summary>
@@ -76,7 +99,7 @@ public class Factory : Singleton<Factory>
     }
 
     /// <summary>
-    /// 아이템을 하나 생성하는함수
+    /// 아이템을 여러개 생성하는함수
     /// </summary>
     /// <param name="code">생성할 아이템의 코드</param>
     /// <param name="positon">생성할 위치</param>
@@ -102,7 +125,7 @@ public class Factory : Singleton<Factory>
     /// <param name="code">생성할 아이템의 코드</param>
     /// <param name="count">생성할 개수</param>
     /// <returns>아이템의 게임 오브젝트들</returns>
-    public GameObject[] MakeItems(ItemCode code,uint count)
+    public GameObject[] MakeItems(ItemCode code, uint count)
     {
 
         GameObject[] items = new GameObject[count];
@@ -122,7 +145,7 @@ public class Factory : Singleton<Factory>
     /// <param name="positon">생성할 위치</param>
     /// <param name="useNoise">위치에 노이즈를 적용할지 여부(true면 적용,false면 안함)</param>
     /// <returns>아이템의 게임 오브젝트들</returns>
-    public GameObject[] MakeItems(ItemCode code,uint count, Vector3 positon, bool useNoise = false)
+    public GameObject[] MakeItems(ItemCode code, uint count, Vector3 positon, bool useNoise = false)
     {
         GameObject[] items = new GameObject[count];
         for (int i = 0; i < count; i++)
