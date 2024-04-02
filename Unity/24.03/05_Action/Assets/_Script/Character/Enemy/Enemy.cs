@@ -63,6 +63,9 @@ public class Enemy : RecycleObject, IBattler, IHealth
                         onStateUpdate = Update_Chase;
                         break;
                     case EnemyState.Attack:
+                        agent.isStopped = true;
+                        agent.velocity = Vector3.zero;
+                        attackCoolTime = attackInterval;
                         onStateUpdate = Update_Attack;
                         break;
                     case EnemyState.Dead:
@@ -168,7 +171,7 @@ public class Enemy : RecycleObject, IBattler, IHealth
     /// <summary>
     /// 공격 속도
     /// </summary>
-    public float attaclSpeed = 1.0f;
+    public float attackInterval = 1.0f;
 
     /// <summary>
     /// 남아있는 쿨타임
@@ -220,6 +223,11 @@ public class Enemy : RecycleObject, IBattler, IHealth
     /// </summary>
     public Action onDie { get; set; }
 
+    /// <summary>
+    /// 맞았을 때 실행될 델리게이트(int : 실제 맞은데미지)
+    /// </summary>
+    public Action<int> onHit { get; set; }
+
     [Serializable]  // 구조체는 인스펙터에서 안보이기에 Serializable로 해야 보이게 해줄수 있다.
     public struct ItemDropInfo
     {
@@ -248,6 +256,9 @@ public class Enemy : RecycleObject, IBattler, IHealth
     ParticleSystem dieEffect;
     EnemyHealthBar hpBar;
 
+
+
+
     int anim_MoveToHash = Animator.StringToHash("Move");
     int anim_StopToHash = Animator.StringToHash("Stop");
     int anim_AttackToHash = Animator.StringToHash("Attack");
@@ -260,12 +271,40 @@ public class Enemy : RecycleObject, IBattler, IHealth
     {
         animator = GetComponent<Animator>();
         agent = GetComponent<NavMeshAgent>();
+
         bodyCollider = GetComponent<SphereCollider>();
+
         rigid = GetComponent<Rigidbody>();
+
         Transform child = transform.GetChild(2);
         hpBar = child.GetComponent<EnemyHealthBar>();
+
         child = transform.GetChild(3);
         dieEffect = child.GetComponent<ParticleSystem>();
+
+        child = transform.GetChild(5);
+        AttackArea attackArea = child.GetComponent<AttackArea>();
+        attackArea.onPlayerIn += (target) =>
+        {
+            // 플레이어가 들어온 상태에서
+            if(State == EnemyState.Chase)   // 추적 상태이면
+            {
+                attackTarget = target;      // 공격대상 지정하고
+                State = EnemyState.Attack;  // 공격 상태로 변환
+            }
+        };
+        attackArea.onPlayerOut += (target) =>
+        {
+            if (attackTarget == target)         // 공격 대상이 나갔으면
+            {
+                attackTarget = null;            // 공격 대상을 비우고
+                if (State != EnemyState.Dead)   // 죽지 않았다면
+                {
+                    State = EnemyState.Chase;   // 추적 상태를 되돌리기
+
+                }
+            }
+        };
     }
 
     protected override void OnEnable()
@@ -297,7 +336,9 @@ public class Enemy : RecycleObject, IBattler, IHealth
         onStateUpdate();
 
     }
-    
+
+
+
     /// <summary>
     /// wait 상태용 업데이트 함수
     /// </summary>
@@ -347,6 +388,13 @@ public class Enemy : RecycleObject, IBattler, IHealth
 
     void Update_Attack()
     {
+        attackCoolTime -= Time.deltaTime;
+        transform.rotation = Quaternion.Slerp(transform.rotation,
+            Quaternion.LookRotation(attackTarget.transform.position - transform.position), 0.1f);
+        if (attackCoolTime < 0) 
+        {
+            Attack(attackTarget);
+        }
 
     }
 
@@ -366,22 +414,21 @@ public class Enemy : RecycleObject, IBattler, IHealth
 
         // 일정 반경(farSightRange)안에 있는 플레이어 찾기
         Collider[] colliders = Physics.OverlapSphere(transform.position, farSightRange, LayerMask.GetMask("Player"));
-        Debug.Log(colliders.Length);
         if (colliders.Length > 0)
         {
             //일정 반경(farSightRange)안에 플레이어가 있다
             Vector3 playerPos = colliders[0].transform.position;   // 0번이 무조건 플레이어다
             Vector3 toPlayerDir = playerPos - transform.position;   // 적 -> 플레이어 방향벡터
-            if (toPlayerDir.sqrMagnitude <= nearSightRange * nearSightRange+1f)  // 플레이어가 nearSightRange안쪽에 있다
+            if (toPlayerDir.sqrMagnitude <= nearSightRange * nearSightRange)  // 플레이어가 nearSightRange안쪽에 있다
             {
                 chaseTarget = colliders[0].transform;
                 result = true;
             }
             else
             {
-                Debug.Log("A");
-                Debug.Log(IsInSightAngle(toPlayerDir));
-                Debug.Log(IsSightClear(toPlayerDir));
+           
+                //Debug.Log(IsInSightAngle(toPlayerDir));
+                //Debug.Log(IsSightClear(toPlayerDir));
                 if (IsInSightAngle(toPlayerDir) )   // 시야각안 인지 확인후 적과 플레이어 사이를 가리는 오브젝트가 있는지 확인
                 {
                     if (IsSightClear(toPlayerDir))
@@ -440,21 +487,39 @@ public class Enemy : RecycleObject, IBattler, IHealth
 
         return result;
     }
+
+    /// <summary>
+    /// 공격처리용 함수
+    /// </summary>
+    /// <param name="target">공격 대상</param>
     public void Attack(IBattler target)
     {
-        target.Defence(AttackPower);
+        animator.SetTrigger(anim_AttackToHash); // 애니메이션 재생
+        target.Defence(AttackPower);            // 공격 대상에게 데미지 전달
+        attackCoolTime = attackInterval;        // 쿨타임 초기화
     }
 
+    /// <summary>
+    /// 방어 처리용 함수
+    /// </summary>
+    /// <param name="damage">내가 받은 순수 데미지</param>
     public void Defence(float damage)
     {
-        if (IsAlive)
+        if (IsAlive)    // 살아있을 때만 데미지를 받음
         {
-            animator.SetTrigger(anim_HitToHash);
-            HP -= Mathf.Max(0, damage - DefencePower);
-            Debug.Log($"{HP}");
+            animator.SetTrigger(anim_HitToHash);        // 애니메이션 재생
+            float final = Mathf.Max(0, damage - DefencePower);
+            HP -= final;  // 최종 데미지 계산해서 적용
+            onHit?.Invoke(Mathf.RoundToInt(final));
+
+
+            //Debug.Log($"{HP}");
         }
     }
 
+    /// <summary>
+    /// 사망 처리용 함수
+    /// </summary>
     public void Die()
     {
         Debug.Log("사망");
@@ -549,7 +614,6 @@ public class Enemy : RecycleObject, IBattler, IHealth
         Handles.DrawWireArc(transform.position, transform.up, q1 * forward, sightHalfAngle * 2,farSightRange,2.0f);
 
         Handles.DrawWireDisc(transform.position, transform.up, nearSightRange);
-
 
     }
 

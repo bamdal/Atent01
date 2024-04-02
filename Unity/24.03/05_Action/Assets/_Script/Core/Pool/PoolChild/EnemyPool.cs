@@ -14,12 +14,12 @@ public class EnemyPool : ObjectPool<Enemy>
 
 
     /// <summary>
-    /// Ç®¿¡¼­ »ç¿ëÇÏÁö ¾Ê´Â ¿ÀºêÁ§Æ®¸¦ ÇÏ³ª ²¨³½ÈÄ ¸®ÅÏÇÏ´Â ÇÔ¼ö
+    /// í’€ì—ì„œ ì‚¬ìš©í•˜ì§€ ì•ŠëŠ” ì˜¤ë¸Œì íŠ¸ë¥¼ í•˜ë‚˜ êº¼ë‚¸í›„ ë¦¬í„´í•˜ëŠ” í•¨ìˆ˜
     /// </summary>
-    /// <param name="index">»ç¿ëÇÒ ¿şÀÌÆ÷ÀÎÆ® ÀÎµ¦½º</param>
-    /// <param name="position">¹èÄ¡µÉ À§Ä¡(¿ùµåÁÂÇ¥)</param>
-    /// <param name="eulerAngle">¹èÄ¡µÉ È¸Àü</param>
-    /// <returns>¼ÒÈ¯µÈ ¿ÀºêÁ§Æ®</returns>
+    /// <param name="index">ì‚¬ìš©í•  ì›¨ì´í¬ì¸íŠ¸ ì¸ë±ìŠ¤</param>
+    /// <param name="position">ë°°ì¹˜ë  ìœ„ì¹˜(ì›”ë“œì¢Œí‘œ)</param>
+    /// <param name="eulerAngle">ë°°ì¹˜ë  íšŒì „</param>
+    /// <returns>ì†Œí™˜ëœ ì˜¤ë¸Œì íŠ¸</returns>
     public Enemy GetObject(int index, Vector3? position = null, Vector3? eulerAngle = null)
     {
         Enemy enemy = GetObject(position, eulerAngle);
@@ -28,10 +28,11 @@ public class EnemyPool : ObjectPool<Enemy>
         return enemy;
     }
 
+
     /// <summary>
-    /// ÀÎµ¦½º¸¦ ¼³Á¤ÇÏÁö¾Ê¾ÒÀ» °æ¿ì ±âº» ÀÎµ¦½º°ª
+    /// ì¸ë±ìŠ¤ë¥¼ ì„¤ì •í•˜ì§€ì•Šì•˜ì„ ê²½ìš° ê¸°ë³¸ ì¸ë±ìŠ¤ê°’
     /// </summary>
-    /// <param name="comp">»ı¼ºµÉ Àû</param>
+    /// <param name="comp">ìƒì„±ë  ì </param>
     protected override void OnGenerateObject(Enemy comp)
     {
         comp.waypoints = waypoints[0];

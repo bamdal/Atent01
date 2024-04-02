@@ -7,7 +7,8 @@ public enum PoolObjectType
 {
     Item,
     HitEffect,
-    Slime
+    Slime,
+    DamageText
 }
 
 public class Factory : Singleton<Factory>
@@ -20,6 +21,7 @@ public class Factory : Singleton<Factory>
     ItemPool itemPool;
     HitEffectPool hitEffectPool;
     EnemyPool enemyPool;
+    DamageTextPool damageTextPool;
 
     protected override void OnInitialize()
     {
@@ -34,6 +36,9 @@ public class Factory : Singleton<Factory>
         hitEffectPool = GetComponentInChildren<HitEffectPool>(true);
         if (hitEffectPool != null)
             hitEffectPool.Initialize();
+        damageTextPool = GetComponentInChildren<DamageTextPool>(true);
+        if(damageTextPool != null)
+            damageTextPool.Initialize();
     }
 
     public GameObject GetObject(PoolObjectType type, Vector3? position = null, Vector3? euler = null)
@@ -46,6 +51,9 @@ public class Factory : Singleton<Factory>
                 break;
             case PoolObjectType.HitEffect:
                 result = hitEffectPool.GetObject(position, euler).gameObject;
+                break;
+            case PoolObjectType.DamageText:
+                result = damageTextPool.GetObject(position, euler).gameObject;
                 break;
             default:
                 break;
@@ -83,6 +91,16 @@ public class Factory : Singleton<Factory>
     public Enemy GetEnemy(int index, Vector3 position, float angle = 0.0f)
     {
         return enemyPool.GetObject(index, position, angle * Vector3.forward);
+    }
+
+    /// <summary>
+    /// 데미지 텍스트 하나를 소환하는 함수
+    /// </summary>
+    /// <param name="damage">텍스트에 띄울 데미지</param>
+    /// <returns></returns>
+    public GameObject GetDamageText(int damage, Vector3? position)
+    {
+        return damageTextPool.GetObject(damage, position);
     }
 
     /// <summary>

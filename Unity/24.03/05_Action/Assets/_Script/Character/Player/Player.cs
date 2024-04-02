@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Windows;
+using Cinemachine;
+
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -101,6 +103,7 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget, IBattler
     // 컴포넌트들
     Animator animator;
     CharacterController characterController;
+    CinemachineVirtualCamera deadCam;
 
     // 애니메이터용 해시값 및 상수
     readonly int Speed_Hash = Animator.StringToHash("Speed");
@@ -252,16 +255,20 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget, IBattler
         }
     }
     // 플레이어 공격력 방어력
-    float baseAttackPower = 5.0f;
-    float baseDefencePower = 1.0f;
-    float attackPower = 5.0f;
+    public float baseAttackPower = 5.0f;
+    public float baseDefencePower = 1.0f;
+    float attackPower;
 
     public float AttackPower => attackPower;
 
-    float defencePower = 1.0f;
+    float defencePower;
 
     public float DefencePower => defencePower;
 
+    /// <summary>
+    /// 맞았을 때 실행될 델리게이트(int : 실제 맞은데미지)
+    /// </summary>
+    public Action<int> onHit { get; set; }
 
     private void Awake()
     {
@@ -287,6 +294,8 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget, IBattler
         animator = GetComponent<Animator>();
         characterController = GetComponent<CharacterController>();
 
+        deadCam = GetComponentInChildren<CinemachineVirtualCamera>();
+
         inputController = GetComponent<PlayerInputController>();
         inputController.onMove += OnMoveInput;
         inputController.onMoveModeChange += OnMoveModeChangeInput;
@@ -294,7 +303,8 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget, IBattler
         inputController.onItemPickup += OnItemPickInput;
 
         partsSlot = new InvenSlot[Enum.GetValues(typeof(EquipType)).Length];    // Enum을 Enum.GetValues로 배열로 가져와서 개수를 센다
-
+        attackPower = baseAttackPower;
+        defencePower = baseDefencePower;
     }
 
     private void Start()
@@ -456,7 +466,10 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget, IBattler
 
     public void Die()
     {
+        deadCam.Follow = null;
+        deadCam.Priority = 20;
         onDie?.Invoke();
+        
         Debug.Log("플레이어 사망");
     }
 
@@ -690,8 +703,9 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget, IBattler
     {
         if (IsAlive)
         {
-            HP -= Mathf.Max(0, damage - DefencePower);   // 0 이하로는 데미지가 내려가지 않는다
-
+            float final = Mathf.Max(0, damage - DefencePower); // 0 이하로는 데미지가 내려가지 않는다
+            HP -= final;  
+            onHit?.Invoke(Mathf.RoundToInt(final));
         }
 
     }

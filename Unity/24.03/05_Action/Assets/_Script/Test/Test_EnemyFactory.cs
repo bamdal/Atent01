@@ -5,6 +5,12 @@ using UnityEngine.InputSystem;
 
 public class Test_EnemyFactory : TestBase
 {
+    void Start()
+    {
+        Player player = GameManager.Instance.Player;
+        player.Inventory.AddItem(ItemCode.IronSword);
+        player.Inventory[0].EquipItem(player.gameObject);
+    }
     protected override void OnTest1(InputAction.CallbackContext context)
     {
         Factory.Instance.GetEnemy();
@@ -20,5 +26,9 @@ public class Test_EnemyFactory : TestBase
         {
             enemy.HP= 0;
         }
+    }
+    protected override void OnTest4(InputAction.CallbackContext context)
+    {
+        //Factory.Instance.GetDamageText(50);
     }
 }

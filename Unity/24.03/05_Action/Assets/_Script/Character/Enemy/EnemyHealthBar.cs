@@ -5,34 +5,34 @@ using UnityEngine;
 
 public class EnemyHealthBar : MonoBehaviour
 {
-    // ÀûÀÇ HP º¯°æ½Ã ³²Àº HP ºñÀ²·Î Ç¥½Ã
-    // 2. »ö»ó Á¤»óÀûÀ¸·Î º¸ÀÌ°Ô ÇÏ±â
-    // HP´Â ¿ŞÂÊÀ¸·Î ÁÙ¾îµå´Â µíÀÌ º¸¿©¾ß ÇÑ´Ù
-    // ºôº¸µå¿©¾ß ÇÑ´Ù. - Ç×»ó Ä«¸Ş¶ó¸¦ Á¤¸éÀ¸·Î ¹Ù¶óº¸¾Æ¾ß ÇÑ´Ù
+    // ì ì˜ HP ë³€ê²½ì‹œ ë‚¨ì€ HP ë¹„ìœ¨ë¡œ í‘œì‹œ
+    // 2. ìƒ‰ìƒ ì •ìƒì ìœ¼ë¡œ ë³´ì´ê²Œ í•˜ê¸°
+    // HPëŠ” ì™¼ìª½ìœ¼ë¡œ ì¤„ì–´ë“œëŠ” ë“¯ì´ ë³´ì—¬ì•¼ í•œë‹¤
+    // ë¹Œë³´ë“œì—¬ì•¼ í•œë‹¤. - í•­ìƒ ì¹´ë©”ë¼ë¥¼ ì •ë©´ìœ¼ë¡œ ë°”ë¼ë³´ì•„ì•¼ í•œë‹¤ 
 
     /// <summary>
-    /// fillÀÇ ÇÇº¿ÀÌ µÉ Æ®·£½ºÆû
+    /// fillì˜ í”¼ë´‡ì´ ë  íŠ¸ëœìŠ¤í¼
     /// </summary>
     Transform fillPivot;
     private void Awake()
     {
-        fillPivot = transform.GetChild(1);  // fill ÇÇº¿ Ã£±â
+        fillPivot = transform.GetChild(1);  // fill í”¼ë´‡ ì°¾ê¸°
 
         IHealth target = GetComponentInParent<IHealth>();
-        target.onHealthChange += Refresh;   // ºÎ¸ğ¿¡¼­ IHealthÃ£¾Æ¼­ µ¨¸®°ÔÀÌÆ® ¿¬°á
+        target.onHealthChange += Refresh;   // ë¶€ëª¨ì—ì„œ IHealthì°¾ì•„ì„œ ë¸ë¦¬ê²Œì´íŠ¸ ì—°ê²°
     }
 
 
     private void LateUpdate()
     {
-        // ºôº¸µå·Î ¸¸µé±â À§ÇØ Ä«¸Ş¶óÀÇ Á¤¸éÀ¸·Î º¸ÀÌ°Ô ÇÏ±â
+        // ë¹Œë³´ë“œë¡œ ë§Œë“¤ê¸° ìœ„í•´ ì¹´ë©”ë¼ì˜ ì •ë©´ìœ¼ë¡œ ë³´ì´ê²Œ í•˜ê¸°
         transform.forward =  transform.position - Camera.main.transform.position ;
     }
 
     /// <summary>
-    /// ºÎ¸ğÀÇ HP°¡ º¯°æµÇ¸é ½ÇÇàµÇ´Â ÇÔ¼ö
+    /// ë¶€ëª¨ì˜ HPê°€ ë³€ê²½ë˜ë©´ ì‹¤í–‰ë˜ëŠ” í•¨ìˆ˜
     /// </summary>
-    /// <param name="ratio">HP ºñÀ² (hp/maxHP)</param>
+    /// <param name="ratio">HP ë¹„ìœ¨ (hp/maxHP)</param>
     private void Refresh(float ratio)
     {
         fillPivot.localScale = new(ratio, 1, 1);
