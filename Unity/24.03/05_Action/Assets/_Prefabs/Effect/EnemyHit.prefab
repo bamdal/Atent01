@@ -23929,7 +23929,7 @@ GameObject:
   - component: {fileID: 7223882667709175734}
   - component: {fileID: 2844443126486912063}
   m_Layer: 0
-  m_Name: Hit
+  m_Name: EnemyHit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -25,4 +25,8 @@ public class Test_PlayerBattle : TestBase
     {
         player.Defence(damage);
     }
+    protected override void OnTest2(InputAction.CallbackContext context)
+    {
+        Factory.Instance.GetEnemy();
+    }
 }

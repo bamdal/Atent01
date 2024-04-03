@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -26,11 +24,29 @@ public class PlayerInputController : MonoBehaviour
     /// </summary>
     public Action onAttack;
 
+    /// <summary>
+    /// 아이템을 줍는 입력을 전달하는 델리게이트
+    /// </summary>
     public Action onItemPickup;
+
+    /// <summary>
+    /// 락온 버튼이 눌려진 입력을 전달하는 델리게이트
+    /// </summary>
+    public Action onLockOn;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public Action onSkillStart;
+
+    public Action onSkillEnd;
 
     private void Awake()
     {
         inputActions = new PlayerInputActions();
+
+        Player player = GameManager.Instance.Player;
+        player.onDie += inputActions.Player.Disable;
     }
 
     private void OnEnable()
@@ -41,6 +57,9 @@ public class PlayerInputController : MonoBehaviour
         inputActions.Player.MoveModeChange.performed += OnMoveModeChange;
         inputActions.Player.Attack.performed += OnAttack;
         inputActions.Player.Pickup.performed += OnPickup;
+        inputActions.Player.LockOn.performed += OnLockOn;
+        inputActions.Player.Skill.performed += OnSkillStart;
+        inputActions.Player.Skill.canceled += OnSkillEnd;
 
     }
 
@@ -48,6 +67,9 @@ public class PlayerInputController : MonoBehaviour
 
     private void OnDisable()
     {
+        inputActions.Player.Skill.canceled -= OnSkillEnd;
+        inputActions.Player.Skill.performed -= OnSkillStart;
+        inputActions.Player.LockOn.performed -= OnLockOn;
         inputActions.Player.Pickup.performed -= OnPickup;
         inputActions.Player.Attack.performed -= OnAttack;
         inputActions.Player.MoveModeChange.performed -= OnMoveModeChange;
@@ -88,4 +110,21 @@ public class PlayerInputController : MonoBehaviour
     {
         onItemPickup?.Invoke(); 
     }
+
+    private void OnLockOn(InputAction.CallbackContext context)
+    {
+        onLockOn?.Invoke();
+    }
+
+    private void OnSkillStart(InputAction.CallbackContext _)
+    {
+        onSkillStart?.Invoke();
+    }
+
+    private void OnSkillEnd(InputAction.CallbackContext _)
+    {
+        onSkillEnd?.Invoke();
+    }
+
+
 }

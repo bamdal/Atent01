@@ -6,7 +6,8 @@ using UnityEngine;
 public enum PoolObjectType
 {
     Item,
-    HitEffect,
+    EnemyHitEffect,
+    PlayerHitEffect,
     Slime,
     DamageText
 }
@@ -19,7 +20,8 @@ public class Factory : Singleton<Factory>
     public float noisePower = 0.5f;
 
     ItemPool itemPool;
-    HitEffectPool hitEffectPool;
+    HitEffectPool playerHitEffectPool;
+    HitEffectPool enemyHitEffectPool;
     EnemyPool enemyPool;
     DamageTextPool damageTextPool;
 
@@ -33,9 +35,14 @@ public class Factory : Singleton<Factory>
         itemPool = GetComponentInChildren<ItemPool>(true);
         if (itemPool != null)
             itemPool.Initialize();
-        hitEffectPool = GetComponentInChildren<HitEffectPool>(true);
-        if (hitEffectPool != null)
-            hitEffectPool.Initialize();
+        Transform child = transform.GetChild(0);
+        playerHitEffectPool = child.GetComponent<HitEffectPool>();
+        if (playerHitEffectPool != null)
+            playerHitEffectPool.Initialize();
+        child = transform.GetChild(1);
+        enemyHitEffectPool = child.GetComponent<HitEffectPool>();
+        if (enemyHitEffectPool != null)
+            enemyHitEffectPool.Initialize();
         damageTextPool = GetComponentInChildren<DamageTextPool>(true);
         if(damageTextPool != null)
             damageTextPool.Initialize();
@@ -49,11 +56,14 @@ public class Factory : Singleton<Factory>
             case PoolObjectType.Item:
                 result = itemPool.GetObject(position, euler).gameObject;
                 break;
-            case PoolObjectType.HitEffect:
-                result = hitEffectPool.GetObject(position, euler).gameObject;
+            case PoolObjectType.PlayerHitEffect:
+                result = playerHitEffectPool.GetObject(position, euler).gameObject;
                 break;
             case PoolObjectType.DamageText:
                 result = damageTextPool.GetObject(position, euler).gameObject;
+                break;
+            case PoolObjectType.EnemyHitEffect:
+                result = enemyHitEffectPool.GetObject(position, euler).gameObject;
                 break;
             default:
                 break;
@@ -179,9 +189,19 @@ public class Factory : Singleton<Factory>
     /// </summary>
     /// <param name="position">생성될 위치</param>
     /// <returns>소환된 오브젝트</returns>
-    public GameObject GetHitEffect(Vector3? position)
+    public GameObject GetPlayerHitEffect(Vector3? position)
     {
-        return hitEffectPool.GetObject(position).gameObject;
+        return playerHitEffectPool.GetObject(position).gameObject;
+    }
+
+    /// <summary>
+    /// 히트 이펙트를 생성하는 함수
+    /// </summary>
+    /// <param name="position">생성될 위치</param>
+    /// <returns>소환된 오브젝트</returns>
+    public GameObject GetEnemyHitEffect(Vector3? position)
+    {
+        return enemyHitEffectPool.GetObject(position).gameObject;
     }
 }
 

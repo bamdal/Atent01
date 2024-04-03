@@ -248,6 +248,11 @@ public class Enemy : RecycleObject, IBattler, IHealth
     /// </summary>
     Action onStateUpdate;
 
+    /// <summary>
+    /// 공격이펙트 위치
+    /// </summary>
+    Transform hitEffectPosition;
+
     // 컴포넌트들
     Animator animator;
     NavMeshAgent agent;
@@ -259,11 +264,11 @@ public class Enemy : RecycleObject, IBattler, IHealth
 
 
 
-    int anim_MoveToHash = Animator.StringToHash("Move");
-    int anim_StopToHash = Animator.StringToHash("Stop");
-    int anim_AttackToHash = Animator.StringToHash("Attack");
-    int anim_HitToHash = Animator.StringToHash("Hit");
-    int anim_DieToHash = Animator.StringToHash("Die");
+    readonly int anim_MoveToHash = Animator.StringToHash("Move");
+    readonly int anim_StopToHash = Animator.StringToHash("Stop");
+    readonly int anim_AttackToHash = Animator.StringToHash("Attack");
+    readonly int anim_HitToHash = Animator.StringToHash("Hit");
+    readonly int anim_DieToHash = Animator.StringToHash("Die");
 
     // 읽기 전용
     readonly Vector3 EffectResetPosition = new(0.0f, 0.01f, 0.0f);
@@ -305,6 +310,8 @@ public class Enemy : RecycleObject, IBattler, IHealth
                 }
             }
         };
+        child = transform.GetChild(6);
+        hitEffectPosition = child;
     }
 
     protected override void OnEnable()
@@ -317,13 +324,29 @@ public class Enemy : RecycleObject, IBattler, IHealth
         State = EnemyState.Wait;
         animator.ResetTrigger(anim_StopToHash); // Wait 상태로 설정하면서 Stop트리거가 쌓인것을 제거하기 위해 필요
         HP = maxHP;
+
+        Player player = GameManager.Instance.Player;
+        if (player != null)
+        {
+            player.onDie += PlayerDie;
+
+        }
     }
 
     protected override void OnDisable()
     {
-        // 콜라이더 활성화
+        if (GameManager.Instance != null)
+        {
+            Player player = GameManager.Instance.Player;
+            if (player != null)
+            {
+                player.onDie -= PlayerDie;
 
-        bodyCollider.enabled = true;
+            }
+        }
+
+
+        bodyCollider.enabled = true;// 콜라이더 활성화
         hpBar.gameObject.SetActive(true);      // hpBar 보이게 만들기
         agent.enabled = true;      // agent가 활성화 되어있으면 항상 네비메쉬 위에 있음
 
@@ -416,29 +439,35 @@ public class Enemy : RecycleObject, IBattler, IHealth
         Collider[] colliders = Physics.OverlapSphere(transform.position, farSightRange, LayerMask.GetMask("Player"));
         if (colliders.Length > 0)
         {
-            //일정 반경(farSightRange)안에 플레이어가 있다
-            Vector3 playerPos = colliders[0].transform.position;   // 0번이 무조건 플레이어다
-            Vector3 toPlayerDir = playerPos - transform.position;   // 적 -> 플레이어 방향벡터
-            if (toPlayerDir.sqrMagnitude <= nearSightRange * nearSightRange)  // 플레이어가 nearSightRange안쪽에 있다
+            Player player = colliders[0].GetComponent<Player>();  
+            if(player != null && player.IsAlive)    // 플레이어가 살아있을때만 추적
             {
-                chaseTarget = colliders[0].transform;
-                result = true;
-            }
-            else
-            {
-           
-                //Debug.Log(IsInSightAngle(toPlayerDir));
-                //Debug.Log(IsSightClear(toPlayerDir));
-                if (IsInSightAngle(toPlayerDir) )   // 시야각안 인지 확인후 적과 플레이어 사이를 가리는 오브젝트가 있는지 확인
+                //일정 반경(farSightRange)안에 플레이어가 있다
+                Vector3 playerPos = colliders[0].transform.position;   // 0번이 무조건 플레이어다
+                Vector3 toPlayerDir = playerPos - transform.position;   // 적 -> 플레이어 방향벡터
+                if (toPlayerDir.sqrMagnitude <= nearSightRange * nearSightRange)  // 플레이어가 nearSightRange안쪽에 있다
                 {
-                    if (IsSightClear(toPlayerDir))
-                    {
-                        chaseTarget = colliders[0].transform;
-                        result = true;
+                    chaseTarget = colliders[0].transform;
+                    result = true;
+                }
+                else
+                {
 
+                    //Debug.Log(IsInSightAngle(toPlayerDir));
+                    //Debug.Log(IsSightClear(toPlayerDir));
+                    if (IsInSightAngle(toPlayerDir))   // 시야각안 인지 확인후 적과 플레이어 사이를 가리는 오브젝트가 있는지 확인
+                    {
+                        if (IsSightClear(toPlayerDir))
+                        {
+                            chaseTarget = colliders[0].transform;
+                            result = true;
+
+                        }
                     }
                 }
             }
+
+
 
         }
 
@@ -496,6 +525,8 @@ public class Enemy : RecycleObject, IBattler, IHealth
     {
         animator.SetTrigger(anim_AttackToHash); // 애니메이션 재생
         target.Defence(AttackPower);            // 공격 대상에게 데미지 전달
+
+        Factory.Instance.GetEnemyHitEffect(hitEffectPosition.position + UnityEngine.Random.insideUnitSphere * 0.1f);
         attackCoolTime = attackInterval;        // 쿨타임 초기화
     }
 
@@ -526,6 +557,7 @@ public class Enemy : RecycleObject, IBattler, IHealth
         State = EnemyState.Dead;
         StartCoroutine(DeadSquence());  // 사망연출 시작
         onDie?.Invoke();                // 죽었다고 알림
+        onDie = null;                   // 죽으면 onDie도 초기화
     }
 
     /// <summary>
@@ -592,6 +624,11 @@ public class Enemy : RecycleObject, IBattler, IHealth
     public void HealthRegenerateByTick(float tickRegen, float tickInterval, uint totalTickCount)
     {
         throw new NotImplementedException();
+    }
+
+    void PlayerDie()
+    {
+        State = EnemyState.Wait;
     }
 
 

@@ -1,8 +1,6 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Windows;
 using Cinemachine;
 
 
@@ -21,6 +19,11 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget, IBattler
     /// 달리는 속도
     /// </summary>
     public float runSpeed = 5.0f;
+
+    /// <summary>
+    /// 락온 사거리
+    /// </summary>
+    public float lockOnRange = 5.0f;
 
     /// <summary>
     /// 현재 속도
@@ -100,17 +103,7 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget, IBattler
     /// </summary>
     public float turnSpeed = 10.0f;
 
-    // 컴포넌트들
-    Animator animator;
-    CharacterController characterController;
-    CinemachineVirtualCamera deadCam;
 
-    // 애니메이터용 해시값 및 상수
-    readonly int Speed_Hash = Animator.StringToHash("Speed");
-    const float AnimatorStopSpeed = 0.0f;
-    const float AnimatorWalkSpeed = 0.3f;
-    const float AnimatorRunSpeed = 1.0f;
-    readonly int Attack_Hash = Animator.StringToHash("Attack");
 
     /// <summary>
     /// 무기 이펙트 변화를 알리는 델리게이트
@@ -270,6 +263,70 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget, IBattler
     /// </summary>
     public Action<int> onHit { get; set; }
 
+
+    /// <summary>
+    /// 락온 이펙트 오브젝트의트랜스폼
+    /// </summary>
+    Transform lockOnEffect;
+
+    /// <summary>
+    /// 락온할 대상의 트랜스폼
+    /// </summary>
+    Transform lockOnTarget;
+
+    public Transform LockOnTarget
+    {
+        get => lockOnTarget;
+        set
+        {
+            if (value != lockOnTarget)
+            {
+                lockOnTarget = value;
+                if (lockOnTarget != null)
+                {
+                    // 지금 대상을 락온한다
+
+                    // lockOnTarget이 죽었을 때 lockOnTarget을 null로 만들기
+                    lockOnEffect.SetParent(lockOnTarget);       // lockOnEffect의 부모를 lockOnTarget으로 변경
+                    lockOnEffect.localPosition = Vector3.zero;  // lockOnEffect의 위치를 lockOnTarget의 위치로 변경
+                    lockOnEffect.gameObject.SetActive(true);    // lockOnEffect보이게 하기
+
+                    Enemy enemy = lockOnTarget.GetComponent<Enemy>();
+                    if (enemy != null)
+                    {
+                        enemy.onDie += () => LockOnTarget = null;
+
+                    }
+                }
+                else
+                {
+                    // 락온 해제
+                    lockOnEffect.gameObject.SetActive(false);   // lockOnEffect 안보이게 하기
+                    lockOnEffect.SetParent(this.transform);     // lockOnEffect의 부모를 플레이어로 변경
+                    lockOnEffect.localPosition = Vector3.zero;  // lockOnEffect의 위치를 플레이어 위치로 변경
+                }
+            }
+        }
+    }
+
+    // 컴포넌트들
+    Animator animator;
+    CharacterController characterController;
+    CinemachineVirtualCamera deadCam;
+    PlayerSkillArea skillArea;
+
+    // 애니메이터용 해시값 및 상수
+    readonly int anim_SpeedToHash = Animator.StringToHash("Speed");
+    const float AnimatorStopSpeed = 0.0f;
+    const float AnimatorWalkSpeed = 0.3f;
+    const float AnimatorRunSpeed = 1.0f;
+    readonly int anim_AttackToHash = Animator.StringToHash("Attack");
+    readonly int anim_GetHitToHash = Animator.StringToHash("GetHit");
+    readonly int anim_DieToHash = Animator.StringToHash("Die");
+    readonly int anim_SkillStartToHash = Animator.StringToHash("SkillStart");
+    readonly int anim_SkillEndToHash = Animator.StringToHash("SkillEnd");
+
+
     private void Awake()
     {
         Transform child = transform.GetChild(2);    // root
@@ -290,22 +347,31 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget, IBattler
         shiledParent = shiledParent.GetChild(0);    // hand_l
         shiledParent = shiledParent.GetChild(2);    // weapon_l
 
+        lockOnEffect = transform.GetChild(3);
 
         animator = GetComponent<Animator>();
         characterController = GetComponent<CharacterController>();
 
         deadCam = GetComponentInChildren<CinemachineVirtualCamera>();
 
+        skillArea = GetComponentInChildren<PlayerSkillArea>();
+
         inputController = GetComponent<PlayerInputController>();
         inputController.onMove += OnMoveInput;
         inputController.onMoveModeChange += OnMoveModeChangeInput;
         inputController.onAttack += OnAttackInput;
         inputController.onItemPickup += OnItemPickInput;
+        inputController.onLockOn += OnLockOnInPut;
+
+        inputController.onSkillStart += OnSkillStart;
+        inputController.onSkillEnd += OnSkillEnd;
 
         partsSlot = new InvenSlot[Enum.GetValues(typeof(EquipType)).Length];    // Enum을 Enum.GetValues로 배열로 가져와서 개수를 센다
         attackPower = baseAttackPower;
         defencePower = baseDefencePower;
     }
+
+
 
     private void Start()
     {
@@ -325,9 +391,13 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget, IBattler
         characterController.Move(Time.deltaTime * currentSpeed * inputDirection);   // 좀 더 수동
         //characterController.SimpleMove(currentSpeed *  inputDirection);           // 좀 더 자동
 
+        if (lockOnTarget != null)   // 락온시 회전방향을 락온 대상으로 고정
+        {
+            targetRotation = Quaternion.LookRotation(lockOnTarget.position - transform.position);
+        }
+
         // 목표 회전으로 변경
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * turnSpeed);
-
         coolTime -= Time.deltaTime;
     }
 
@@ -357,7 +427,7 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget, IBattler
         {
             // 입력을 끝낸 상황
             currentSpeed = 0.0f;    // 정지 시키기
-            animator.SetFloat(Speed_Hash, AnimatorStopSpeed);
+            animator.SetFloat(anim_SpeedToHash, AnimatorStopSpeed);
         }
     }
 
@@ -385,54 +455,12 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget, IBattler
         // 서있거나 걷는 상태일때 공격가능
         if (coolTime < 0.0f && (currentSpeed < 0.001f || CurrnetMoveMode == MoveMode.Walk))
         {
-            animator.SetTrigger(Attack_Hash);
+            animator.SetTrigger(anim_AttackToHash);
             coolTime = maxCoolTime;
         }
 
 
 
-    }
-
-
-    /// <summary>
-    /// 모드에 따라 이동속도를 변경하는 함수
-    /// </summary>
-    /// <param name="mode">현재 모드</param>
-    private void MoveSpeeChange(MoveMode mode)
-    {
-        // 눌려지고 있는 상황
-        switch (mode)    // 이동 모드에 따라 속도와 애니메이션 변경
-        {
-            case MoveMode.Walk:
-                currentSpeed = walkSpeed;
-                animator.SetFloat(Speed_Hash, AnimatorWalkSpeed);
-                break;
-            case MoveMode.Run:
-                currentSpeed = runSpeed;
-                animator.SetFloat(Speed_Hash, AnimatorRunSpeed);
-                break;
-        }
-    }
-
-
-    /// <summary>
-    /// 무기와 방패를 보여줄지 말지를 결정하는 함수
-    /// </summary>
-    /// <param name="isShow"></param>
-    public void ShowWeaponAndShield(bool isShow = true)
-    {
-
-        weaponParent.gameObject.SetActive(isShow);
-        shiledParent.gameObject.SetActive(isShow);
-    }
-
-    /// <summary>
-    /// 무기 이펙트를 키거나 끄라는 신호를 보내는 함수
-    /// </summary>
-    /// <param name="isShow">true일 때 보이고, false일때 안보인다</param>
-    public void ShowWeaponEffect(bool isShow = true)
-    {
-        onWeaponEffectEnable?.Invoke(isShow);
     }
 
     /// <summary>
@@ -464,10 +492,97 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget, IBattler
         }
     }
 
+
+
+    /// <summary>
+    /// 락온 입력이 들어왔을때 실행될 함수
+    /// </summary>
+    private void OnLockOnInPut()
+    {
+        // 적이 1마리 이상있을때 가장 가까운 적 
+        if (LockOnTarget == null)
+        {
+            // 주변적 찾기(AttackTarget)
+            Collider[] enemies = Physics.OverlapSphere(transform.position, lockOnRange, LayerMask.GetMask("AttackTarget"));
+            // 적이 1마리 이상일때
+            if(enemies.Length > 0)
+            {
+                Transform nearest = null;
+                float nearestDistanceSqr = float.MaxValue;
+
+                foreach (Collider enemy in enemies)
+                {
+                    float distanceSqr = Vector3.SqrMagnitude(transform.position - enemy.transform.position);
+
+                    if (nearestDistanceSqr > distanceSqr)
+                    {
+                        nearestDistanceSqr = distanceSqr;
+                        nearest = enemy.transform;
+                    }
+
+                }
+
+                LockOnTarget = nearest;
+
+            }
+
+        }
+        else
+        {
+            LockOnTarget = null;
+        }
+
+
+    }
+
+    /// <summary>
+    /// 모드에 따라 이동속도를 변경하는 함수
+    /// </summary>
+    /// <param name="mode">현재 모드</param>
+    private void MoveSpeeChange(MoveMode mode)
+    {
+        // 눌려지고 있는 상황
+        switch (mode)    // 이동 모드에 따라 속도와 애니메이션 변경
+        {
+            case MoveMode.Walk:
+                currentSpeed = walkSpeed;
+                animator.SetFloat(anim_SpeedToHash, AnimatorWalkSpeed);
+                break;
+            case MoveMode.Run:
+                currentSpeed = runSpeed;
+                animator.SetFloat(anim_SpeedToHash, AnimatorRunSpeed);
+                break;
+        }
+    }
+
+
+    /// <summary>
+    /// 무기와 방패를 보여줄지 말지를 결정하는 함수
+    /// </summary>
+    /// <param name="isShow"></param>
+    public void ShowWeaponAndShield(bool isShow = true)
+    {
+
+        weaponParent.gameObject.SetActive(isShow);
+        shiledParent.gameObject.SetActive(isShow);
+    }
+
+    /// <summary>
+    /// 무기 이펙트를 키거나 끄라는 신호를 보내는 함수
+    /// </summary>
+    /// <param name="isShow">true일 때 보이고, false일때 안보인다</param>
+    public void ShowWeaponEffect(bool isShow = true)
+    {
+        onWeaponEffectEnable?.Invoke(isShow);
+    }
+
+
+
     public void Die()
     {
         deadCam.Follow = null;
         deadCam.Priority = 20;
+        animator.SetTrigger(anim_DieToHash);
         onDie?.Invoke();
         
         Debug.Log("플레이어 사망");
@@ -703,19 +818,39 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget, IBattler
     {
         if (IsAlive)
         {
-            float final = Mathf.Max(0, damage - DefencePower); // 0 이하로는 데미지가 내려가지 않는다
+            animator.SetTrigger(anim_GetHitToHash);
+            WeaponBladeDisable();                               // 공격중에 피격당할 경우를 대비해서 꺼준다
+
+            float final = Mathf.Max(0, damage - DefencePower);  // 0 이하로는 데미지가 내려가지 않는다
             HP -= final;  
+
             onHit?.Invoke(Mathf.RoundToInt(final));
         }
 
     }
 
+    private void OnSkillStart()
+    {
+        animator.SetBool(anim_SkillEndToHash, false);
+        animator.SetTrigger(anim_SkillStartToHash);
+        skillArea.Activate(AttackPower);
+    }
+
+    private void OnSkillEnd()
+    {
+        animator.SetBool(anim_SkillEndToHash, true);
+
+        skillArea.Deactivate();
+    }
 
 #if UNITY_EDITOR
     private void OnDrawGizmos()
     {
         Handles.color = Color.blue;
         Handles.DrawWireDisc(transform.position, Vector3.up, ItemPickupRange, 2.0f);
+
+        Handles.color = Color.cyan;
+        Handles.DrawWireDisc(transform.position, Vector3.up, lockOnRange, 1.0f);
     }
 
 

@@ -66,7 +66,7 @@ public class Weapon : MonoBehaviour
 
                 Vector3 impactPoint = transform.position + transform.up * 0.8f; // 칼날 부분중 한군데를 임의로 지정
                 Vector3 effectPoint = other.ClosestPoint(impactPoint);    //impactPoint의 위치와 other가 가장 가까운 위치
-                Factory.Instance.GetHitEffect(effectPoint);               // effectPoint 이펙트 생성
+                Factory.Instance.GetPlayerHitEffect(effectPoint);               // effectPoint 이펙트 생성
             }
         }
     }
