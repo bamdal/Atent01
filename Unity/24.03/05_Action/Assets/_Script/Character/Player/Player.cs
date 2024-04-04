@@ -219,7 +219,7 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget, IBattler
                 }
                 mp = Mathf.Clamp(mp, 0, MaxMP);
                 onManaChange?.Invoke(mp / MaxMP);
-                Debug.Log($"{this.gameObject.name} Mana {mp}");
+                //Debug.Log($"{this.gameObject.name} Mana {mp}");
             }
 
         }
@@ -444,7 +444,7 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget, IBattler
     /// </summary>
     private void OnMoveModeChangeInput()
     {
-        Debug.Log(CurrnetMoveMode);
+        //Debug.Log(CurrnetMoveMode);
         if (CurrnetMoveMode == MoveMode.Walk)
         {
             CurrnetMoveMode = MoveMode.Run;
