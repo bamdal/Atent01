@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerSkillArea : MonoBehaviour
@@ -17,36 +18,100 @@ public class PlayerSkillArea : MonoBehaviour
     /// </summary>
     public float skillPower = 0.2f;
 
+
+    public float manaCost = 30.0f;
+
     /// <summary>
     /// 활성화 된 시점에서 스킬의 최종 공격력
     /// </summary>
-    float finalPower; 
+    float finalPower;
 
+    /// <summary>
+    /// 활성화 상태를 확인하기 위한 프로퍼티
+    /// </summary>
+    public bool IsActivate => gameObject.activeSelf;
 
-    public void Activate(float power)
+    /// <summary>
+    /// 트리거 안에 있는 적들의 목록
+    /// </summary>
+    List<Enemy> enemies = new List<Enemy>(4);
+
+    /// <summary>
+    /// 데미지 쿨타임
+    /// </summary>
+    float coolTime = 0.0f;
+
+    /// <summary>
+    /// MP에 접근하기위한 인터페이스
+    /// </summary>
+    IMana playerMana;
+
+    private void Awake()
     {
-        finalPower = power * (1 + skillPower);
-        gameObject.SetActive(true);
-        // skillTick 마다 트리거 안에있는 모든 적에게 finalPower만큼 데미지를 준다
-        // 칼의 이펙트 킨다
-        // 활성화 되어있는 동안 지속적으로 플레이어의 MP가 감소
-        // 스킬 애니메이션시작
+        playerMana = GetComponentInParent<IMana>();
     }
 
+    private void Update()
+    {
+        coolTime -= Time.deltaTime;
+        if (coolTime < 0.0f)
+        {
+            foreach (Enemy enemy in enemies)    // 트리거 안에 있는 모든 적에게 데미지 주기
+            {
+                enemy.Defence(finalPower);
+            }
+            coolTime = skillTick;               // 쿨타임 초기화
+        }
+        playerMana.MP -= manaCost * Time.deltaTime; // MP는 지속적으로 cost감소
+       
+    }
+
+    /// <summary>
+    /// 스킬 영역 활성화
+    /// </summary>
+    /// <param name="power">플레이어의 현재공격력</param>
+    public void Activate(float power)
+    {
+        coolTime = 0.0f;                        // 쿨타임 초기화
+        finalPower = power * (1 + skillPower);  // 최종 데미지 결정
+        gameObject.SetActive(true);             // 오브젝트 활성화 ( = 트리거 켜기)
+
+
+    }
+
+
+    /// <summary>
+    /// 스킬 영역 비활성화
+    /// </summary>
     public void Deactivate()
     {
-        // 칼의 이펙트 끄고 비활성화
-        // 스킬 애니메이션 종료
-        gameObject.SetActive(false);    
+        gameObject.SetActive(false);    // 오브젝트 비활성화
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        
+        if (other.CompareTag("Enemy"))
+        {
+            Enemy enemy = other.GetComponent<Enemy>();
+            if (enemy != null)
+            {
+                enemies.Add(enemy);
+            }
+        }
+
     }
 
     private void OnTriggerExit(Collider other)
     {
-        
+        if (other.CompareTag("Enemy"))
+        {
+            Enemy enemy = other.GetComponent<Enemy>();
+            if (enemy != null)
+            {
+                enemies.Remove(enemy);
+            }
+
+        }
+
     }
 }

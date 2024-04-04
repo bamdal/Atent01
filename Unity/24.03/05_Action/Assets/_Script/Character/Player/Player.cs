@@ -66,12 +66,16 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget, IBattler
         get => currentMoveMode;
         set
         {
-            currentMoveMode = value;    // 상태 변경
-            if (currentSpeed > 0.0f)    // 이동 중인지 아닌지 확인
+            if (!skillArea.IsActivate)  // 스킬 사용중에는 이동 모드 변경 불가
             {
-                // 이동 중이면 모드에 맞게 속도와 애니메이션 변경
-                MoveSpeeChange(currentMoveMode);
+                currentMoveMode = value;    // 상태 변경
+                if (currentSpeed > 0.0f)    // 이동 중인지 아닌지 확인
+                {
+                    // 이동 중이면 모드에 맞게 속도와 애니메이션 변경
+                    MoveSpeeChange(currentMoveMode);
+                }
             }
+
 
         }
     }
@@ -209,6 +213,10 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget, IBattler
             if (IsAlive)
             {
                 mp = value;
+                if (mp <= 0)
+                {
+                    OnSkillEnd();
+                }
                 mp = Mathf.Clamp(mp, 0, MaxMP);
                 onManaChange?.Invoke(mp / MaxMP);
                 Debug.Log($"{this.gameObject.name} Mana {mp}");
@@ -354,7 +362,7 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget, IBattler
 
         deadCam = GetComponentInChildren<CinemachineVirtualCamera>();
 
-        skillArea = GetComponentInChildren<PlayerSkillArea>();
+        skillArea = GetComponentInChildren<PlayerSkillArea>(true);
 
         inputController = GetComponent<PlayerInputController>();
         inputController.onMove += OnMoveInput;
@@ -436,6 +444,7 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget, IBattler
     /// </summary>
     private void OnMoveModeChangeInput()
     {
+        Debug.Log(CurrnetMoveMode);
         if (CurrnetMoveMode == MoveMode.Walk)
         {
             CurrnetMoveMode = MoveMode.Run;
@@ -533,6 +542,30 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget, IBattler
         }
 
 
+    }
+
+    /// <summary>
+    /// 스킬 사용 버튼을 눌렀을 때 실행될 함수 
+    /// </summary>
+    private void OnSkillStart()
+    {
+        if (currentMoveMode == MoveMode.Walk && MP > 0)
+        {
+            animator.SetTrigger(anim_SkillStartToHash);
+            animator.SetBool(anim_SkillEndToHash, false);
+            skillArea.Activate(AttackPower);
+            ShowWeaponEffect(true);
+        }
+    }
+
+    /// <summary>
+    /// 스킬 사용을 끝냈을 때 실행될 함수
+    /// </summary>
+    private void OnSkillEnd()
+    {
+        animator.SetBool(anim_SkillEndToHash, true);
+        ShowWeaponEffect(false);
+        skillArea.Deactivate();
     }
 
     /// <summary>
@@ -829,19 +862,7 @@ public class Player : MonoBehaviour, IHealth, IMana, IEquipTarget, IBattler
 
     }
 
-    private void OnSkillStart()
-    {
-        animator.SetBool(anim_SkillEndToHash, false);
-        animator.SetTrigger(anim_SkillStartToHash);
-        skillArea.Activate(AttackPower);
-    }
 
-    private void OnSkillEnd()
-    {
-        animator.SetBool(anim_SkillEndToHash, true);
-
-        skillArea.Deactivate();
-    }
 
 #if UNITY_EDITOR
     private void OnDrawGizmos()
