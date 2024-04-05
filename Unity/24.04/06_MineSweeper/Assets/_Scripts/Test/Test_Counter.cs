@@ -10,6 +10,8 @@ public class Test_Counter : TestBase
 
     public bool Start = false;
 
+    public GameManager.GameState gameState;
+
 #if UNITY_EDITOR
     private void Update()
     {
@@ -27,6 +29,11 @@ public class Test_Counter : TestBase
     protected override void OnTest2(InputAction.CallbackContext context)
     {
         GameManager.Instance.Test_SetFlagCount(Random.Range(-100, 1000));
+    }
+
+    protected override void OnTest3(InputAction.CallbackContext context)
+    {
+        GameManager.Instance.Test_StateChange(gameState);
     }
 #endif
 }

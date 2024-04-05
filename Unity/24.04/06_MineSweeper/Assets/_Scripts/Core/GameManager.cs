@@ -100,5 +100,9 @@ public class GameManager : Singleton<GameManager>
         FlagCount = flagCount;
     }
 
+    public void Test_StateChange(GameState state)
+    {
+        State = state;
+    }
 #endif
 }

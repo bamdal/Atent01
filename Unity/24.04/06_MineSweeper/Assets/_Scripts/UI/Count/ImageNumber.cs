@@ -9,7 +9,7 @@ public class ImageNumber : MonoBehaviour
     /// <summary>
     /// UI에 뜰 숫자
     /// </summary>
-    int number = 0;
+    int number = -1;
 
     /// <summary>
     /// 스프라이트 숫자 이미지
