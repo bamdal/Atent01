@@ -10,7 +10,7 @@ public class Test_Board : TestBase
     public int mineCount = 10;
 
     public Board board;
-
+#if UNITY_EDITOR
     protected override void OnTest1(InputAction.CallbackContext context)
     {
         board.Initialize(width, height,mineCount);
@@ -19,5 +19,8 @@ public class Test_Board : TestBase
     protected override void OnTest2(InputAction.CallbackContext context)
     {
         board.Test_OpenAllCover();
+
     }
+
+#endif
 }

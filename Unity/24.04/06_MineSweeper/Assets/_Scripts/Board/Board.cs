@@ -40,6 +40,25 @@ public class Board : MonoBehaviour
     const float Distance = 1.0f;
 
     /// <summary>
+    /// 현재 마우스가 누르고 있는 셀
+    /// </summary>
+    Cell currentCell = null;
+
+    Cell CurrnetCell
+    {
+        get => currentCell;
+        set
+        {
+            if (currentCell != value)
+            {
+                currentCell?.RestoreCover();
+                currentCell = value;
+                currentCell?.LeftPress();
+            }
+        }
+    }
+
+    /// <summary>
     /// 입력용 인풋시스템
     /// </summary>
     PlayerInputActions inputActions;
@@ -49,6 +68,11 @@ public class Board : MonoBehaviour
 
     public Sprite[] closeCellImage;
     public Sprite this[CloseCellType type] => closeCellImage[(int)type];
+
+    /// <summary>
+    /// 게임 매니저
+    /// </summary>
+    GameManager gameManager;
 
 
     private void Awake()
@@ -82,6 +106,9 @@ public class Board : MonoBehaviour
     /// <param name="newMineCount">배치될 지뢰의 개수</param>
     public void Initialize(int newWidth, int newHieght, int newMineCount)
     {
+        // 게임 매니저 저장해 놓기
+        gameManager = GameManager.Instance;
+
         // 값 설정
         width = newWidth;
         height = newHieght;
@@ -96,31 +123,56 @@ public class Board : MonoBehaviour
                 // 셀 하나 씩 생성하고 위치 설정
                 GameObject cellObj = Instantiate(cellPrefab,transform);
                 Cell cell = cellObj.GetComponent<Cell>();
-                cell.Board = this;
-                cell.transform.localPosition = new Vector3(x * Distance, -y * Distance);
 
-                // 배열에 추가
                 int id = x + y * width;
-                cells[id] = cell;
+                cell.ID = id;
+                cell.transform.localPosition = new Vector3(x * Distance, -y * Distance);
+                cell.Board = this;
+                cell.onFlagReturn = gameManager.IncreaseFlagCount;
+                cell.onFlagUse = gameManager.DecreaseFlagCount;
+
                 cellObj.name = $"Cell_{id}_({x},{y})";
+
+                cells[id] = cell;
+
+
+
             }
         }
+
+        // 셀 전체 초기화
+        foreach (Cell cell in cells)
+        {
+            cell.Initialize();
+
+        }
+
+        // 보드 데이터 리셋
         ResetBoard();
     }
+
 
     /// <summary>
     /// 보드에 존재하는 모든 셀의 데이터 리셋하고 지뢰를 새로 배치하는 함수(게임 재시작용 함수)
     /// </summary>
     void ResetBoard()
     {
+        // 전체 셀의 데이터 리셋
         foreach (Cell cell in cells)
         {
+
             cell.ResetData();
-            cell.SetMine();
         }
         // mineCount만큼 지뢰 배치
-        
+        Shuffle(cells.Length, out int[] shuffleResult); // 숫자 섞기(0~ cells.Length-1)
+
+        for (int i = 0; i < mineCount; i++)
+        {
+            cells[shuffleResult[i]].SetMine();
+        }
     }
+
+    // 셀 확인용 함수들 ------------------------------------------------------------------
 
     /// <summary>
     /// 스크린 좌표를 그리드 좌표로 변경해주는 함수
@@ -146,7 +198,7 @@ public class Board : MonoBehaviour
         int? result = null;
         if(IsValidGrid(x, y))
         {
-            result = x + y * height;
+            result = x + y * width;
         }
 
 
@@ -155,14 +207,24 @@ public class Board : MonoBehaviour
     }
 
     /// <summary>
+    /// 인덱스를 그리드 좌표로 만들어 주는 함수
+    /// </summary>
+    /// <param name="index"></param>
+    /// <returns></returns>
+    Vector2Int IndexToGrid(int index)
+    {
+        return new(index % width, index / width);
+    }
+
+    /// <summary>
     /// 지정된 그리드 좌표가 보드 내부인지 확인하는 함수
     /// </summary>
     /// <param name="x">x 좌표</param>
     /// <param name="y">y 좌표</param>
-    /// <returns>보등 안이면 true, 밖이면 false</returns>
+    /// <returns>보등 안이면 true, 밖이면 false, 셀이 초기화 되지않았다면 null</returns>
     bool IsValidGrid(int x, int y)
     {
-        return x >= 0 && y >= 0 && x < width && y < height;
+        return x >= 0 && y >= 0 && x < width && y < height && cells != null;
     }
 
     /// <summary>
@@ -186,40 +248,127 @@ public class Board : MonoBehaviour
     private void OnLeftPress(InputAction.CallbackContext context)
     {
         Vector2 screen = Mouse.current.position.ReadValue();
+        Cell cell = GetCell(screen);
+        if (cell != null)
+        {
+            CurrnetCell = cell;
+        }
+        // 눌렀을 대 커버 변경
+        // None Cell ClosePress가 보이고
+        // Flag 변화 없음
+        // Question - QuestionPress변경
+    }
 
-            //Debug.Log(GetCell(screen).gameObject.name);
-        // 셀의 이름 출력하기(레이캐스트 제외)
-
-    } 
-    
     private void OnLeftRelease(InputAction.CallbackContext context)
     {
         Vector2 screen = Mouse.current.position.ReadValue();
+        Cell cell = GetCell(screen);
+        if (cell != null)
+        {
+            cell.LeftRelease();
+        }
+
+
+
     }
+
+    
 
     private void OnRightClick(InputAction.CallbackContext context)
     {
         Vector2 screen = Mouse.current.position.ReadValue();
+        Cell cell = GetCell(screen);
+        if(cell != null)
+        {
+            cell.RightPress();
+        }
 
     }
     private void OnMouseMove(InputAction.CallbackContext context)
     {
-        Vector2 screen = context.ReadValue<Vector2>();
+        if (Mouse.current.leftButton.isPressed)
+        {
+            Vector2 screen = context.ReadValue<Vector2>();
+            Cell cell = GetCell(screen);
+            if (cell != null)
+            {
+                CurrnetCell = cell;
+            }
+        }
+
 
     }
-    // ------------------------------------------------------------------------------------------
+    // 기타 유틸리티 함수들 ------------------------------------------------------------------------------------------
 
+    /// <summary>
+    /// 셔플용 함수
+    /// </summary>
+    /// <param name="count">셔플할 숫자 범위 (0 ~ count -1)</param>
+    /// <param name="result">셔플 결과</param>
+    void Shuffle(int count, out int[] result)
+    {
+        // count만큼 순서대로 숫자가 들어간 배열 만들기
+        result = new int[count];
+        for (int i = 0; i < count; i++)
+        {
+            result[i] = i;
+        }
+        // 위에서 만든 배열을 섞기 
+        int loopCount = result.Length-1;
+        for (int i = 0; i < loopCount; i++) // 8*8일때 63번 반복
+        {
+            int randomIndex = UnityEngine.Random.Range(0, result.Length - i);   // 처음에는 0 ~ 63 중 랜덤 선택
+            int lastIndex = loopCount - i;                                      // 처음엔 63번 인덱스
 
+            (result[lastIndex], result[randomIndex]) = (result[randomIndex], result[lastIndex]);    // 랜덤으로 나온 값과 63번 값 스왑
+        }
+    }
+
+    /// <summary>
+    /// 특정 셀의 주변 셀을 돌려주는 함수
+    /// </summary>
+    /// <param name="id">중심 셀의 아이디</param>
+    /// <returns>중심 셀의 주변 셀들의 리스트</returns>
+    public List<Cell> GetNeighbors(int id)
+    {
+        List<Cell> result = new List<Cell>();
+        Vector2Int grid = IndexToGrid(id);  // id의 그리드 위치를 +-1씩해서 구하기
+        for (int y = -1; y < 2; y++)
+        {
+            for (int x = -1; x < 2; x++)
+            {
+                if (!(x == 0 && y == 0))    // 자기 자신은제외
+                {
+                    int? index = GridToIndex(x + grid.x, y + grid.y);
+                    if (index != null)      // valid한 id면 추가
+                    {
+                        result.Add(cells[index.Value]);
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
 
 
     // 게임 상태 변환
 #if UNITY_EDITOR
     public void Test_OpenAllCover()
     {
-        foreach (var cell in cells)
+        if(cells != null)
         {
-            cell.Test_OpenCover();
+            foreach (var cell in cells)
+            {
+                cell.Test_OpenCover();
+            }
         }
+        
+    }
+
+    public void Test_BoardReset()
+    {
+        ResetBoard();
     }
 #endif
 }

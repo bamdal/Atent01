@@ -153,7 +153,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   seed: -1
-  width: 8
+  width: 4
   height: 8
   mineCount: 10
   board: {fileID: 5287075933566034210}
@@ -331,11 +331,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 6726121897602138072, guid: e6a5d362b879f8a4d8f633f9199ad57f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -3.38
+      value: -3.32
       objectReference: {fileID: 0}
     - target: {fileID: 6726121897602138072, guid: e6a5d362b879f8a4d8f633f9199ad57f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.95
+      value: 4.06
       objectReference: {fileID: 0}
     - target: {fileID: 6726121897602138072, guid: e6a5d362b879f8a4d8f633f9199ad57f, type: 3}
       propertyPath: m_LocalPosition.z
