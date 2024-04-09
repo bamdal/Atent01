@@ -39,16 +39,17 @@ public class GameManager : Singleton<GameManager>
                 switch (state)                      // 델리게이트 실행
                 {
                     case GameState.Ready:
+                        FlagCount = mineCount;
                         onGameReady?.Invoke();
                         break;
                     case GameState.Play:
                         onGamePlay?.Invoke();
                         break;
                     case GameState.GameClear:
-                        onGameGameClear?.Invoke();
+                        onGameClear?.Invoke();
                         break;
                     case GameState.GameOver:
-                        onGameGameOver?.Invoke();
+                        onGameOver?.Invoke();
                         break;
                 }
 
@@ -56,11 +57,15 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
+    public bool IsPlaying => State == GameState.Play;
+
     // 상태변화 알림용 델리게이트
     public Action onGameReady;
     public Action onGamePlay;
-    public Action onGameGameClear;
-    public Action onGameGameOver;
+    public Action onGameClear;
+    public Action onGameOver;
+
+
 
     // 보드 생성 관련 -------------------------------------------------------------------------------------
 
@@ -134,7 +139,31 @@ public class GameManager : Singleton<GameManager>
         FlagCount--;
     }
 
-    //----------------------------------------------------------------------------------------------
+    // 게임 상태 관련----------------------------------------------------------------------------------------------
+
+
+    public void GameStart()
+    {
+        if(State == GameState.Ready)
+        {
+            State = GameState.Play;
+        }
+    }
+
+    public void GameReset()
+    {
+        State = GameState.Ready;
+    }
+
+    public void GameOver()
+    {
+        State = GameState.GameOver;
+    }
+
+    public void GameClear()
+    {
+        State = GameState.GameClear;
+    }
 
     // 게임 매니저 공용 함수 -------------------------------------------------------------------
     protected override void OnInitialize()

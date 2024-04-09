@@ -39,6 +39,8 @@ public class Board : MonoBehaviour
     /// </summary>
     const float Distance = 1.0f;
 
+    public bool IsPlaying => gameManager.IsPlaying;
+
     /// <summary>
     /// 현재 마우스가 누르고 있는 셀
     /// </summary>
@@ -49,14 +51,17 @@ public class Board : MonoBehaviour
         get => currentCell;
         set
         {
-            if (currentCell != value)
+            if (currentCell != value)           // currentCell이 변경되면
             {
-                currentCell?.RestoreCover();
+                currentCell?.RestoreCovers();   // 이전셀이 눌러 놓았던것은 원래대로 복구
                 currentCell = value;
-                currentCell?.LeftPress();
+                currentCell?.LeftPress();       // 새 currentCell에 누르기 처리
             }
         }
     }
+
+    public Action onBoardLeftPress;
+    public Action onBoardLeftRelease;
 
     /// <summary>
     /// 입력용 인풋시스템
@@ -121,21 +126,23 @@ public class Board : MonoBehaviour
             for(int x = 0; x < width; x++)
             {
                 // 셀 하나 씩 생성하고 위치 설정
-                GameObject cellObj = Instantiate(cellPrefab,transform);
+                GameObject cellObj = Instantiate(cellPrefab,transform); // 셀 게임 오브젝트 생성
                 Cell cell = cellObj.GetComponent<Cell>();
 
                 int id = x + y * width;
-                cell.ID = id;
+                cell.ID = id;           // ID 설정
                 cell.transform.localPosition = new Vector3(x * Distance, -y * Distance);
-                cell.Board = this;
-                cell.onFlagReturn = gameManager.IncreaseFlagCount;
-                cell.onFlagUse = gameManager.DecreaseFlagCount;
+                cell.Board = this;      // Board 기록해두기
+
+                cell.onFlagReturn = gameManager.IncreaseFlagCount;  // 셀에 깃발 설치됐을 때 실행할 함수 연결
+                cell.onFlagUse = gameManager.DecreaseFlagCount;     // 셀에 깃발 해제됐을 때 실행할 함수 연결
+                cell.onExplosion = gameManager.GameOver;            // 셀에서 지뢰가 터졌을 때 실행할 함수 연결 
 
                 cellObj.name = $"Cell_{id}_({x},{y})";
 
                 cells[id] = cell;
 
-
+                
 
             }
         }
@@ -146,10 +153,14 @@ public class Board : MonoBehaviour
             cell.Initialize();
 
         }
+        gameManager.onGameReady = ResetBoard;   // 레디로 가면 보드 리셋
+        gameManager.onGameOver += OnGameOver;   // 게임오버
 
         // 보드 데이터 리셋
         ResetBoard();
+
     }
+
 
 
     /// <summary>
@@ -170,7 +181,37 @@ public class Board : MonoBehaviour
         {
             cells[shuffleResult[i]].SetMine();
         }
+        count = cells.Length;
     }
+
+    // 게임 매니저 상태 변화시 사용할 함수들 ---------------------------------
+
+
+
+    /// <summary>
+    /// 게임오버가 되면 보드가 처리할 일을 기록해 놓은 함수
+    /// </summary>
+    /// <exception cref="NotImplementedException"></exception>
+    private void OnGameOver()
+    {
+        // 잘못 설치한 깃발은 NotMine으로 cover변환
+        // 못찾은 지뢰는 커버를 제거
+        foreach (Cell cell in cells)
+        {
+            if (!cell.HasMine && cell.IsFlaged)
+            {
+                cell.FlagMistake();
+
+            }
+            else if (cell.HasMine && !cell.IsFlaged)
+            {
+                cell.MineNotFound();
+            }
+        }
+
+    }
+
+
 
     // 셀 확인용 함수들 ------------------------------------------------------------------
 
@@ -252,13 +293,20 @@ public class Board : MonoBehaviour
         if (cell != null)
         {
             CurrnetCell = cell;
+            gameManager.GameStart();
+
+            if (gameManager.IsPlaying)
+            {
+                onBoardLeftPress?.Invoke();
+
+            }
         }
         // 눌렀을 대 커버 변경
         // None Cell ClosePress가 보이고
         // Flag 변화 없음
         // Question - QuestionPress변경
     }
-
+    public int count;
     private void OnLeftRelease(InputAction.CallbackContext context)
     {
         Vector2 screen = Mouse.current.position.ReadValue();
@@ -266,8 +314,18 @@ public class Board : MonoBehaviour
         if (cell != null)
         {
             cell.LeftRelease();
-        }
+            gameManager.GameStart();
 
+            if (gameManager.IsPlaying)
+            {
+                onBoardLeftRelease?.Invoke();
+                if(count == gameManager.mineCount)
+                {
+                    gameManager.GameClear();
+                }
+            }
+           
+        }
 
 
     }
