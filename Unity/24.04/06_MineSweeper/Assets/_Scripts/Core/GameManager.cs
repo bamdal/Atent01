@@ -40,9 +40,15 @@ public class GameManager : Singleton<GameManager>
                 {
                     case GameState.Ready:
                         FlagCount = mineCount;
+                        Debug.Log(playerName);
                         onGameReady?.Invoke();
                         break;
                     case GameState.Play:
+                        if (playerName == string.Empty)
+                        {
+                            playerName = $"Player{(uint)DateTime.Now.GetHashCode()}";
+                        }
+
                         onGamePlay?.Invoke();
                         break;
                     case GameState.GameClear:
@@ -139,6 +145,34 @@ public class GameManager : Singleton<GameManager>
         FlagCount--;
     }
 
+    // 플레이 행동 관련 ------------------------------------------
+
+    int actionCount = 0;
+
+    public int ActionCount
+    {
+        get => actionCount;
+        private set
+        {
+            if(actionCount != value)
+            {
+                actionCount = value;
+                onActionCountChange?.Invoke(actionCount);
+            }
+        }
+    }
+
+    public Action<int> onActionCountChange;
+
+    /// <summary>
+    /// 플레이어의 행동이 끝남을 알리는 함수
+    /// </summary>
+    public void PlayerActionEnd()
+    {
+        ActionCount++; 
+    }
+    // 셀 열기, 깃발설치, 깃발 해체
+
     // 게임 상태 관련----------------------------------------------------------------------------------------------
 
 
@@ -153,6 +187,7 @@ public class GameManager : Singleton<GameManager>
     public void GameReset()
     {
         State = GameState.Ready;
+        ActionCount = 0;
     }
 
     public void GameOver()
@@ -165,6 +200,11 @@ public class GameManager : Singleton<GameManager>
         State = GameState.GameClear;
     }
 
+    // 플레이어 정보용 -------------------------------------------------------------
+
+    string playerName = string.Empty;
+    PlayerNameInput playerNameInput;
+
     // 게임 매니저 공용 함수 -------------------------------------------------------------------
     protected override void OnInitialize()
     {
@@ -173,6 +213,9 @@ public class GameManager : Singleton<GameManager>
         board.Initialize(boardWidth, boardHeight,mineCount);
 
         FlagCount = mineCount; // 깃발 개수 설정
+
+        playerNameInput = FindAnyObjectByType<PlayerNameInput>();
+        playerNameInput.onPlayerNameSet += (name) => playerName = name;
     }
 
 #if UNITY_EDITOR

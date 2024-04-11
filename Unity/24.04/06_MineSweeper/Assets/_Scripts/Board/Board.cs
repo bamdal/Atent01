@@ -30,6 +30,11 @@ public class Board : MonoBehaviour
     int mineCount = 10;
 
     /// <summary>
+    /// 닫혀있는 셀의 개수
+    /// </summary>
+    int closeCellCount;
+
+    /// <summary>
     /// 이 보드가 생성한 모든 셀
     /// </summary>
     Cell[] cells;
@@ -38,6 +43,14 @@ public class Board : MonoBehaviour
     /// 셀 한칸의 크기
     /// </summary>
     const float Distance = 1.0f;
+
+    /// <summary>
+    /// 게임이 끝났을때 찾지못한 지뢰의 개수
+    /// </summary>
+    int notFoundMineCount = 0;
+    
+    public int FoundMineCount => mineCount - notFoundMineCount;
+    public int NotFoundMineCount => notFoundMineCount;
 
     public bool IsPlaying => gameManager.IsPlaying;
 
@@ -82,7 +95,7 @@ public class Board : MonoBehaviour
 
     private void Awake()
     {
-        inputActions = new PlayerInputActions();    
+        inputActions = new PlayerInputActions();
     }
 
     private void OnEnable()
@@ -121,12 +134,12 @@ public class Board : MonoBehaviour
 
         // 셀 배열 만들기
         cells = new Cell[width * height];
-        for(int y = 0; y < height; y++)
+        for (int y = 0; y < height; y++)
         {
-            for(int x = 0; x < width; x++)
+            for (int x = 0; x < width; x++)
             {
                 // 셀 하나 씩 생성하고 위치 설정
-                GameObject cellObj = Instantiate(cellPrefab,transform); // 셀 게임 오브젝트 생성
+                GameObject cellObj = Instantiate(cellPrefab, transform); // 셀 게임 오브젝트 생성
                 Cell cell = cellObj.GetComponent<Cell>();
 
                 int id = x + y * width;
@@ -134,15 +147,26 @@ public class Board : MonoBehaviour
                 cell.transform.localPosition = new Vector3(x * Distance, -y * Distance);
                 cell.Board = this;      // Board 기록해두기
 
-                cell.onFlagReturn = gameManager.IncreaseFlagCount;  // 셀에 깃발 설치됐을 때 실행할 함수 연결
-                cell.onFlagUse = gameManager.DecreaseFlagCount;     // 셀에 깃발 해제됐을 때 실행할 함수 연결
-                cell.onExplosion = gameManager.GameOver;            // 셀에서 지뢰가 터졌을 때 실행할 함수 연결 
+                cell.onFlagReturn += gameManager.IncreaseFlagCount;  // 셀에 깃발 설치됐을 때 실행할 함수 연결
+                cell.onFlagUse += gameManager.DecreaseFlagCount;     // 셀에 깃발 해제됐을 때 실행할 함수 연결
+                cell.onExplosion += gameManager.GameOver;            // 셀에서 지뢰가 터졌을 때 실행할 함수 연결 
+                cell.onCellOpen += () =>                             // 셀이 열릴때마다 클리어 체크용 람다함수 실행
+                {
+                    closeCellCount--;                                // 닫힌 셀 개수 감소
+                    if (closeCellCount == mineCount)    // 닫힌 셀의 개수가 지뢰개수와 같다면 게임 클리어
+                    {
+                        gameManager.GameClear();
+
+                    }
+                };
+
+                cell.onCellAction += gameManager.PlayerActionEnd;
 
                 cellObj.name = $"Cell_{id}_({x},{y})";
 
                 cells[id] = cell;
 
-                
+
 
             }
         }
@@ -155,6 +179,7 @@ public class Board : MonoBehaviour
         }
         gameManager.onGameReady = ResetBoard;   // 레디로 가면 보드 리셋
         gameManager.onGameOver += OnGameOver;   // 게임오버
+        gameManager.onGameClear += OnGameClear;
 
         // 보드 데이터 리셋
         ResetBoard();
@@ -181,7 +206,10 @@ public class Board : MonoBehaviour
         {
             cells[shuffleResult[i]].SetMine();
         }
-        count = cells.Length;
+
+
+        closeCellCount = cells.Length;
+        notFoundMineCount = 0;
     }
 
     // 게임 매니저 상태 변화시 사용할 함수들 ---------------------------------
@@ -191,7 +219,6 @@ public class Board : MonoBehaviour
     /// <summary>
     /// 게임오버가 되면 보드가 처리할 일을 기록해 놓은 함수
     /// </summary>
-    /// <exception cref="NotImplementedException"></exception>
     private void OnGameOver()
     {
         // 잘못 설치한 깃발은 NotMine으로 cover변환
@@ -206,11 +233,22 @@ public class Board : MonoBehaviour
             else if (cell.HasMine && !cell.IsFlaged)
             {
                 cell.MineNotFound();
+                notFoundMineCount++;    // 못찾은 지뢰 카운트
             }
         }
 
     }
 
+    private void OnGameClear()
+    {
+        if (gameManager.FlagCount != 0) // 아직 설치안한 깃발이 있다면
+        {
+            foreach (Cell cell in cells)
+            {
+                cell.BoardClearProcess();     // 닫힌셀에 깃발 설치
+            }
+        }
+    }
 
 
     // 셀 확인용 함수들 ------------------------------------------------------------------
@@ -225,7 +263,7 @@ public class Board : MonoBehaviour
         Vector2 world = Camera.main.ScreenToWorldPoint(screen);
         Vector2 diff = world - (Vector2)transform.position;
 
-        return new Vector2Int(Mathf.FloorToInt(diff.x/Distance), Mathf.FloorToInt(-diff.y / Distance));
+        return new Vector2Int(Mathf.FloorToInt(diff.x / Distance), Mathf.FloorToInt(-diff.y / Distance));
     }
 
     /// <summary>
@@ -237,7 +275,7 @@ public class Board : MonoBehaviour
     int? GridToIndex(int x, int y)
     {
         int? result = null;
-        if(IsValidGrid(x, y))
+        if (IsValidGrid(x, y))
         {
             result = x + y * width;
         }
@@ -306,7 +344,7 @@ public class Board : MonoBehaviour
         // Flag 변화 없음
         // Question - QuestionPress변경
     }
-    public int count;
+
     private void OnLeftRelease(InputAction.CallbackContext context)
     {
         Vector2 screen = Mouse.current.position.ReadValue();
@@ -319,24 +357,21 @@ public class Board : MonoBehaviour
             if (gameManager.IsPlaying)
             {
                 onBoardLeftRelease?.Invoke();
-                if(count == gameManager.mineCount)
-                {
-                    gameManager.GameClear();
-                }
+
             }
-           
+
         }
 
 
     }
 
-    
+
 
     private void OnRightClick(InputAction.CallbackContext context)
     {
         Vector2 screen = Mouse.current.position.ReadValue();
         Cell cell = GetCell(screen);
-        if(cell != null)
+        if (cell != null)
         {
             cell.RightPress();
         }
@@ -372,7 +407,7 @@ public class Board : MonoBehaviour
             result[i] = i;
         }
         // 위에서 만든 배열을 섞기 
-        int loopCount = result.Length-1;
+        int loopCount = result.Length - 1;
         for (int i = 0; i < loopCount; i++) // 8*8일때 63번 반복
         {
             int randomIndex = UnityEngine.Random.Range(0, result.Length - i);   // 처음에는 0 ~ 63 중 랜덤 선택
@@ -414,14 +449,14 @@ public class Board : MonoBehaviour
 #if UNITY_EDITOR
     public void Test_OpenAllCover()
     {
-        if(cells != null)
+        if (cells != null)
         {
             foreach (var cell in cells)
             {
                 cell.Test_OpenCover();
             }
         }
-        
+
     }
 
     public void Test_BoardReset()

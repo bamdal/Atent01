@@ -143,6 +143,15 @@ public class Cell : MonoBehaviour
     /// </summary>
     public Action onExplosion;
 
+    /// <summary>
+    /// 셀이 열렸음을 알리는 델리게이트
+    /// </summary>
+    public Action onCellOpen;
+
+    /// <summary>
+    /// 셀이 행동했을때 알리는 델리게이트
+    /// </summary>
+    public Action onCellAction;
 
     /// <summary>
     /// 깃발 설치 여부를 알려주는 프로퍼티
@@ -225,9 +234,11 @@ public class Cell : MonoBehaviour
             {
                 case CellCoverState.None:
                     CoverState = CellCoverState.Flag;
+                    onCellAction?.Invoke();
                     break;
                 case CellCoverState.Flag:
                     CoverState = CellCoverState.Question;
+                    onCellAction?.Invoke();
                     break;
                 case CellCoverState.Question:
                     CoverState = CellCoverState.None;
@@ -298,6 +309,7 @@ public class Cell : MonoBehaviour
                 }
                 if (aroundMineCount == flagCount)   // 깃발개수와 주위 폭탄개수가 같다면
                 {
+                    onCellAction?.Invoke();
                     foreach (var cell in pressedCells)
                     {
                         cell.Open();                // 눌려진 셀들을 연다
@@ -310,9 +322,9 @@ public class Cell : MonoBehaviour
             }
             else
             {
+                onCellAction?.Invoke();
                 // 닫혀있는 셀이라면 
                 Open(); // 열기
-
             }
 
         }
@@ -327,9 +339,9 @@ public class Cell : MonoBehaviour
     {
         if (!isOpne && !IsFlaged)   // 닫혀있고 깃발이 설치되어있지 않은 셀만 처리
         {
-            Board.count--;
             isOpne = true;                      // 열림처리후
             cover.gameObject.SetActive(false);  // 커버를 지운다
+            onCellOpen?.Invoke();
 
             if (hasMine)                        // 지뢰라면 게임오버
             {
@@ -395,6 +407,18 @@ public class Cell : MonoBehaviour
     public void MineNotFound()
     {
         cover.gameObject.SetActive(false);
+    }
+
+    /// <summary>
+    /// 게임이 클리어됐을때 불릴 함수
+    /// </summary>
+    public void BoardClearProcess()
+    {
+        if(!isOpne && HasMine && !IsFlaged)
+        {
+            CoverState = CellCoverState.Flag;
+
+        }
     }
 #if UNITY_EDITOR
     public void Test_OpenCover()
