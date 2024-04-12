@@ -215,10 +215,16 @@ public class GameManager : Singleton<GameManager>
         get => playerNameInput?.GetPlayerName();
         set => playerNameInput?.SetPlayerName(value);
     }
+    // 랭킹 관련 ----------------------------------------------------------------------
+
+    RankDataManager rankDataManager;
+    public RankDataManager RankDataManager => rankDataManager;
 
     // 게임 매니저 공용 함수 -------------------------------------------------------------------
     protected override void OnInitialize()
     {
+        rankDataManager = GetComponent<RankDataManager>();
+
         // 보드 초기화
         board = FindAnyObjectByType<Board>();
         board.Initialize(boardWidth, boardHeight,mineCount);
