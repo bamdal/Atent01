@@ -40,13 +40,13 @@ public class GameManager : Singleton<GameManager>
                 {
                     case GameState.Ready:
                         FlagCount = mineCount;
-                        Debug.Log(playerName);
+                        Debug.Log(PlayerName);
                         onGameReady?.Invoke();
                         break;
                     case GameState.Play:
-                        if (playerName == string.Empty)
+                        if (PlayerName == string.Empty)
                         {
-                            playerName = $"Player{(uint)DateTime.Now.GetHashCode()}";
+                            PlayerName = $"Player{(uint)DateTime.Now.GetHashCode()}";
                         }
 
                         onGamePlay?.Invoke();
@@ -202,8 +202,19 @@ public class GameManager : Singleton<GameManager>
 
     // 플레이어 정보용 -------------------------------------------------------------
 
-    string playerName = string.Empty;
+    /// <summary>
+    /// 플레이어 이름 입력용 UI
+    /// </summary>
     PlayerNameInput playerNameInput;
+
+    /// <summary>
+    /// 플레이어의 이름을 설정하고 확인하기 위한 프로퍼티
+    /// </summary>
+    string PlayerName
+    {
+        get => playerNameInput?.GetPlayerName();
+        set => playerNameInput?.SetPlayerName(value);
+    }
 
     // 게임 매니저 공용 함수 -------------------------------------------------------------------
     protected override void OnInitialize()
@@ -215,7 +226,6 @@ public class GameManager : Singleton<GameManager>
         FlagCount = mineCount; // 깃발 개수 설정
 
         playerNameInput = FindAnyObjectByType<PlayerNameInput>();
-        playerNameInput.onPlayerNameSet += (name) => playerName = name;
     }
 
 #if UNITY_EDITOR
