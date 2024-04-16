@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class GameManager : Singleton<GameManager>
 {
-/*    Player player;
+   Player player;
 
 
 
@@ -36,5 +36,5 @@ public class GameManager : Singleton<GameManager>
     {
         player = FindAnyObjectByType<Player>();
 
-    }*/
+    }
 }
