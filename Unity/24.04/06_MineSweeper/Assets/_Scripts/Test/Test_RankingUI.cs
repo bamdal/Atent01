@@ -28,11 +28,11 @@ public class Test_RankingUI : TestBase
 
     protected override void OnTest4(InputAction.CallbackContext context)
     {
-        Debug.Log(GameManager.Instance.RankDataManager.Test_A());
+        GameManager.Instance.RankDataManager.Test_Save();
     }
 
     protected override void OnTest5(InputAction.CallbackContext context)
     {
-        Debug.Log(GameManager.Instance.RankDataManager.Test_B());
+        GameManager.Instance.RankDataManager.Test_Load();
     }
 }

@@ -46,7 +46,7 @@ public class GameManager : Singleton<GameManager>
                     case GameState.Play:
                         if (PlayerName == string.Empty)
                         {
-                            PlayerName = $"Player{(uint)DateTime.Now.GetHashCode()}";
+                            PlayerName = $"Player{(uint)DateTime.Now.GetHashCode() % 100000} ";
                         }
 
                         onGamePlay?.Invoke();
@@ -164,6 +164,8 @@ public class GameManager : Singleton<GameManager>
 
     public Action<int> onActionCountChange;
 
+
+
     /// <summary>
     /// 플레이어의 행동이 끝남을 알리는 함수
     /// </summary>
@@ -172,6 +174,15 @@ public class GameManager : Singleton<GameManager>
         ActionCount++; 
     }
     // 셀 열기, 깃발설치, 깃발 해체
+
+    // 시간 관련 ----------------------------------------------
+    Timer timer;
+
+    /// <summary>
+    /// 현재 진행시간
+    /// </summary>
+    public float PlayTime => timer.ElapsedTime;
+
 
     // 게임 상태 관련----------------------------------------------------------------------------------------------
 
@@ -210,11 +221,13 @@ public class GameManager : Singleton<GameManager>
     /// <summary>
     /// 플레이어의 이름을 설정하고 확인하기 위한 프로퍼티
     /// </summary>
-    string PlayerName
+    public string PlayerName
     {
         get => playerNameInput?.GetPlayerName();
-        set => playerNameInput?.SetPlayerName(value);
+        private set => playerNameInput?.SetPlayerName(value);
     }
+
+
     // 랭킹 관련 ----------------------------------------------------------------------
 
     RankDataManager rankDataManager;
@@ -230,6 +243,7 @@ public class GameManager : Singleton<GameManager>
         board.Initialize(boardWidth, boardHeight,mineCount);
 
         FlagCount = mineCount; // 깃발 개수 설정
+        timer = FindAnyObjectByType<Timer>();
 
         playerNameInput = FindAnyObjectByType<PlayerNameInput>();
     }
