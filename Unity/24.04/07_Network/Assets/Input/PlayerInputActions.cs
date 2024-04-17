@@ -28,70 +28,130 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             ""id"": ""2d53b027-428e-41db-9223-5515b8d25053"",
             ""actions"": [
                 {
-                    ""name"": ""Move"",
+                    ""name"": ""MoveForward"",
                     ""type"": ""Value"",
-                    ""id"": ""8f972ab8-ae64-4e82-abf2-44832328a2ed"",
-                    ""expectedControlType"": ""Vector2"",
+                    ""id"": ""fb5730f6-2e78-40b8-80f2-b527d1876a3e"",
+                    ""expectedControlType"": ""Axis"",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Rotate"",
+                    ""type"": ""Value"",
+                    ""id"": ""3e18f2e6-ad74-4d59-8f46-c74cf4981152"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""AttackLC"",
+                    ""type"": ""Button"",
+                    ""id"": ""97e9d935-2636-4fb7-a2a8-343f4ccf7d5c"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""AttackRC"",
+                    ""type"": ""Button"",
+                    ""id"": ""e1a6dbca-9197-4e40-834d-864172b54660"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
                 {
-                    ""name"": ""WASD"",
-                    ""id"": ""34e0d383-cf36-440a-b914-4b6390156275"",
-                    ""path"": ""2DVector"",
+                    ""name"": ""1D Axis"",
+                    ""id"": ""1c710a6d-33df-4087-8f1b-232332c26a65"",
+                    ""path"": ""1DAxis"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Move"",
+                    ""action"": ""MoveForward"",
                     ""isComposite"": true,
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": ""up"",
-                    ""id"": ""778b65b3-26c3-4aab-9563-bd480e881ae4"",
-                    ""path"": ""<Keyboard>/w"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""KM"",
-                    ""action"": ""Move"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""down"",
-                    ""id"": ""fc9ace11-138a-4e2a-8f3a-f59f518e8dd3"",
+                    ""name"": ""negative"",
+                    ""id"": ""b4a75a26-a363-4eec-9893-7942e2ab5ea7"",
                     ""path"": ""<Keyboard>/s"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""KM"",
-                    ""action"": ""Move"",
+                    ""groups"": """",
+                    ""action"": ""MoveForward"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": ""left"",
-                    ""id"": ""2118fac8-d59a-4705-8e69-65c73b553af4"",
+                    ""name"": ""positive"",
+                    ""id"": ""ee230832-20ed-4ec9-9c21-08f297c152da"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MoveForward"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""1D Axis"",
+                    ""id"": ""e7512775-c82f-4cbf-8a5d-97ac97b45d9a"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Rotate"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""c99d5542-d30e-49c7-8146-40b963b21da0"",
                     ""path"": ""<Keyboard>/a"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""KM"",
-                    ""action"": ""Move"",
+                    ""groups"": """",
+                    ""action"": ""Rotate"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": ""right"",
-                    ""id"": ""c912d517-50c9-4b2d-b34e-43355176e5b6"",
+                    ""name"": ""positive"",
+                    ""id"": ""08768061-d244-444d-846d-3822df7025b8"",
                     ""path"": ""<Keyboard>/d"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""KM"",
-                    ""action"": ""Move"",
+                    ""groups"": """",
+                    ""action"": ""Rotate"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7f75b62c-e3f1-4093-a3b6-903331f2cff4"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""AttackLC"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ab0afc31-9d67-4dc3-a2ad-79cb24858372"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""AttackRC"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -117,7 +177,10 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
 }");
         // Player
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
-        m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
+        m_Player_MoveForward = m_Player.FindAction("MoveForward", throwIfNotFound: true);
+        m_Player_Rotate = m_Player.FindAction("Rotate", throwIfNotFound: true);
+        m_Player_AttackLC = m_Player.FindAction("AttackLC", throwIfNotFound: true);
+        m_Player_AttackRC = m_Player.FindAction("AttackRC", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -179,12 +242,18 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     // Player
     private readonly InputActionMap m_Player;
     private List<IPlayerActions> m_PlayerActionsCallbackInterfaces = new List<IPlayerActions>();
-    private readonly InputAction m_Player_Move;
+    private readonly InputAction m_Player_MoveForward;
+    private readonly InputAction m_Player_Rotate;
+    private readonly InputAction m_Player_AttackLC;
+    private readonly InputAction m_Player_AttackRC;
     public struct PlayerActions
     {
         private @PlayerInputActions m_Wrapper;
         public PlayerActions(@PlayerInputActions wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Move => m_Wrapper.m_Player_Move;
+        public InputAction @MoveForward => m_Wrapper.m_Player_MoveForward;
+        public InputAction @Rotate => m_Wrapper.m_Player_Rotate;
+        public InputAction @AttackLC => m_Wrapper.m_Player_AttackLC;
+        public InputAction @AttackRC => m_Wrapper.m_Player_AttackRC;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -194,16 +263,34 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         {
             if (instance == null || m_Wrapper.m_PlayerActionsCallbackInterfaces.Contains(instance)) return;
             m_Wrapper.m_PlayerActionsCallbackInterfaces.Add(instance);
-            @Move.started += instance.OnMove;
-            @Move.performed += instance.OnMove;
-            @Move.canceled += instance.OnMove;
+            @MoveForward.started += instance.OnMoveForward;
+            @MoveForward.performed += instance.OnMoveForward;
+            @MoveForward.canceled += instance.OnMoveForward;
+            @Rotate.started += instance.OnRotate;
+            @Rotate.performed += instance.OnRotate;
+            @Rotate.canceled += instance.OnRotate;
+            @AttackLC.started += instance.OnAttackLC;
+            @AttackLC.performed += instance.OnAttackLC;
+            @AttackLC.canceled += instance.OnAttackLC;
+            @AttackRC.started += instance.OnAttackRC;
+            @AttackRC.performed += instance.OnAttackRC;
+            @AttackRC.canceled += instance.OnAttackRC;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
         {
-            @Move.started -= instance.OnMove;
-            @Move.performed -= instance.OnMove;
-            @Move.canceled -= instance.OnMove;
+            @MoveForward.started -= instance.OnMoveForward;
+            @MoveForward.performed -= instance.OnMoveForward;
+            @MoveForward.canceled -= instance.OnMoveForward;
+            @Rotate.started -= instance.OnRotate;
+            @Rotate.performed -= instance.OnRotate;
+            @Rotate.canceled -= instance.OnRotate;
+            @AttackLC.started -= instance.OnAttackLC;
+            @AttackLC.performed -= instance.OnAttackLC;
+            @AttackLC.canceled -= instance.OnAttackLC;
+            @AttackRC.started -= instance.OnAttackRC;
+            @AttackRC.performed -= instance.OnAttackRC;
+            @AttackRC.canceled -= instance.OnAttackRC;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -232,6 +319,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     }
     public interface IPlayerActions
     {
-        void OnMove(InputAction.CallbackContext context);
+        void OnMoveForward(InputAction.CallbackContext context);
+        void OnRotate(InputAction.CallbackContext context);
+        void OnAttackLC(InputAction.CallbackContext context);
+        void OnAttackRC(InputAction.CallbackContext context);
     }
 }
