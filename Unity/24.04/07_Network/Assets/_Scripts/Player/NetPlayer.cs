@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 using Unity.Netcode;
 using UnityEngine;
@@ -8,9 +9,6 @@ using UnityEngine.InputSystem;
 
 public class NetPlayer : NetworkBehaviour
 {
-    PlayerInputActions inputActions;
-    CharacterController characterController;
-    Animator animator;
 
     /// <summary>
     /// 이동 속도
@@ -54,8 +52,15 @@ public class NetPlayer : NetworkBehaviour
     /// </summary>
     NetworkVariable<AnimationState> netAnimState = new NetworkVariable<AnimationState>();
 
+    /// <summary>
+    /// 채팅용 네트워크 변수
+    /// </summary>
+    NetworkVariable<FixedString512Bytes> chatString = new NetworkVariable<FixedString512Bytes> ();
 
-
+    // 컴포넌트들
+    PlayerInputActions inputActions;
+    CharacterController characterController;
+    Animator animator;
 
     private void Awake()
     {
@@ -64,6 +69,7 @@ public class NetPlayer : NetworkBehaviour
         animator = GetComponent<Animator>();
 
         netAnimState.OnValueChanged += OnAnimStateChange;
+        chatString.OnValueChanged += OnChatRecive;
     }
 
 
@@ -144,11 +150,7 @@ public class NetPlayer : NetworkBehaviour
 
     }
 
-    [ServerRpc]
-    void UpdateAnimStateServerRpc(AnimationState state)
-    {
-        netAnimState.Value = state;
-    }
+
 
     private void OnRotate(InputAction.CallbackContext context)
     {
@@ -187,6 +189,49 @@ public class NetPlayer : NetworkBehaviour
 
     }
 
+    private void SetRotateInput(float rotateInput)
+    {
+        if (NetworkManager.Singleton.IsServer)
+        {
+            RotateRequestServerRpc(rotateInput);
+
+
+        }
+        else if (IsOwner)
+        {
+            RotateRequestServerRpc(rotateInput);
+
+        }
+    }
+
+
+    private void OnAnimStateChange(AnimationState previousValue, AnimationState newValue)
+    {
+        animator.SetTrigger(newValue.ToString());
+    }
+
+    /// <summary>
+    /// 채팅을 받았을 때 처리하는 함수
+    /// </summary>
+    /// <param name="previousValue"></param>
+    /// <param name="newValue"></param>
+    /// <exception cref="NotImplementedException"></exception>
+    private void OnChatRecive(FixedString512Bytes previousValue, FixedString512Bytes newValue)
+    {
+        GameManager.Instance.Log(newValue.ToString());
+    }
+
+    /// <summary>
+    /// 채팅을 보내는 함수
+    /// </summary>
+    /// <param name="message"></param>
+    public void SendChat(string message)
+    {
+        chatString.Value = message;
+    }
+
+    // 서버 Rpc들 -----------------------------------------------------------------------------------------
+
     /// <summary>
     /// 서버가 실행하는 함수임을 알리기 위해 ServerRpc어트리뷰트와 함수끝에 이름이 반드시 ServerRpc를 포함해야한다
     /// </summary>
@@ -197,20 +242,10 @@ public class NetPlayer : NetworkBehaviour
         netMoveDir.Value = move;
     }
 
-
-    private void SetRotateInput(float rotateInput)
+    [ServerRpc]
+    void UpdateAnimStateServerRpc(AnimationState state)
     {
-        if (NetworkManager.Singleton.IsServer )
-        {
-            RotateRequestServerRpc(rotateInput);
-           
-
-        }
-        else if(IsOwner)
-        {
-            RotateRequestServerRpc(rotateInput);
-           
-        }
+        netAnimState.Value = state;
     }
 
     [ServerRpc]
@@ -220,10 +255,7 @@ public class NetPlayer : NetworkBehaviour
 
     }
 
-    private void OnAnimStateChange(AnimationState previousValue, AnimationState newValue)
-    {
-        animator.SetTrigger(newValue.ToString());   
-    }
+
 
 
 
