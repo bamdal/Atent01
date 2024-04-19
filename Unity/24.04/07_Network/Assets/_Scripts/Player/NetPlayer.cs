@@ -121,33 +121,6 @@ public class NetPlayer : NetworkBehaviour
     {
         float moveInput = context.ReadValue<float>(); // -1,0,1 중 하나
         SetMoveInput(moveInput);
-
-        if (moveInput > 0.001f)
-        {
-            state = AnimationState.Walk;
-        }
-        else if (moveInput < -0.001f)
-        {
-            state = AnimationState.BackWalk;
-        }
-        else
-        {
-            state = AnimationState.Idle;
-        }
-
-        if (state != netAnimState.Value)
-        {
-            if(IsServer)
-            {
-                netAnimState.Value = state;
-            }
-            else if(IsOwner)
-            {
-                UpdateAnimStateServerRpc(state);
-
-            }
-        }
-
     }
 
 
@@ -155,7 +128,7 @@ public class NetPlayer : NetworkBehaviour
     private void OnRotate(InputAction.CallbackContext context)
     {
         float rotateInput = context.ReadValue<float>();
-        SetRotateInput(rotateInput * rotateSpeed);
+        SetRotateInput(rotateInput);
 
         //rotate = rotateInput * rotateSpeed;
     }
@@ -172,36 +145,81 @@ public class NetPlayer : NetworkBehaviour
 
     // --------------------------------------------------------------------------
 
+    /// <summary>
+    /// 이동 입력 처리함수
+    /// </summary>
+    /// <param name="moveInput">이동 입력된 정도</param>
     void SetMoveInput(float moveInput)
     {
-        float moveDir = moveInput * moveSpeed;
 
-        if (NetworkManager.Singleton.IsServer)
+        if (IsOwner)    // 오너 일때만 이동처리
         {
-            MoveRequestServerRpc(moveDir);
+            float moveDir = moveInput * moveSpeed;  // 이동 정도 결정
+
+            if (IsServer)                           // 서버면 직접 수정
+            {
+                netMoveDir.Value = moveDir;
+
+            }
+            else
+            {
+                MoveRequestServerRpc(moveDir);      // 서버가 아니라면 서버에게 수정 요청하기
+
+            }
+            
+            // 애니메이션 변경
+            if (moveInput > 0.001f)
+            {
+                state = AnimationState.Walk;
+            }
+            else if (moveInput < -0.001f)
+            {
+                state = AnimationState.BackWalk;
+            }
+            else
+            {
+                state = AnimationState.Idle;
+            }
+
+            if (state != netAnimState.Value)    // 애니메이션 상태가 변화했다면
+            {
+                if (IsServer)                   // 서버면 직접 수정
+                {
+                    netAnimState.Value = state;
+                }
+                else if (IsOwner)               // 아니면 서버에 요청
+                {
+                    UpdateAnimStateServerRpc(state);
+
+                }
+            }
 
         }
-        else if(IsOwner)
-        {
-            MoveRequestServerRpc(moveDir);
-        }
-
 
     }
 
+    /// <summary>
+    /// 회전 입력처리 함수
+    /// </summary>
+    /// <param name="rotateInput">회전 입력 정도</param>
     private void SetRotateInput(float rotateInput)
     {
-        if (NetworkManager.Singleton.IsServer)
+        if (IsOwner)    // 오너일 때만 처리
         {
-            RotateRequestServerRpc(rotateInput);
+            float rotate = rotateInput * rotateSpeed;   // 회전량 연산
+            if (NetworkManager.Singleton.IsServer)
+            {
+                netRotate.Value = rotate;
 
 
+            }
+            else
+            {
+                RotateRequestServerRpc(rotate);
+
+            }
         }
-        else if (IsOwner)
-        {
-            RotateRequestServerRpc(rotateInput);
 
-        }
     }
 
 
@@ -210,16 +228,7 @@ public class NetPlayer : NetworkBehaviour
         animator.SetTrigger(newValue.ToString());
     }
 
-    /// <summary>
-    /// 채팅을 받았을 때 처리하는 함수
-    /// </summary>
-    /// <param name="previousValue"></param>
-    /// <param name="newValue"></param>
-    /// <exception cref="NotImplementedException"></exception>
-    private void OnChatRecive(FixedString512Bytes previousValue, FixedString512Bytes newValue)
-    {
-        GameManager.Instance.Log(newValue.ToString());
-    }
+    // 채팅 --------------------------------------------------------------------------------------------------
 
     /// <summary>
     /// 채팅을 보내는 함수
@@ -227,8 +236,31 @@ public class NetPlayer : NetworkBehaviour
     /// <param name="message"></param>
     public void SendChat(string message)
     {
-        chatString.Value = message;
+        // chatString 변경
+        if (IsServer)
+        {
+            chatString.Value = message;
+
+        }
+        else if (IsOwner)
+        {
+            RequestChatServerRpc(message);
+        }
+
     }
+
+    /// <summary>
+    /// 채팅을 받았을 때 처리하는 함수(chatString이 변경되었으면 호출)
+    /// </summary>
+    /// <param name="previousValue"></param>
+    /// <param name="newValue"></param>
+    /// <exception cref="NotImplementedException"></exception>
+    private void OnChatRecive(FixedString512Bytes previousValue, FixedString512Bytes newValue)
+    {
+        GameManager.Instance.Log(newValue.ToString());  // 받은 내용 logger에 찍기
+    }
+
+
 
     // 서버 Rpc들 -----------------------------------------------------------------------------------------
 
@@ -255,7 +287,11 @@ public class NetPlayer : NetworkBehaviour
 
     }
 
-
+    [ServerRpc]
+    void RequestChatServerRpc(FixedString512Bytes message)
+    {
+        chatString.Value = message;
+    }
 
 
 

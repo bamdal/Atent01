@@ -1,10 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static System.Net.Mime.MediaTypeNames;
 
 public class Logger : MonoBehaviour
 {
@@ -49,11 +51,27 @@ public class Logger : MonoBehaviour
         // inputField.onSubmit;    // 입력이 완료되었을 때 실행 (엔테를 쳤을때만 실행)
         inputField.onSubmit.AddListener((text) => 
         {
-            
-            Log(text);
-            inputField.text = string.Empty;     // 입력 완료되면 비우기
-            inputField.ActivateInputField();    // 포커스 다시 활성화
-            //inputField.Select(); // 포커스 있을때는 비활성화 없을때는 활성화
+            // 입력한 라인의 첫글자가 '/'면 콘솔 명령 수행
+            if (text.IndexOf("/") == 0)
+            {
+                ConsoleCommand(text);
+            }
+            else
+            {
+
+                if (GameManager.Instance.Player != null)
+                {
+                    GameManager.Instance.Player.SendChat(text);
+                }
+                else
+                {
+                    Log(text);
+                }
+                inputField.text = string.Empty;     // 입력 완료되면 비우기
+                inputField.ActivateInputField();    // 포커스 다시 활성화
+                                                    //inputField.Select(); // 포커스 있을때는 비활성화 없을때는 활성화
+            }
+
         });
 
         child = transform.GetChild(0);
@@ -233,4 +251,46 @@ public class Logger : MonoBehaviour
         }
         return result;
     }
+
+    /// <summary>
+    /// 개발용 콘솔 명령어 처리하는 함수
+    /// </summary>
+    /// <param name="command">입력받은 명령어</param>
+    void ConsoleCommand(string command)
+    {
+
+        // 첫글자는 '/'
+        // "/setname 가가가" 입력되면 GameManager의 UserName이 "가가가"로 설정
+        // command가 "/setcolor 1,0,0"으로 입력되면 플레이어의 색상은 빨간색으로 변경
+        string setnameCommand = "/setname ";
+        string setcolorCommand = "/setcolor ";
+
+        
+
+        int index = command.IndexOf(setnameCommand);
+        if (index != -1)
+        {
+            int startindex = index + setnameCommand.Length;
+            string text = command.Substring(startindex);
+            GameManager.Instance.UserName = text;
+        }
+        index = command.IndexOf(setcolorCommand);
+        if (index != -1)
+        {
+            int startindex = index + setcolorCommand.Length;
+            string text = command.Substring(startindex);
+            string[] rgb = text.Split(",");
+            float r,g,b;
+            if (rgb.Length == 3 &&
+                float.TryParse(rgb[0], out r) &&
+                float.TryParse(rgb[1], out g) &&
+                float.TryParse(rgb[2], out b))
+            {
+                Color color = new Color(r,g,b);
+                GameManager.Instance.UserColor = color;
+            }
+
+        }
+
+        }
 }
