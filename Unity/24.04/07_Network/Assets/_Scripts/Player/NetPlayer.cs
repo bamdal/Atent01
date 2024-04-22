@@ -55,7 +55,9 @@ public class NetPlayer : NetworkBehaviour
     /// <summary>
     /// 채팅용 네트워크 변수
     /// </summary>
-    NetworkVariable<FixedString512Bytes> chatString = new NetworkVariable<FixedString512Bytes> ();
+    NetworkVariable<FixedString512Bytes> chatString = new NetworkVariable<FixedString512Bytes>();
+
+
 
     // 컴포넌트들
     PlayerInputActions inputActions;
@@ -71,7 +73,6 @@ public class NetPlayer : NetworkBehaviour
         netAnimState.OnValueChanged += OnAnimStateChange;
         chatString.OnValueChanged += OnChatRecive;
     }
-
 
 
     private void OnEnable()
@@ -99,6 +100,22 @@ public class NetPlayer : NetworkBehaviour
         inputActions.Disable();
     }
 
+    public override void OnNetworkSpawn()
+    {
+        if (IsOwner)
+        {
+            GameManager.Instance.VCam.Follow = transform.GetChild(0);
+        }
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        if (IsOwner)
+        {
+            GameManager.Instance.VCam.Follow = null;
+            GameManager.Instance.onPlayerDisconnected?.Invoke();
+        }
+    }
 
 
 
@@ -228,6 +245,11 @@ public class NetPlayer : NetworkBehaviour
         animator.SetTrigger(newValue.ToString());
     }
 
+
+
+
+
+
     // 채팅 --------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -292,7 +314,6 @@ public class NetPlayer : NetworkBehaviour
     {
         chatString.Value = message;
     }
-
 
 
 

@@ -10,7 +10,10 @@ public class Test_NetController : MonoBehaviour
 {
     // Start is called before the first frame update
     TextMeshProUGUI playerInGame;
-    TextMeshProUGUI playerName;
+    TextMeshProUGUI userName;
+
+    const string BlankUserName = "□□□□□□□□";
+    const string BlankPlayerInGame ="-";
     void Start()
     {
         Transform child = transform.GetChild(0);
@@ -58,8 +61,15 @@ public class Test_NetController : MonoBehaviour
 
         child = transform.GetChild(4);
         child = child.GetChild(1);
-        playerName = child.GetComponent<TextMeshProUGUI>();
-        gameManager.onUserNameChange += (text) => { playerName.text = text; };
+        userName = child.GetComponent<TextMeshProUGUI>();
+        gameManager.onUserNameChange += (text) => { userName.text = text;  };
+
+        // 플레이어 연결 종료시 
+        gameManager.onPlayerDisconnected += () =>
+        {
+            userName.text = BlankUserName;
+            playerInGame.text = BlankPlayerInGame;
+        };
     }
 
 }

@@ -16,6 +16,7 @@ public class NetSingleton<T> : NetworkBehaviour where T : Component
     /// 종료처리에 들어갔는지 확인하기 위한 변수
     /// </summary>
     static bool isShutdown = false;
+    public bool IsShutdown => isShutdown;
 
     /// <summary>
     /// 이 싱글톤의 객체 ( 인스턴스 )

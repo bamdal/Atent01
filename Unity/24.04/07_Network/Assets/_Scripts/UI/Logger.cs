@@ -67,11 +67,11 @@ public class Logger : MonoBehaviour
                 {
                     Log(text);
                 }
-                inputField.text = string.Empty;     // 입력 완료되면 비우기
-                inputField.ActivateInputField();    // 포커스 다시 활성화
-                                                    //inputField.Select(); // 포커스 있을때는 비활성화 없을때는 활성화
-            }
 
+            }
+            inputField.text = string.Empty;     // 입력 완료되면 비우기
+            inputField.ActivateInputField();    // 포커스 다시 활성화
+                                                //inputField.Select(); // 포커스 있을때는 비활성화 없을때는 활성화
         });
 
         child = transform.GetChild(0);
@@ -262,35 +262,86 @@ public class Logger : MonoBehaviour
         // 첫글자는 '/'
         // "/setname 가가가" 입력되면 GameManager의 UserName이 "가가가"로 설정
         // command가 "/setcolor 1,0,0"으로 입력되면 플레이어의 색상은 빨간색으로 변경
-        string setnameCommand = "/setname ";
-        string setcolorCommand = "/setcolor ";
+        /*        string setnameCommand = "/setname ";
+                string setcolorCommand = "/setcolor ";
 
-        
 
-        int index = command.IndexOf(setnameCommand);
-        if (index != -1)
+
+                int index = command.IndexOf(setnameCommand);
+                if (index != -1)
+                {
+                    int startindex = index + setnameCommand.Length;
+                    string text = command.Substring(startindex);
+                    GameManager.Instance.UserName = text;
+                }
+                index = command.IndexOf(setcolorCommand);
+                if (index != -1)
+                {
+                    int startindex = index + setcolorCommand.Length;
+                    string text = command.Substring(startindex);
+                    string[] rgb = text.Split(",");
+                    float r, g, b;
+                    if (rgb.Length == 3 &&
+                        float.TryParse(rgb[0], out r) &&
+                        float.TryParse(rgb[1], out g) &&
+                        float.TryParse(rgb[2], out b))
+                    {
+                        Color color = new Color(r, g, b);
+                        GameManager.Instance.UserColor = color;
+                    }
+
+                }*/
+
+        int space = command.IndexOf(' ');
+
+        string commandToken = command.Substring(0, space);  // 첫번째 ~ space위치 앞까지
+        commandToken = commandToken.ToLower();              // 전부 소문자로 바꾸기
+        string dataToken = command.Substring(space + 1);    // space위치 다음 칸 ~ 끝까지
+
+        GameManager gameManager = GameManager.Instance;
+        switch (commandToken)
         {
-            int startindex = index + setnameCommand.Length;
-            string text = command.Substring(startindex);
-            GameManager.Instance.UserName = text;
-        }
-        index = command.IndexOf(setcolorCommand);
-        if (index != -1)
-        {
-            int startindex = index + setcolorCommand.Length;
-            string text = command.Substring(startindex);
-            string[] rgb = text.Split(",");
-            float r,g,b;
-            if (rgb.Length == 3 &&
-                float.TryParse(rgb[0], out r) &&
-                float.TryParse(rgb[1], out g) &&
-                float.TryParse(rgb[2], out b))
-            {
-                Color color = new Color(r,g,b);
-                GameManager.Instance.UserColor = color;
-            }
+            case "/setname":
+                gameManager.UserName = dataToken;
+                if (gameManager.PlayerDeco != null)
+                {
+                    gameManager.PlayerDeco.SetName(dataToken);
+                }
+                break;
+            case "/setcolor":
+                string[] colorStrings = dataToken.Split(',',' ');
+                float[] colorValues = new float[3] { 0, 0, 0 };
 
+                int count = 0;
+                foreach (string color in colorStrings)
+                {
+                    if (color.Length == 0)
+                        continue;
+
+                    if (count > 2)  // 총 3개 까지만 처리
+                        break;
+
+                    if (!float.TryParse(color, out colorValues[count]))
+                    {
+                        colorValues[count] = 0;
+                    }
+                    count++;
+                }
+
+                for (int i = 0; i < colorValues.Length; i++)
+                {
+                    colorValues[i] = Mathf.Clamp01(colorValues[i]);
+                }
+
+                Color resultColor = new Color(colorValues[0], colorValues[1], colorValues[2]);
+                if (gameManager.PlayerDeco != null)
+                {
+                    // 접속했을 때만 수정
+                    gameManager.PlayerDeco.SetColor(resultColor);
+                }
+                gameManager.UserColor = resultColor;
+                break;
         }
 
-        }
+    }
 }
