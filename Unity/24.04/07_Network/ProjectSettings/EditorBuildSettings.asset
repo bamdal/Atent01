@@ -6,6 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Test/06_Test_CameraConnect.unity
+    path: Assets/Scenes/Test/07_Test_Outline.unity
     guid: 650473a2004106d48809d816dfb4a53f
   m_configObjects: {}

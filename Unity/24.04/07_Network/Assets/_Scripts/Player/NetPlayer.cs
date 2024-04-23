@@ -57,12 +57,26 @@ public class NetPlayer : NetworkBehaviour
     /// </summary>
     NetworkVariable<FixedString512Bytes> chatString = new NetworkVariable<FixedString512Bytes>();
 
+    /// <summary>
+    /// 공격용 총알 프리펩
+    /// </summary>
+    public GameObject bulletPrefab;
 
+    /// <summary>
+    /// 공격용 오브 프리펩
+    /// </summary>
+    public GameObject orbPrefab;
+
+    /// <summary>
+    /// 발사위치용 트랜스폼
+    /// </summary>
+    Transform fireTransform;
 
     // 컴포넌트들
     PlayerInputActions inputActions;
     CharacterController characterController;
     Animator animator;
+    
 
     private void Awake()
     {
@@ -72,6 +86,8 @@ public class NetPlayer : NetworkBehaviour
 
         netAnimState.OnValueChanged += OnAnimStateChange;
         chatString.OnValueChanged += OnChatRecive;
+
+        fireTransform = transform.GetChild(4);
     }
 
 
@@ -152,12 +168,12 @@ public class NetPlayer : NetworkBehaviour
 
     private void OnLClick(InputAction.CallbackContext context)
     {
-
+        Attack1();
     }
 
     private void OnRClick(InputAction.CallbackContext context)
     {
-
+        Attack2();
     }
 
     // --------------------------------------------------------------------------
@@ -247,7 +263,15 @@ public class NetPlayer : NetworkBehaviour
 
 
 
+    void Attack1()
+    {
 
+    }
+
+    void Attack2()
+    {
+        GameObject orb = Instantiate(orbPrefab, fireTransform.position,fireTransform.rotation);
+    }
 
 
     // 채팅 --------------------------------------------------------------------------------------------------
