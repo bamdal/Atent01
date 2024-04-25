@@ -72,7 +72,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 10
-  lifeTime: 20
+  lifeTime: 5
   expolsionRadius: 5
 --- !u!73398921 &8414428863789636101
 VFXRenderer:
