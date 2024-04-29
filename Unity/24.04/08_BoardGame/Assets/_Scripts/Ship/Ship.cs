@@ -124,6 +124,7 @@ public class Ship : MonoBehaviour
         set
         {
             direction = value;
+            modelRoot.rotation = Quaternion.Euler(0, (int)direction * 90.0f, 0);
             //modelRoot 를 방향에 맞게 회전 
         }
     }
@@ -174,6 +175,8 @@ public class Ship : MonoBehaviour
     /// </summary>
     public Action<Ship> onSink;
 
+    int shipDirectionCount;
+
     /// <summary>
     /// 배 초기화용 함수
     /// </summary>
@@ -189,6 +192,8 @@ public class Ship : MonoBehaviour
 
         gameObject.name = $"{Type}_{Size}";
         gameObject.SetActive(false);
+
+        shipDirectionCount = ShipManager.Instance.ShipTypeCount;
     }
 
 
@@ -218,7 +223,9 @@ public class Ship : MonoBehaviour
     /// <param name="deployPositions">배치되는 위치들</param>
     public void Deploy(Vector2Int[] deployPositions)
     {
+        isDeployed = true;  // 배치되었다고 표시
 
+        positions = deployPositions;    // 배치된 위치(그리드) 기록
     }
 
     /// <summary>
@@ -226,7 +233,7 @@ public class Ship : MonoBehaviour
     /// </summary>
     public void UnDeploy()
     {
-        isDeployed = false;
+        ResetData();    // 데이터 초기화
     }
 
     /// <summary>
@@ -235,7 +242,15 @@ public class Ship : MonoBehaviour
     /// <param name="isCW">true면 시계방향,false면 반시계방향</param>
     public void Rotate(bool isCW = true)
     {
-
+        if (isCW)
+        {
+            Direction = (ShipDirection)(((int)Direction + 1) % (shipDirectionCount-1));
+        }else
+        {
+            // 음수 % 연산 방지
+            // %연산을 할 때는 나누는 숫자를 몇번을 더해도 결과에 영향을 안끼침
+            Direction = (ShipDirection)(((int)Direction + (shipDirectionCount -2)) % (shipDirectionCount-1));
+        }
     }
 
     /// <summary>

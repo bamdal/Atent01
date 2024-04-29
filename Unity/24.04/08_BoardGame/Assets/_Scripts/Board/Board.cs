@@ -1,14 +1,176 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static UnityEngine.Rendering.VolumeComponent;
 
 
 public class Board : MonoBehaviour
 {
-    // 클릭되어야함
-    // 각종 위치관련 유틸리티 함수
+    /// <summary>
+    /// 보드크기
+    /// </summary>
     public const int BoardSize = 10;
+
+    // 함선 배치관련 함수들 --------------------------------------------------------
+
+    /// <summary>
+    /// 보드에 배치되어있는 배의 정도 (빈곳은 None)
+    /// </summary>
+    ShipType[] shipInfos;
+
+    private void Awake()
+    {
+        shipInfos = new ShipType[BoardSize * BoardSize];    // 기본적으로 전부 None
+    }
+
+    /// <summary>
+    /// 함선을 배치하는 함수
+    /// </summary>
+    /// <param name="ship">배치할 함선(위치, 방향 , 크기 등의 정보 사용)</param>
+    /// <param name="grid">배치될 그리드 좌표</param>
+    /// <returns>배치 성공시 true, 아니면 false</returns>
+    public bool ShipDeployment(Ship ship, Vector2Int grid)
+    {
+        bool result = IsShipDeploymentAvailable(ship, grid, out Vector2Int[] gridPositions);    // 배치가 가능한 위치인지 확인
+
+        if (result)
+        {
+            foreach (var pos in gridPositions)
+            {
+                shipInfos[GridToIndex(pos).Value] = ship.Type;  // 함선 기록
+            }
+
+           Vector3 world = GridToWorld(grid);
+           ship.transform.position = transform.position + world;            // 함선위치를 옮기고
+           ship.Deploy(gridPositions);                 // 함선 개별 처리 수행
+        }
+
+        return result;
+
+    }
+
+    /// <summary>
+    /// 함선을 배치하는 함수
+    /// </summary>
+    /// <param name="ship">배치할 함선(위치, 방향 , 크기 등의 정보 사용)</param>
+    /// <param name="world">배치될 월드 좌표</param>
+    /// <returns>배치 성공시 true, 아니면 false</returns>
+    public bool ShipDeployment(Ship ship, Vector3 world)
+    {
+
+        return ShipDeployment(ship, WorldToGrid(world));
+    }
+
+    /// <summary>
+    /// 함선이 특정 위치에 배치될 수 있는지 확인하는 함수
+    /// </summary>
+    /// <param name="ship">확인할 배</param>
+    /// <param name="grid">확인할 배치 좌표(함선의 머리의 그리드 좌표)</param>
+    /// <param name="resultPositions">배치가 가능할 때 배치될 위치들(그리드좌표)</param>
+    /// <returns>true면 배치가능, false면 배치 불가능</returns>
+    public bool IsShipDeploymentAvailable(Ship ship, Vector2Int grid, out Vector2Int[] resultPositions)
+    {
+        Vector2Int dir = Vector2Int.zero;   // 그리드 위치 계산을 위한 방향 벡터         
+        switch (ship.Direction)             // 바라보는 방향에 따라 방향벡터 값 결정
+        {
+            case ShipDirection.North:
+                dir = Vector2Int.up;
+                break;
+            case ShipDirection.East:
+                dir = Vector2Int.left;
+                break;
+            case ShipDirection.South:
+                dir = Vector2Int.down;
+                break;
+            case ShipDirection.West:
+                dir = Vector2Int.right;
+                break;
+            default:
+                break;
+        }
+
+        resultPositions = new Vector2Int[ship.Size];    // 확인할 위치 만들기 (배치가능한 경우의 배치 위치)
+        for (int i = 0; i < ship.Size; i++)
+        {
+            resultPositions[i] = grid + dir * i;
+        }
+        bool result = true;
+        foreach (Vector2Int pos in resultPositions)     // 확인할 위치들을 하나씩 전부 확인
+        {
+            if (!IsInBoard(pos) || IsShipDeployedPosition(pos)) // 보드밖이거나 배가 배치되어있으면
+            {
+                result = false; // 배치 불가능
+                break;
+            }
+        }
+        return result;
+    }
+
+    /// <summary>
+    /// 함선이 특정 위치에 배치될 수 있는지 확인하는 함수
+    /// </summary>
+    /// <param name="ship">확인할 배</param>
+    /// <param name="grid">확인할 배치 좌표(함선의 머리의 그리드 좌표)</param>
+    /// <returns>true면 배치가능, false면 배치 불가능</returns>
+    public bool IsShipDeploymentAvailable(Ship ship, Vector2Int grid)
+    {
+        return IsShipDeploymentAvailable(ship, grid, out _);
+    }
+
+
+
+
+    /// <summary>
+    /// 함선이 특정 위치에 배치될 수 있는지 확인하는 함수
+    /// </summary>
+    /// <param name="ship">확인할 배</param>
+    /// <param name="world">확인할 배치 좌표(함선의 머리의 월드 좌표)</param>
+    /// <returns>true면 배치가능, false면 배치 불가능</returns>
+    public bool IsShipDeploymentAvailable(Ship ship, Vector3 world)
+    {
+        return IsShipDeploymentAvailable(ship, WorldToGrid(world));
+    }
+
+    /// <summary>
+    /// 보드의 특정 위치에 있는 배의 종류를 확인하느 함수
+    /// </summary>
+    /// <param name="grid">확인할 위치</param>
+    /// <returns>배가 없거나 보드밖이면 None, 배가 있으면 배의 종류</returns>
+    public ShipType GetShipTypeOnBoard(Vector2Int grid)
+    {
+        ShipType result = ShipType.None;
+
+        int? index = GridToIndex(grid); // 보드안이고 그리드값이 보드 크기 안일 때 값이 나옴
+        if (index != null)
+            result = shipInfos[GridToIndex(grid).Value];    // 제대로 된 값일 때 배의 정보 리턴
+
+
+        return result;
+    }
+
+    public ShipType GetShipTypeOnBoard(Vector3 world)
+    {
+        return GetShipTypeOnBoard(WorldToGrid(world));
+    }
+
+    /// <summary>
+    /// 함선 배치 해제 함수
+    /// </summary>
+    /// <param name="ship">배치 해제할 함선</param>
+    public void UndoShipDeployment(Ship ship)
+    {
+        foreach (var pos in ship.Positions)
+        {
+            shipInfos[GridToIndex(pos).Value] = ShipType.None;
+        }
+        ship.UnDeploy();
+        ship.gameObject.SetActive(false);
+    }
+
+    // 좌표변환 유틸리티 -------------------------------------
 
     /// <summary>
     /// 인덱스 값 -> 그리드 좌표
@@ -63,7 +225,7 @@ public class Board : MonoBehaviour
     /// <param name="x">x 값</param>
     /// <param name="y">y 값</param>
     /// <returns>월드좌표(그리드 중심점)</returns>
-    public Vector3 GridToWorld(int x,int y)
+    public Vector3 GridToWorld(int x, int y)
     {
         return new Vector3(x + 0.5f, 0, y - 0.5f);
     }
@@ -75,7 +237,7 @@ public class Board : MonoBehaviour
     /// <returns>월드좌표(그리드 중심점)</returns>
     public Vector3 GridToWorld(Vector2Int grid)
     {
-        return new Vector3(grid.x + 0.5f, 0, grid.y - 0.5f);
+        return new Vector3(grid.x + 0.5f, 0, -grid.y - 0.5f);
     }
 
     /// <summary>
@@ -86,9 +248,9 @@ public class Board : MonoBehaviour
     public Vector2Int WorldToGrid(Vector3 world)
     {
 
-            Vector2 diff = new(world.x - transform.position.x, transform.position.z - world.z);
+        Vector2 diff = new(world.x - transform.position.x, transform.position.z - world.z);
 
-            return new Vector2Int(Mathf.FloorToInt(diff.x), Mathf.FloorToInt(diff.y));
+        return new Vector2Int(Mathf.FloorToInt(diff.x), Mathf.FloorToInt(diff.y));
 
     }
 
@@ -131,10 +293,32 @@ public class Board : MonoBehaviour
     public bool IsInBoard(Vector2Int grid)
     {
 
-            return grid.x < BoardSize && grid.y < BoardSize && grid.x > -1 && grid.y > -1;
-    
+        return grid.x < BoardSize && grid.y < BoardSize && grid.x > -1 && grid.y > -1;
+
     }
 
+    /// <summary>
+    /// 특정 위치에 배가 배치되어있는지 확인하는 함수
+    /// </summary>
+    /// <param name="grid">확인할 위치(그리드좌표)</param>
+    /// <returns>true면 있고 false면 없다</returns>
+    bool IsShipDeployedPosition(Vector2Int grid)
+    {
+        int? index = GridToIndex(grid);
+        bool result;
+        if (index.HasValue)
+        {
+            result = shipInfos[GridToIndex(grid).Value] != ShipType.None;   // index가 값이 있으면 shipInfo 확인
+
+        }
+        else
+        {
+            result = false;
+
+        }
+
+        return result;
+    }
 
 
     /// <summary>
