@@ -45,6 +45,8 @@ public class TestShipMovement : TestBase
             Vector3 world = board.GridToWorld(grid);
             ship.transform.position = world + board.transform.position;
             ship.gameObject.SetActive(true);
+
+            OnShipMovement();
         }
 
     }
@@ -61,8 +63,16 @@ public class TestShipMovement : TestBase
             {
                 ship.Rotate(true);
             }
+            OnShipMovement();
         }
 
     }
+
+    protected virtual void OnShipMovement()
+    {
+
+    }
+
+
 
 }

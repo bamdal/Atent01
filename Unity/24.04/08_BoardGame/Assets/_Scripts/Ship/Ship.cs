@@ -214,6 +214,17 @@ public class Ship : MonoBehaviour
     /// <param name="isNomal">true면 불투명, false면 배치용 반투명</param>
     public void SetMaterialType(bool isNomal = true)
     {
+        if(shipRenderer != null)
+        {
+            if (isNomal)
+            {
+                shipRenderer.material = ShipManager.Instance.NormalShipMaterial;
+            }
+            else
+            {
+                shipRenderer.material = ShipManager.Instance.DeployModeShopMaterial;
+            }
+        }
 
     }
 
@@ -223,6 +234,7 @@ public class Ship : MonoBehaviour
     /// <param name="deployPositions">배치되는 위치들</param>
     public void Deploy(Vector2Int[] deployPositions)
     {
+        SetMaterialType();
         isDeployed = true;  // 배치되었다고 표시
 
         positions = deployPositions;    // 배치된 위치(그리드) 기록
@@ -258,7 +270,11 @@ public class Ship : MonoBehaviour
     /// </summary>
     public void RandomRotate()
     {
-
+        int rotateCount = UnityEngine.Random.Range(0,shipDirectionCount);   // 0~3
+        for (int i = 0; i < rotateCount; i++)
+        {
+            Rotate();   // 회전시키기
+        }
     }
 
     /// <summary>

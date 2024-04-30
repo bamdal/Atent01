@@ -10,32 +10,44 @@ public class TestShipDeployment : TestShipMovement
     // 함선 우클릭시 배치해제    (배치 해제시 비활성화해서 안보이게)
 
 
-    Ship[] testShips;
+    protected Ship[] testShips;
 
-    
+    /// <summary>
+    /// 현재 확인하고 있는 함선
+    /// </summary>
     Ship TargetShip
     {
         get => ship;
         set
         {
-     
-            
-            if (ship != value) 
+
+
+
+            if(ship != null && !ship.IsDeployed)    // 이전배가 있고 배치가 되지않았을 때만
             {
-                if (value == null && ship != null)
-                {
-                    Renderer renderer = ship.GetComponentInChildren<Renderer>(true);
-                    renderer.material = ShipManager.Instance.NormalShipMaterial;
-                }
-                ship = value;
-                ship?.gameObject.SetActive(true);
-
-
+                ship.gameObject.SetActive(false);   // 이전배는 안보이게
             }
+
+            ship = value;
+            if (ship != null && !ship.IsDeployed)   // 새로 배가 설정되면
+            {
+
+                ship.SetMaterialType(false);    // 머티리얼 배치모드로 바꾸기
+                OnShipMovement();               // 배치가능한지 머터리얼수정
+                ship.transform.position = board.GridToWorld(board.GetMouseGridPosition()) + board.transform.position;  // 마우스 위치로 옮기고
+                ship.gameObject.SetActive(true);// 보여주기
+            }
+
+
+
+
+
+
+
         }
     }
 
-    private void Start()
+    protected virtual void Start()
     {
 
         testShips = new Ship[ShipManager.Instance.ShipTypeCount];
@@ -72,6 +84,7 @@ public class TestShipDeployment : TestShipMovement
     }
     protected override void OnTestLClick(InputAction.CallbackContext context)
     {
+        // 배치용으로 선택된 배가 있으면 배를 배치 시도
         Vector2Int grid = board.GetMouseGridPosition();
         if (TargetShip != null && board.ShipDeployment(TargetShip, grid))
         {
@@ -86,35 +99,25 @@ public class TestShipDeployment : TestShipMovement
 
     protected override void OnTestRClick(InputAction.CallbackContext context)
     {
+
         Vector2Int grid = board.GetMouseGridPosition();
         ShipType shipType = board.GetShipTypeOnBoard(grid);
-        if (shipType != ShipType.None)
+        if (shipType != ShipType.None)  // 우클릭 된 지점에 배가 있으면
         {
             Ship ship = testShips[(int)shipType - 1];
-            board.UndoShipDeployment(ship);
+            board.UndoShipDeployment(ship); // 배치 취소
         }
     }
 
-    private void Update()
+    /// <summary>
+    /// 배에 움직임이 있었을 때 그 상태가 배치가능한지 여부 파악후 색상 변경
+    /// </summary>
+    protected override void OnShipMovement()
     {
-        Vector2Int grid = board.GetMouseGridPosition();
-        if (TargetShip != null)
-        {
-            Renderer renderer = TargetShip.GetComponentInChildren<Renderer>(true);
-            if(renderer != null)
-                renderer.material=ShipManager.Instance.DeployModeShopMaterial;
-
-            if (board.IsShipDeploymentAvailable(TargetShip, grid))
-            {
-                ShipManager.Instance.SetDeployModeColor(true);
-
-            }
-            else
-            {
-                ShipManager.Instance.SetDeployModeColor(false);
-
-            }
-        }
+        bool isSucess = board.IsShipDeploymentAvailable(TargetShip, TargetShip.transform.position); // 배치 가능한지 확인
+        ShipManager.Instance.SetDeployModeColor(isSucess);
 
     }
+
+
 }

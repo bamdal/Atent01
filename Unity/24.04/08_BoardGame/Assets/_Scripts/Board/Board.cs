@@ -21,6 +21,7 @@ public class Board : MonoBehaviour
     /// </summary>
     ShipType[] shipInfos;
 
+
     private void Awake()
     {
         shipInfos = new ShipType[BoardSize * BoardSize];    // 기본적으로 전부 None
@@ -162,12 +163,32 @@ public class Board : MonoBehaviour
     /// <param name="ship">배치 해제할 함선</param>
     public void UndoShipDeployment(Ship ship)
     {
-        foreach (var pos in ship.Positions)
+        if (ship.IsDeployed)
         {
-            shipInfos[GridToIndex(pos).Value] = ShipType.None;
+            foreach (var pos in ship.Positions)
+            {
+                shipInfos[GridToIndex(pos).Value] = ShipType.None;
+            }
+            ship.UnDeploy();
+            ship.gameObject.SetActive(false);
         }
-        ship.UnDeploy();
-        ship.gameObject.SetActive(false);
+
+    }
+
+    /// <summary>
+    /// 보드 초기화용 함수
+    /// </summary>
+    /// <param name="ships"></param>
+    public void ResetBoard(Ship[] ships)
+    {
+        // ships 전부 배치 해제
+        foreach (var ship in ships)
+        {
+            if (ship.IsDeployed)
+            {
+                UndoShipDeployment(ship);
+            }
+        }
     }
 
     // 좌표변환 유틸리티 -------------------------------------
@@ -189,7 +210,7 @@ public class Board : MonoBehaviour
     /// <returns>월드 좌표</returns>
     public Vector3 IndexToWorld(uint index)
     {
-        return Vector3.zero;
+        return GridToWorld(IndexToGrid(index));
     }
 
     /// <summary>
