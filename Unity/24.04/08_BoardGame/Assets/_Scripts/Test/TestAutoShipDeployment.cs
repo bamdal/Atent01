@@ -23,7 +23,7 @@ public class TestAutoShipDeployment : TestShipDeployment
     /// <summary>
     /// 아직 배치되지 않는 배를 모두 자동으로 배치하는 함수
     /// </summary>
-    void AutoShipDeployment()
+    protected void AutoShipDeployment()
     {
         /*        Debug.Log("실행");
                 //testShips에 !IsDeployed인것들 배치
@@ -75,7 +75,7 @@ public class TestAutoShipDeployment : TestShipDeployment
                     int[] shopIndice = new int[ship.Size];
                     for (int j = 0; j < ship.Size; j++)
                     {
-                        shopIndice[i] = board.GridToIndex(ship.Positions[j]).Value;//배가 배치된 인덱스
+                        shopIndice[i] = board.GridToIndex(ship.Positions[j]).Value; //배가 배치된 인덱스
                     }
                     
                     foreach (var index in shopIndice)

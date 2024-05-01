@@ -15,7 +15,7 @@ public class TestShipDeployment : TestShipMovement
     /// <summary>
     /// 현재 확인하고 있는 함선
     /// </summary>
-    Ship TargetShip
+    protected Ship TargetShip
     {
         get => ship;
         set
@@ -89,11 +89,11 @@ public class TestShipDeployment : TestShipMovement
         if (TargetShip != null && board.ShipDeployment(TargetShip, grid))
         {
             TargetShip = null;
-            Debug.Log("배치성공");
+           // Debug.Log("배치성공");
         }
         else
         {
-            Debug.Log("배치실패");
+           // Debug.Log("배치실패");
         }
     }
 

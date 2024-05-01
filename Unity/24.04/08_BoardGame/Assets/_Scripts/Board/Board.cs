@@ -21,10 +21,33 @@ public class Board : MonoBehaviour
     /// </summary>
     ShipType[] shipInfos;
 
+    /// <summary>
+    /// 공격을 받은 위치면 true, 공격을 받은 적이없는 위치면 false
+    /// </summary>
+    bool[] isAttacked;
 
+    /// <summary>
+    /// 함선의 종류별로 공격을 당했을 때 실행될 델리게이트를 가지는 딕셔너리
+    /// </summary>
+    public Dictionary<ShipType, Action> onShipAttacked;
+
+    BombSetter bombSetter;
+    FireSetter fireSetter;
     private void Awake()
     {
         shipInfos = new ShipType[BoardSize * BoardSize];    // 기본적으로 전부 None
+        isAttacked = new bool[BoardSize * BoardSize];       // 기본적으로 false
+        bombSetter = GetComponentInChildren<BombSetter>();
+        fireSetter = GetComponentInChildren<FireSetter>();
+
+
+        onShipAttacked = new Dictionary<ShipType, Action>();
+        onShipAttacked[ShipType.None] = null;       // None은 사용하지않음, 없는키 참조 방지용
+        onShipAttacked[ShipType.Carrier] = null;
+        onShipAttacked[ShipType.BattleShip] = null;
+        onShipAttacked[ShipType.Destroyer] = null;
+        onShipAttacked[ShipType.Submarine] = null;
+        onShipAttacked[ShipType.PatrolBoat] = null;
     }
 
     /// <summary>
@@ -189,7 +212,49 @@ public class Board : MonoBehaviour
                 UndoShipDeployment(ship);
             }
         }
+
+        for (int i = 0; i < isAttacked.Length; i++)
+        {
+            isAttacked[i] = false;
+        }
+
+        bombSetter.ResetBombMarks();
+        fireSetter.ResetFire();
     }
+
+    // 공격 관련 함수들 -----------------------------------------------
+
+
+    /// <summary>
+    /// 보드가 상대방에 의해 공격을 당했을 때
+    /// </summary>
+    /// <param name="grid">공격받은 위치(그리드좌표), 이 위치는 반드시 보드안쪽이다</param>
+    /// <returns>true면 함선에 명중 false면 맞지않음</returns>
+    public bool OnAttacked(Vector2Int grid)
+    {
+        int index = GridToIndex(grid).Value;
+
+
+        if (!IsInBoard(grid) || isAttacked[index])
+        {
+            return false;
+        }
+        bool result = false;
+
+        isAttacked[index] = true;               // 해당 위치에 공격했다고 표시
+
+        ShipType target = shipInfos[index];     // 공격 받은 위치에 있는 함선 종류 확인
+        if (target != ShipType.None)
+        {
+            result = true;
+            onShipAttacked[target]?.Invoke();   // 함선 종류에 맞게 명중했다고 신호보내기
+        }
+
+        bombSetter.SetBombMark(GridToWorld(grid), result);  // 붐마크로 표시
+
+        return result;
+    }
+
 
     // 좌표변환 유틸리티 -------------------------------------
 

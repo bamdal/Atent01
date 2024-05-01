@@ -31,6 +31,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8892151088842995090}
+  - {fileID: 8276524394127387683}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &93788906081057041
@@ -45,6 +46,54 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94c6ef658412f0d4baaf1ef78625d821, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &6556198898475699526
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8276524394127387683}
+  - component: {fileID: 6842350833678763761}
+  m_Layer: 0
+  m_Name: BombSetter
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8276524394127387683
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6556198898475699526}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 2, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 519158490572625977}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6842350833678763761
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6556198898475699526}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c6d3cf192488db42948928f26a420fc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sucessPrefab: {fileID: 5134213211218474467, guid: 0e3b4aabed9f53248945b0212d3e562f,
+    type: 3}
+  failPrefab: {fileID: 5134213211218474467, guid: bc2341e5cfcd12d449a4c463ecd7d50e,
+    type: 3}
 --- !u!1001 &1729895430941692273
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -100,7 +100,6 @@ public class Ship : MonoBehaviour
         private set
         {
             hp = value;
-            OnHiitted();
             if (!IsAlive)       // hp가 0이하면 
             {
                 OnSinking();    // 침몰
@@ -175,7 +174,12 @@ public class Ship : MonoBehaviour
     /// </summary>
     public Action<Ship> onSink;
 
+    /// <summary>
+    /// 배 방향개수
+    /// </summary>
     int shipDirectionCount;
+
+
 
     /// <summary>
     /// 배 초기화용 함수
@@ -202,7 +206,7 @@ public class Ship : MonoBehaviour
     /// </summary>
     void ResetData()
     {
-
+        HP = Size;
         Direction = ShipDirection.North;
         isDeployed = false;
         positions = null;
@@ -282,7 +286,10 @@ public class Ship : MonoBehaviour
     /// </summary>
     public void OnHiitted()
     {
+        Debug.Log($"{shipName}피격");
 
+        onHit?.Invoke(this);
+        HP--;
     }
 
     /// <summary>
@@ -290,7 +297,9 @@ public class Ship : MonoBehaviour
     /// </summary>
     void OnSinking()
     {
+        Debug.Log("침몰");
 
+        onSink?.Invoke(this);   
     }
 
 }
