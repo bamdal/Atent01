@@ -278,6 +278,21 @@ public class Board : MonoBehaviour
         return GridToWorld(IndexToGrid(index));
     }
 
+    public bool IsAttackable(int index)
+    {
+        return !isAttacked[index];
+    }
+
+    public bool IsAttackable(Vector2Int grid)
+    {
+        bool result = false;
+        int? index = GridToIndex(grid);
+        if (index.HasValue)
+            result = IsAttackable(index.Value);
+
+        return result;
+    }
+
     /// <summary>
     /// 그리드 -> 인덱스 값
     /// </summary>
