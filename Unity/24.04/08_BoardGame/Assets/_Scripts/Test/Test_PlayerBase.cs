@@ -56,5 +56,14 @@ public class Test_PlayerBase : TestBase
         
     }
 
-  
+    protected override void OnTest1(InputAction.CallbackContext context)
+    {
+        user.AutoAttack();
+    }
+    protected override void OnTest2(InputAction.CallbackContext context)
+    {
+        enemy.AutoAttack();
+    }
+
+
 }

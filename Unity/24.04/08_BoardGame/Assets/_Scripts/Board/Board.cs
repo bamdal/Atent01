@@ -256,6 +256,45 @@ public class Board : MonoBehaviour
     }
 
 
+    public bool IsAttackable(int index)
+    {
+        return !isAttacked[index];
+    }
+
+    public bool IsAttackable(Vector2Int grid)
+    {
+        bool result = false;
+        int? index = GridToIndex(grid);
+        if (index.HasValue)
+            result = IsAttackable(index.Value);
+
+        return result;
+    }
+
+    /// <summary>
+    /// 특정 위치가 공격이 성공했는지 알리는 함수
+    /// </summary>
+    /// <param name="grid">그리드 좌표</param>
+    /// <returns>true면 공격 성공위치, false는 공격 실패 위치</returns>
+    public bool IsAttackSuccessPosition(Vector2Int grid)
+    {
+        int? index = GridToIndex(grid);
+        // grid가 보드안쪽이고, 공격 당한 위치고, 배가 있다.
+        return index != null && isAttacked[index.Value] && shipInfos[index.Value] != ShipType.None;
+    }
+
+    /// <summary>
+    /// 특정 위치가 공격이 실패한 위치인지 알리는 함수
+    /// </summary>
+    /// <param name="grid">그리드 좌표</param>
+    /// <returns>true면 공격 실패한위치, false는 공격 성공 위치</returns>
+    public bool IsAttackFailPosition(Vector2Int grid)
+    {
+        int? index = GridToIndex(grid);
+        // grid가 보드안쪽이고, 공격 당한 위치고, 배가 없다.
+        return index != null && isAttacked[index.Value] && shipInfos[index.Value] == ShipType.None;
+    }
+
     // 좌표변환 유틸리티 -------------------------------------
 
     /// <summary>
@@ -278,20 +317,6 @@ public class Board : MonoBehaviour
         return GridToWorld(IndexToGrid(index));
     }
 
-    public bool IsAttackable(int index)
-    {
-        return !isAttacked[index];
-    }
-
-    public bool IsAttackable(Vector2Int grid)
-    {
-        bool result = false;
-        int? index = GridToIndex(grid);
-        if (index.HasValue)
-            result = IsAttackable(index.Value);
-
-        return result;
-    }
 
     /// <summary>
     /// 그리드 -> 인덱스 값
