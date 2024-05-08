@@ -131,6 +131,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 882319306632366257, guid: eb9c12a13de0a544cb695401e10aa267,
+        type: 3}
+      propertyPath: IsTestMode
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4226732989424624299, guid: eb9c12a13de0a544cb695401e10aa267,
         type: 3}
       propertyPath: m_ImpulseDefinition.m_ImpulseShape

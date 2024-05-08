@@ -9,7 +9,7 @@ public class UserPlayer : PlayerBase
     protected override void Start()
     {
         base.Start();
-
+        AutoShipDeployment(true);
         opponent = gameManager.EnemyPlayer;
     }
 

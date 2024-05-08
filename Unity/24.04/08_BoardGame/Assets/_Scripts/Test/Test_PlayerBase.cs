@@ -20,14 +20,16 @@ public class Test_PlayerBase : TestBase
         user = GameManager.Instance.UserPlayer;
         enemy = GameManager.Instance.EnemyPlayer;
 
+        bool isShow = GameManager.Instance.IsTestMode;
+
         reset.onClick.AddListener(() => { user.Clear(); enemy.Clear();  });
-        random.onClick.AddListener(() => { user.AutoShipDeployment(true); enemy.AutoShipDeployment(true); });
+        random.onClick.AddListener(() => { user.AutoShipDeployment(true); enemy.AutoShipDeployment(isShow); });
         resetAndRandom.onClick.AddListener(() => 
         { 
             user.Clear();
             enemy.Clear();
             user.AutoShipDeployment(true);
-            enemy.AutoShipDeployment(true);
+            enemy.AutoShipDeployment(isShow);
         });
     }
 

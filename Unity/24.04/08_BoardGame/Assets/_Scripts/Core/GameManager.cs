@@ -25,7 +25,10 @@ public class GameManager : Singleton<GameManager>
     /// </summary>
     CinemachineImpulseSource cameraInpulseSource;
 
-
+    /// <summary>
+    /// 테스트 모드인지 표시용
+    /// </summary>
+    public bool IsTestMode = false;
 
     protected override void OnPreInitialize()
     {

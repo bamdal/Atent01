@@ -76,6 +76,35 @@ public class PlayerBase : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 일반 공격 후보지역들의 인덱스
+    /// </summary>
+    List<uint> normalAttackIndice;
+
+    /// <summary>
+    /// 우선 순위가 높은 공격후보지역들의 인덱스들
+    /// </summary>
+    List<uint> criticalAttackIndice;
+
+    /// <summary>
+    /// 마지막 공격이 성공한 그리드 좌표 , NOT_SUCCESS면 이전공격 실패
+    /// </summary>
+    Vector2Int lastSucessAttackPosition;
+
+    /// <summary>
+    /// 이전 공격이 실패했다 알리는 읽기전용 변수
+    /// </summary>
+    readonly Vector2Int NOT_SUCCESS = -Vector2Int.one;
+
+    /// <summary>
+    /// 이번 공격으로 상대방 함선이 침몰했는지 알려주는 변수(true면 침몰, false면 아님)
+    /// </summary>
+    bool opponentShipDestroyed = false;
+
+    /// <summary>
+    /// 이웃 위치 확인용
+    /// </summary>
+    readonly Vector2Int[] neighbors = { new(-1, 0), new(1, 0), new(0, 1), new(0, -1) };
     protected virtual void Awake()
     {
         Transform child = transform.GetChild(0);
@@ -95,7 +124,7 @@ public class PlayerBase : MonoBehaviour
         Initialize();
 
 
-        AutoShipDeployment(true);
+        
     }
 
     protected virtual void Initialize()
@@ -135,6 +164,8 @@ public class PlayerBase : MonoBehaviour
     }
 
     // 턴 관리용 함수                 --------------------------------------------------------------------------
+
+
     // 공격 관련 함수                 --------------------------------------------------------------------------
 
     /// <summary>
@@ -176,7 +207,7 @@ public class PlayerBase : MonoBehaviour
             }
             else
             {
-                lastSucessAttackPosition = NOT_SUCCESS;
+                //lastSucessAttackPosition = NOT_SUCCESS;   // 성공->실패->성공순서였을때 두번째 성공에서 주변모두를 추가하는 문제 수정용
             }
 
             uint attackIndex = (uint)Board.GridToIndex(attackGrid).Value;
@@ -207,35 +238,7 @@ public class PlayerBase : MonoBehaviour
         Attack(opponent.Board.IndexToGrid(index));
     }
 
-    /// <summary>
-    /// 일반 공격 후보지역들의 인덱스
-    /// </summary>
-    List<uint> normalAttackIndice;
 
-    /// <summary>
-    /// 우선 순위가 높은 공격후보지역들의 인덱스들
-    /// </summary>
-    List<uint> criticalAttackIndice;
-
-    /// <summary>
-    /// 마지막 공격이 성공한 그리드 좌표 , NOT_SUCCESS면 이전공격 실패
-    /// </summary>
-    Vector2Int lastSucessAttackPosition;
-
-    /// <summary>
-    /// 이전 공격이 실패했다 알리는 읽기전용 변수
-    /// </summary>
-    readonly Vector2Int NOT_SUCCESS = -Vector2Int.one;
-
-    /// <summary>
-    /// 이번 공격으로 상대방 함선이 침몰했는지 알려주는 변수(true면 침몰, false면 아님)
-    /// </summary>
-    bool opponentShipDestroyed = false;
-
-    /// <summary>
-    /// 이웃 위치 확인용
-    /// </summary>
-    readonly Vector2Int[] neighbors = { new(-1, 0), new(1, 0), new(0, 1), new(0, -1) };
 
     /// <summary>
     /// 자동으로 공격하는 함수, Enemy가 공격할 때나 User가 타임 아웃되었을 때 사용하는 목적
@@ -277,9 +280,9 @@ public class PlayerBase : MonoBehaviour
 
     /// <summary>
     /// 아직 배치되지 않는 배를 모두 자동으로 배치하는 함수
-    /// <paramref name="isShowShips">보여줄지 말지 결정</param>
+    /// <paramref name="isShipsShow">보여줄지 말지 결정</param>
     /// </summary>
-    public void AutoShipDeployment(bool isShowShips)
+    public void AutoShipDeployment(bool isShipsShow)
     {
 
 
@@ -404,7 +407,7 @@ public class PlayerBase : MonoBehaviour
 
                 // 실제 배치
                 board.ShipDeployment(ship, grid);
-                ship.gameObject.SetActive(isShowShips);
+                ship.gameObject.SetActive(isShipsShow);
 
                 // 배치된 위치를 high와 low에서 제거
                 List<int> tempList = new List<int>(shipPositions.Length);
@@ -566,32 +569,7 @@ public class PlayerBase : MonoBehaviour
     /// <param name="grid"></param>
     private void AddCriticalFromNeighbors(Vector2Int grid)
     {
- /*       int index = 0;
-        foreach (var neighbor in neighbors)
-        {
-            Vector2Int pos = grid + neighbor;
-            index++;
-            if (opponent.Board.IsInBoard(pos) && !opponent.Board.IsAttackable(pos))
-            {
-                switch (index)
-                {
-                    case 0:
-                        pos += new Vector2Int(2, 0);
-                        break;
-                    case 1:
-                        pos += new Vector2Int(-2, 0);
-                        break;
-                    case 2:
-                        pos += new Vector2Int(0, -2);
-                        break;
-                    case 3:
-                        pos += new Vector2Int(0, 2);
-                        break;
-                }
-                AddCritical((uint)Board.GridToIndex(pos).Value);
-                break;
-            }
-        }*/
+
         Util.Shuffle(neighbors);
         foreach(var neighbor in neighbors)
         {
@@ -600,6 +578,7 @@ public class PlayerBase : MonoBehaviour
             {
                 AddCritical((uint)Board.GridToIndex(pos).Value);
             }
+
         }
     }
 
@@ -613,7 +592,24 @@ public class PlayerBase : MonoBehaviour
         if (IsSuccessLine(last, now, true))
         {
             // 양끝에 위치를 Critical에 추가
+
+            // 같은 줄에 있는 것이 아니면 제거
             Vector2Int grid = now;
+            List<uint> deleteTarget = new List<uint>(16);
+            foreach (var index in criticalAttackIndice)
+            {
+                grid = Board.IndexToGrid(index);    
+                if (grid.y != now.y)            // y가 다르면 한줄에 있는것이 아니다
+                {
+                    deleteTarget.Add(index);
+                }
+            }
+            foreach (var index in deleteTarget)
+            {
+                RemoveCriticalPosition(index);  // 같은 줄에 있는것이 아니면 삭제
+            }
+            
+            grid = now;
             for (grid.x = now.x + 1; grid.x < Board.BoardSize; grid.x++)  // now의 오른쪽 확인해서 추가
             {
                 if (!Board.IsInBoard(grid))
@@ -644,6 +640,23 @@ public class PlayerBase : MonoBehaviour
         {
             // 양끝에 위치를 Critical에 추가
             Vector2Int grid = now;
+            List<uint> deleteTarget = new List<uint>(16);
+            foreach (var index in criticalAttackIndice)
+            {
+                grid = Board.IndexToGrid(index);
+                if (grid.x != now.x)            // y가 다르면 한줄에 있는것이 아니다
+                {
+                    deleteTarget.Add(index);
+                }
+            }
+            foreach (var index in deleteTarget)
+            {
+                RemoveCriticalPosition(index);  // 같은 줄에 있는것이 아니면 삭제
+            }
+
+
+
+            grid = now;
             for (grid.y = now.y + 1; grid.y < Board.BoardSize; grid.y++)  // now의 아래쪽 확인해서 추가
             {
                 if (!Board.IsInBoard(grid))
@@ -761,12 +774,19 @@ public class PlayerBase : MonoBehaviour
         if (!criticalAttackIndice.Contains(index))  // 없을 때만 추가
         {
             criticalAttackIndice.Insert(0, index);  // 항상 앞에 추가 (새로 추가되는 위치가 성공확률이 더 높기 때문)
-            //후보지역 표시
-            GameObject obj = Instantiate(criticalMarkPrefab, criticalMarkParent);                            // 프리펨 생성
-            obj.transform.position = opponent.Board.transform.position + opponent.Board.IndexToWorld(index); // 적 보드 위치에 맞게 수정
-            Vector2Int grid = opponent.Board.IndexToGrid(index);
-            obj.name = $"Critical_({grid.x},{grid.y})";
-            criticalMarks[index] = obj; // criticalMarks.Add(index,obj);
+            
+            if (GameManager.Instance.IsTestMode)
+            {
+                //후보지역 표시
+                GameObject obj = Instantiate(criticalMarkPrefab, criticalMarkParent);                            // 프리펨 생성
+                obj.transform.position = opponent.Board.transform.position + opponent.Board.IndexToWorld(index); // 적 보드 위치에 맞게 수정
+                Vector2Int grid = opponent.Board.IndexToGrid(index);
+                obj.name = $"Critical_({grid.x},{grid.y})";
+                criticalMarks[index] = obj; // criticalMarks.Add(index,obj);
+            }
+
+
+            
         }
     }
 
