@@ -11,8 +11,8 @@ public class Test_PlayerBase : TestBase
     public Button random;
     public Button resetAndRandom;
 
-    PlayerBase user;
-    PlayerBase enemy;
+    public PlayerBase user;
+    public PlayerBase enemy;
 
 
     private void Start()

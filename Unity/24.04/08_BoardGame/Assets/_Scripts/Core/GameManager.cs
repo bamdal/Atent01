@@ -30,6 +30,10 @@ public class GameManager : Singleton<GameManager>
     /// </summary>
     public bool IsTestMode = false;
 
+    TurnManager turnManager;
+
+    public TurnManager TurnManager => turnManager;
+
     protected override void OnPreInitialize()
     {
         base.OnPreInitialize();
@@ -40,6 +44,8 @@ public class GameManager : Singleton<GameManager>
     {
         user = FindAnyObjectByType<UserPlayer>();
         enemy = FindAnyObjectByType<EnemyPlayer>();
+        turnManager = GetComponent<TurnManager>();  
+        turnManager.OnInitialize(user, enemy);
     }
 
     public void CameraShake(float force)
