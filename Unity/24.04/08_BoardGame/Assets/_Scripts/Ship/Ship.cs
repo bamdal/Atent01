@@ -161,7 +161,7 @@ public class Ship : MonoBehaviour
     /// <summary>
     /// 함선이 배치되거나 배치 해제 되었을 때를 알리는 델리게이트(true면 배치 false면 배치해제)
     /// </summary>
-    public Action<bool> onDepoloy;
+    public Action<bool> onDeploy;
 
     /// <summary>
     /// 함선이 공격을 당했을 떄를 알리는 델리게이트(Ship : 자기자신, 이름이나 종류에 대한 접근이 필요함)
