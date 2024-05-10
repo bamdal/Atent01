@@ -144,12 +144,12 @@ public class Ship : MonoBehaviour
     public Vector2Int[] Positions => positions;   
 
     /// <summary>
-    /// 배의 배치 여부(true면 배치되었고, false면 배치되지 않았다.
+    /// 배의 배치 여부(true면 배치되었고, false면 배치되지 않았다.)
     /// </summary>
     bool isDeployed = false;
 
     /// <summary>
-    /// 배의 배치 여부 확인용 프로퍼티
+    /// 배의 배치 여부 확인용 프로퍼티(true면 배치되었고, false면 배치되지 않았다.)
     /// </summary>
     public bool IsDeployed => isDeployed;
 
@@ -242,6 +242,7 @@ public class Ship : MonoBehaviour
         isDeployed = true;  // 배치되었다고 표시
 
         positions = deployPositions;    // 배치된 위치(그리드) 기록
+        onDeploy?.Invoke(true);
     }
 
     /// <summary>
@@ -250,6 +251,7 @@ public class Ship : MonoBehaviour
     public void UnDeploy()
     {
         ResetData();    // 데이터 초기화
+        onDeploy?.Invoke(false);
     }
 
     /// <summary>

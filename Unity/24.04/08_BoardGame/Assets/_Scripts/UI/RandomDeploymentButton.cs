@@ -1,18 +1,29 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class RandomDeploymentButton : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    Button finishButton;
+
+    private void Awake()
     {
-        
+        finishButton = GetComponent<Button>();
+        finishButton.onClick.AddListener(() => { OnClick(); });
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnClick()
     {
-        
+        PlayerBase player = GameManager.Instance.UserPlayer;
+        Ship[] ships = player.Ships;
+        foreach (Ship ship in ships)
+        {
+            if (!ship.IsDeployed)
+            {
+                player.AutoShipDeployment(true);
+                break;
+            }
+        }
     }
 }

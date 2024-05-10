@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TurnManager : MonoBehaviour
+public class TurnController : MonoBehaviour
 {
     /// <summary>
     /// 현재 턴 번호(몇번째 턴인지)
@@ -85,13 +85,13 @@ public class TurnManager : MonoBehaviour
 
         if(user != null)                    // user가 있으면 행동이 끝났거나 패배했을 때 실행될 함수 연결
         {
-            user.onActoinEnd += PlayerTurnEnd;
+            user.onActionEnd += PlayerTurnEnd;
             user.onDefeat += TurnManagerStop;
         }
 
         if(enemy != null)                    // enmey가 있으면 행동이 끝났거나 패배했을 때 실행될 함수 연결
         {
-            enemy.onActoinEnd += PlayerTurnEnd;
+            enemy.onActionEnd += PlayerTurnEnd;
             enemy.onDefeat += TurnManagerStop;
         }
 

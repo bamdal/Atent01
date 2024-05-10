@@ -32,7 +32,7 @@ public class PlayerBase : MonoBehaviour
     Ship ship;
 
     /// <summary>
-    /// 이 플레이거가 가지는 함선
+    /// 이 플레이어가 가지는 함선
     /// </summary>
     protected Ship[] ships;
 
@@ -53,7 +53,7 @@ public class PlayerBase : MonoBehaviour
     /// <summary>
     /// 이 플레이어의 행동이 완료됨을 알리는 델리게이트
     /// </summary>
-    public Action onActoinEnd;
+    public Action onActionEnd;
 
     /// <summary>
     /// 이 플레이어가 패배했음을 알리는 델리게이트
@@ -75,32 +75,9 @@ public class PlayerBase : MonoBehaviour
     /// </summary>
     protected GameManager gameManager;
 
-    protected TurnManager turnManager;
+    protected TurnController turnManager;
 
-    /// <summary>
-    /// 현재 확인하고 있는 함선
-    /// </summary>
-    public Ship TargetShip
-    {
-        get => ship;
-        set
-        {
-            if (ship != null && !ship.IsDeployed)    // 이전배가 있고 배치가 되지않았을 때만
-            {
-                ship.gameObject.SetActive(false);   // 이전배는 안보이게
-            }
 
-            ship = value;
-            if (ship != null && !ship.IsDeployed)   // 새로 배가 설정되면
-            {
-
-                ship.SetMaterialType(false);    // 머티리얼 배치모드로 바꾸기
-                OnShipMovement();               // 배치가능한지 머터리얼수정
-                ship.transform.position = Board.GridToWorld(Board.GetMouseGridPosition()) + Board.transform.position;  // 마우스 위치로 옮기고
-                ship.gameObject.SetActive(true);// 보여주기
-            }
-        }
-    }
 
     /// <summary>
     /// 일반 공격 후보지역들의 인덱스
@@ -147,7 +124,7 @@ public class PlayerBase : MonoBehaviour
         fireSetter = transform.GetChild(0).GetComponentInChildren<FireSetter>();
         shipManager = ShipManager.Instance;
         gameManager = GameManager.Instance;
-        turnManager = GameManager.Instance.TurnManager;
+        turnManager = GameManager.Instance.TurnController;
         Initialize();
 
 
@@ -246,7 +223,7 @@ public class PlayerBase : MonoBehaviour
             normalAttackIndice.Remove(attackIndex);
 
             isActoinDone = true;
-            onActoinEnd?.Invoke();
+            onActionEnd?.Invoke();
         }
 
 
@@ -566,7 +543,7 @@ public class PlayerBase : MonoBehaviour
 
     // 함선 배치 관련 함수            --------------------------------------------------------------------------
 
-    /// <summary>
+/*    /// <summary>
     /// 배에 움직임이 있었을 때 그 상태가 배치가능한지 여부 파악후 색상 변경
     /// </summary>
     protected virtual void OnShipMovement()
@@ -574,7 +551,7 @@ public class PlayerBase : MonoBehaviour
         bool isSucess = board.IsShipDeploymentAvailable(TargetShip, TargetShip.transform.position); // 배치 가능한지 확인
         ShipManager.Instance.SetDeployModeColor(isSucess);
 
-    }
+    }*/
 
 
     /// <summary>
@@ -912,4 +889,10 @@ public class PlayerBase : MonoBehaviour
         opponentShipDestroyed = false;
         Board.ResetBoard(ships);
     }
+
+    public Ship GetShip(ShipType shipType)
+    {
+        return (shipType != ShipType.None) ? Ships[(int)shipType - 1] : null;
+    }
+
 }

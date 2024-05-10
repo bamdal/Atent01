@@ -167,10 +167,11 @@ public class Board : MonoBehaviour
     {
         ShipType result = ShipType.None;
 
-        int? index = GridToIndex(grid); // 보드안이고 그리드값이 보드 크기 안일 때 값이 나옴
+        int? index = GridToIndex(grid); // 보드 안이고 그리드 값이 보드 크기 안일 때 값이 나옴(아니면 null)
         if (index != null)
-            result = shipInfos[GridToIndex(grid).Value];    // 제대로 된 값일 때 배의 정보 리턴
-
+        {
+            result = shipInfos[GridToIndex(grid).Value]; // 제대로 된 값일 때 배의 정보 리턴
+        }
 
         return result;
     }
@@ -342,7 +343,12 @@ public class Board : MonoBehaviour
     /// <returns>그리드가 보드 안이면 인덱스 값, 아니면 null</returns>
     public int? GridToIndex(Vector2Int grid)
     {
-        return grid.y * BoardSize + grid.x;
+        int? result = null;
+        if (IsInBoard(grid))
+        {
+            result = grid.y * BoardSize + grid.x;
+        }
+        return result;
     }
 
     /// <summary>
@@ -388,7 +394,7 @@ public class Board : MonoBehaviour
     /// <returns>true면 안 false면 밖</returns>
     public bool IsInBoard(int x, int y)
     {
-        Vector2 diff = new(x - transform.position.x, transform.position.z - y);
+        Vector2 diff = new(x - transform.position.x,  y- transform.position.z );
         if (diff.x < BoardSize && diff.y < BoardSize && diff.x > 0 && diff.y > 0)
         {
             return true;

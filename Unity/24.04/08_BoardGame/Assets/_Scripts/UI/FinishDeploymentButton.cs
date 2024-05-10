@@ -1,18 +1,21 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class FinishDeploymentButton : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    Button button;
 
-    // Update is called once per frame
-    void Update()
+
+    private void Awake()
     {
-        
+        button = GetComponent<Button>();
+        button.onClick.AddListener(() => { Debug.Log("넘어가기"); });
+    }
+    public void Activate()
+    {
+        button.interactable = true;
     }
 }

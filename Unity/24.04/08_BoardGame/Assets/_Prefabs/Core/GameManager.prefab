@@ -158,7 +158,25 @@ MonoBehaviour:
     m_ImpulseShape: 3
     m_CustomImpulseShape:
       serializedVersion: 2
-      m_Curve: []
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0.5
+        outSlope: 0.5
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0.5
+        outSlope: 0.5
+        tangentMode: 34
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
@@ -204,6 +222,9 @@ GameObject:
   m_Component:
   - component: {fileID: 4745138791289903614}
   - component: {fileID: 882319306632366257}
+  - component: {fileID: 4127807165598780824}
+  - component: {fileID: 5983243511606401970}
+  - component: {fileID: 3058114562305228056}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -237,5 +258,55 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1dfe045e4d0273e4ca9f2d63156a5213, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  IsTestMode: 0
+--- !u!114 &4127807165598780824
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8970627108895460297}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7bfe356fb77c9e944bd3b8891038aeb6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  turnDuration: 5
+  TimeOutEnable: 0
+--- !u!114 &5983243511606401970
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8970627108895460297}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f1f4eeacf28d0b4ea7b70cf69454477, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shipPrefab: {fileID: 7455004392036137273, guid: d3139cf0f2995184aafb9a07b7bf288e,
+    type: 3}
+  shipModels:
+  - {fileID: 5750724321207387233, guid: b62b0d3da2f57d642877e50ab86ecf1f, type: 3}
+  - {fileID: 5750724321207387233, guid: e79199485dd7cc042b5790be1e33a93f, type: 3}
+  - {fileID: 5750724321207387233, guid: c15913fd6671afc4f94068034a720cb8, type: 3}
+  - {fileID: 5750724321207387233, guid: 36bed57dde6ed154bb651fa1ef7c99fd, type: 3}
+  - {fileID: 5750724321207387233, guid: 6c25e89a3e89c3849a78097a61727e40, type: 3}
+  shipMaterials:
+  - {fileID: 2100000, guid: 75aa3eb942fd7d045b4a0e42f4c12167, type: 2}
+  - {fileID: 2100000, guid: 73c7b02b346cf20488de8b724224060c, type: 2}
+--- !u!114 &3058114562305228056
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8970627108895460297}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a9dcc71395dc304eb3369ccd5ec4753, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
