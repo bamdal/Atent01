@@ -290,8 +290,12 @@ public class Ship : MonoBehaviour
     {
         Debug.Log($"{shipName}피격");
 
-        onHit?.Invoke(this);
         HP--;
+        if (IsAlive)
+        {
+            onHit?.Invoke(this);    // 살아있을때만 맞았다는걸 보냄
+
+        }
     }
 
     /// <summary>
