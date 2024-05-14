@@ -56,9 +56,17 @@ public class PlayerBase : MonoBehaviour
     public Action onActionEnd;
 
     /// <summary>
+    /// 이 플레이어의 공격이 실패했음을 알리는 델리게이트(true면 user, false면 enemy)
+    /// </summary>
+    public Action<bool> onAttackFail;
+
+
+    /// <summary>
     /// 이 플레이어가 패배했음을 알리는 델리게이트
     /// </summary>
-    public Action<PlayerBase> onDefeat;
+    public Action onDefeat;
+
+
 
     /// <summary>
     /// 아직 침몰하지 않은 함선의 수
@@ -77,6 +85,8 @@ public class PlayerBase : MonoBehaviour
 
     protected TurnController turnManager;
 
+
+    
 
 
     /// <summary>
@@ -216,6 +226,8 @@ public class PlayerBase : MonoBehaviour
             else
             {
                 //lastSucessAttackPosition = NOT_SUCCESS;   // 성공->실패->성공순서였을때 두번째 성공에서 주변모두를 추가하는 문제 수정용
+                onAttackFail?.Invoke(this is UserPlayer);
+            
             }
 
             uint attackIndex = (uint)Board.GridToIndex(attackGrid).Value;
@@ -878,7 +890,7 @@ public class PlayerBase : MonoBehaviour
     protected virtual void OnDefeat()
     {
         Debug.Log($"[{gameObject.name}] 패배");
-        onDefeat?.Invoke(this);
+        onDefeat?.Invoke();
     }
 
 

@@ -26,6 +26,7 @@ public class Test_BattleLogger : TestBase
 
     protected override void OnTest1(InputAction.CallbackContext context)
     {
+        user.AutoAttack();
         enemy.AutoAttack();
     }
 
