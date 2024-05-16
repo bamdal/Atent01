@@ -66,7 +66,32 @@ public class PlayerBase : MonoBehaviour
     /// </summary>
     public Action onDefeat;
 
+    /// <summary>
+    /// 성공한 공격횟수
+    /// </summary>
+    int successAttackCount;
 
+    public int SuccessAttackCount
+    {
+        get=>successAttackCount;
+
+
+    }
+
+    /// <summary>
+    /// 실패한 공격 횟수
+    /// </summary>
+    int failAttackCount;
+
+    public int FailAttackCount
+    {
+        get => failAttackCount;
+    }
+    
+
+ 
+
+    public int TotalAttackCount => SuccessAttackCount + FailAttackCount;
 
     /// <summary>
     /// 아직 침몰하지 않은 함선의 수
@@ -179,6 +204,9 @@ public class PlayerBase : MonoBehaviour
         turnManager.onTurnEnd += OnPlayerTurnEnd;
 
         remainShipCount = count;    // 함선 개수 초기화
+        successAttackCount = 0;     // 공격 성공 회수 초기화
+        failAttackCount = 0;        // 공격 실패 회수 초기화
+
         Board.ResetBoard(ships);
     }
 
@@ -200,6 +228,7 @@ public class PlayerBase : MonoBehaviour
             bool result = oppenentBoard.OnAttacked(attackGrid);
             if (result)
             {
+                successAttackCount++;   // 공격 성공 횟수 증가
                 if (opponentShipDestroyed)
                 {
                     // 현재 공격으로 침몰된 경우
@@ -227,7 +256,7 @@ public class PlayerBase : MonoBehaviour
             {
                 //lastSucessAttackPosition = NOT_SUCCESS;   // 성공->실패->성공순서였을때 두번째 성공에서 주변모두를 추가하는 문제 수정용
                 onAttackFail?.Invoke(this is UserPlayer);
-            
+                failAttackCount++;                          // 공격 실패 횟수 증가
             }
 
             uint attackIndex = (uint)Board.GridToIndex(attackGrid).Value;
@@ -907,4 +936,11 @@ public class PlayerBase : MonoBehaviour
         return (shipType != ShipType.None) ? Ships[(int)shipType - 1] : null;
     }
 
+#if UNITY_EDITOR
+
+    public void Test_Defeat()
+    {
+        onDefeat?.Invoke();
+    }
+#endif
 }
