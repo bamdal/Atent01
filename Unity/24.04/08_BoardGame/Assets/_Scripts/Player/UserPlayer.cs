@@ -62,9 +62,7 @@ public class UserPlayer : PlayerBase
         //AutoShipDeployment(true);
         opponent = gameManager.EnemyPlayer;
 
-        gameManager.InputController.onMouseClick += OnMouseClick;
-        gameManager.InputController.onMouseMove += OnMouseMove;
-        gameManager.InputController.onMouseWheel += OnMouseWheel;
+
 
     }
 
@@ -185,13 +183,15 @@ public class UserPlayer : PlayerBase
         }
     }
 
-#if UNITY_EDITOR
-    public void Test_BindInputFuncs()
+    /// <summary>
+    /// 입력 연결을 하는 함수
+    /// </summary>
+    public void BindInputFuncs()
     {
         gameManager.InputController.onMouseClick += OnMouseClick;
         gameManager.InputController.onMouseMove += OnMouseMove;
         gameManager.InputController.onMouseWheel += OnMouseWheel;
     }
 
-#endif
+
 }

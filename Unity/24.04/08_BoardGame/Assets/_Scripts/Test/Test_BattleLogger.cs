@@ -19,7 +19,7 @@ public class Test_BattleLogger : TestBase
         enemy.AutoShipDeployment(true);
 
         gameManager.GameState = GameState.Battle;
-        user.Test_BindInputFuncs();
+        user.BindInputFuncs();
 
 
     }

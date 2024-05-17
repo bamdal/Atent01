@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class ResultPanel : MonoBehaviour
@@ -11,6 +12,7 @@ public class ResultPanel : MonoBehaviour
     // user나 Enemy가 패배하면 이 창이 열린다
     // 열릴때 승패 여부에 따라 세팅 차이 두기
     // 열릴 때 Analysis에 값 넣기
+
 
     ResultBoard resultBoard;
     ResultAnalysis userAnalysis;
@@ -106,7 +108,7 @@ public class ResultPanel : MonoBehaviour
     /// </summary>
     private void Restart()
     {
-        gameObject.SetActive(false);
+        SceneManager.LoadScene(1);
     }
 
 

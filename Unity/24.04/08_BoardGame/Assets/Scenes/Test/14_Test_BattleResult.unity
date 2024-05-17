@@ -7903,7 +7903,7 @@ PrefabInstance:
     - target: {fileID: 4127807165598780824, guid: eb9c12a13de0a544cb695401e10aa267,
         type: 3}
       propertyPath: turnDuration
-      value: 0.1
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4127807165598780824, guid: eb9c12a13de0a544cb695401e10aa267,
         type: 3}

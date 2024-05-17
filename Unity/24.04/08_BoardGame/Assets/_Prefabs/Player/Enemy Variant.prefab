@@ -13,10 +13,20 @@ PrefabInstance:
       propertyPath: m_Name
       value: Enemy Variant
       objectReference: {fileID: 0}
-    - target: {fileID: 7242397864879944556, guid: 43e10ce7a9f8f2d4da7edf08d9d4d12b,
+    - target: {fileID: 1470667317229881683, guid: 43e10ce7a9f8f2d4da7edf08d9d4d12b,
         type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1470667317229881683, guid: 43e10ce7a9f8f2d4da7edf08d9d4d12b,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7242397864879944556, guid: 43e10ce7a9f8f2d4da7edf08d9d4d12b,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 7242397864879944556, guid: 43e10ce7a9f8f2d4da7edf08d9d4d12b,
         type: 3}
@@ -26,7 +36,7 @@ PrefabInstance:
     - target: {fileID: 7242397864879944556, guid: 43e10ce7a9f8f2d4da7edf08d9d4d12b,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 7242397864879944556, guid: 43e10ce7a9f8f2d4da7edf08d9d4d12b,
         type: 3}
@@ -92,3 +102,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   criticalMarkPrefab: {fileID: 5273653229813800745, guid: c62d90d1b3175d145af3bad77beeae7e,
     type: 3}
+  thinkingTimeMin: 1
+  thinkingTimeMax: 2

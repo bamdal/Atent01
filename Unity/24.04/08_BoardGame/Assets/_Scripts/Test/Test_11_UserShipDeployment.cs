@@ -6,11 +6,12 @@ using UnityEngine.InputSystem;
 public class Test_11_UserShipDeployment : TestBase
 {
     public DeploymentToggle toggle;
+#if UNITY_EDITOR
 
     private void Start()
     {
         GameManager.Instance.GameState = GameState.ShipDeployment;
-        GameManager.Instance.UserPlayer.Test_BindInputFuncs();
+        GameManager.Instance.UserPlayer.BindInputFuncs();
     }
 
     protected override void OnTest1(InputAction.CallbackContext context)
@@ -32,6 +33,7 @@ public class Test_11_UserShipDeployment : TestBase
         GameManager.Instance.GameState = GameState.ShipDeployment;
 
     }
+    #endif
 }
 
 // 실습

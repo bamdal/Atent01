@@ -13,6 +13,7 @@ public class Test_BattleResult : TestBase
 
     UserPlayer user;
     EnemyPlayer enemy;
+#if UNITY_EDITOR
 
     private void Start()
     {
@@ -25,7 +26,7 @@ public class Test_BattleResult : TestBase
         enemy.AutoShipDeployment(true);
 
         gameManager.GameState = GameState.Battle;
-        user.Test_BindInputFuncs();
+        user.BindInputFuncs();
 
 
     }
@@ -55,5 +56,5 @@ public class Test_BattleResult : TestBase
         GameManager.Instance.EnemyPlayer.Test_Defeat();
 
     }
-
+#endif
 }
