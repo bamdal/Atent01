@@ -1,3 +1,6 @@
+using Cinemachine;
+using System;
+using System.Collections;
 using UnityEngine;
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
@@ -21,6 +24,22 @@ namespace StarterAssets
 		public bool cursorLocked = true;
 		public bool cursorInputForLook = true;
 
+		/// <summary>
+		/// 플레이어를 따라다니는 카메라
+		/// </summary>
+        CinemachineVirtualCamera followVCAM;
+
+        const float zoomFOV = 20.0f;
+        const float normalFOV = 40.0f;
+
+        const float zoomTime = 0.25f;   // 줌이 0.25초에 확대 축소가 이뤄짐
+
+		public Action<bool> onZoom;
+
+        private void Start()
+        {
+            followVCAM = GameManager.Instance.FollowCamara;
+        }
         public void OnMove(InputAction.CallbackContext context)
         {
 			MoveInput(context.ReadValue<Vector2>());
@@ -43,6 +62,23 @@ namespace StarterAssets
         {
 			SprintInput(context.ReadValue<float>() > 0.1f);
         }
+
+		public void OnZoom(InputAction.CallbackContext context)
+		{
+			StopAllCoroutines();
+			StartCoroutine(ZoomInOut(!context.canceled));	// 줌인아웃 시작
+            onZoom.Invoke(!context.canceled);	// 총을 보일지 안보일지 결정
+        }
+
+		public void OnFire(InputAction.CallbackContext context)
+		{
+
+		}
+
+		public void OnReload(InputAction.CallbackContext context)
+		{
+
+		}
 
 #if ENABLE_INPUT_SYSTEM
         public void OnMove(InputValue value)
@@ -89,7 +125,69 @@ namespace StarterAssets
 		{
 			sprint = newSprintState;
 		}
+
+		public void ZoomInput()
+		{
 		
+        }
+
+        public void FireInput()
+		{
+
+		}
+
+		public void ReloadInput()
+		{
+
+		}
+
+		/// <summary>
+		/// ZoomIn/Out을 처리하는 코루틴
+		/// </summary>
+		/// <param name="zoomIn">true확대, false원상복구</param>
+		/// <returns></returns>
+		IEnumerator ZoomInOut(bool zoomIn)
+		{
+			float fov = followVCAM.m_Lens.FieldOfView;
+			float speed = (normalFOV - zoomFOV) / zoomTime;	// zoomTime실행시간내에 함수끝내기 위한 보정값
+			if (zoomIn)
+			{
+                while (fov != zoomFOV)
+                {
+                    fov -= Time.deltaTime * speed;
+                    followVCAM.m_Lens.FieldOfView = Mathf.Clamp(fov,zoomFOV,normalFOV);
+                    yield return null;
+                }
+            }
+			else
+			{
+                while (fov != normalFOV)
+                {
+                    fov += Time.deltaTime * speed;
+                    followVCAM.m_Lens.FieldOfView = Mathf.Clamp(fov, zoomFOV, normalFOV);
+                    yield return null;
+                }
+            }
+
+
+
+        }
+
+
+/*		IEnumerator ZoomTimeCoroutine(float fov)
+		{
+			float nowFOV = followVCAM.m_Lens.FieldOfView;
+			float elapseTime = 0.0f;
+			while (elapseTime < zoomTime)
+			{
+				elapseTime += Time.deltaTime;
+                nowFOV = Mathf.Lerp(nowFOV, fov, zoomTime);
+				followVCAM.m_Lens.FieldOfView = nowFOV;
+				yield return null;
+
+            }
+			followVCAM.m_Lens.FieldOfView = fov;
+        }*/
 		private void OnApplicationFocus(bool hasFocus)
 		{
 			SetCursorState(cursorLocked);
