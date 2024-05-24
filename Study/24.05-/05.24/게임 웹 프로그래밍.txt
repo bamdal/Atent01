@@ -1,0 +1,48 @@
+게임 웹 프로그래밍
+
+웹서버 
+ - HTTP요청을 받아들이고 HTML문서와 같은 웹페이지를 반환하는 컴퓨터 프로그램이다
+ - 제공기능
+  - 공통 주요 기능 : HTTP처리, 데이터 로깅
+  - 기타 기능 : 인증, HTTPs 지원, 콘텐츠 압축, 대역폭 스로틀링 등등
+
+HTML
+ - Hypertext Markup Language 
+ - Markup Language : 데이터 구조를 정의하기 위한 언어
+ - 웹을 이루는 가장 기초적인 구성요소
+ - 태그를 통해 HTML 각 요소를 구분(<>로 묶어서 표현)
+
+웹브라우저
+ - 웹서버에서 이동하고 쌍방향으로 통신앟고 HTML문서나 파일을 출력하는 GUI기반의 소프트웨어
+
+반응형 웹 디자인 
+ - 하나의 웹사이트에서 웹 브라우저의 해상도에 따라 콘텐츠의 크기와 위치가 자동으로 변하도록 만든 웹페이지 접근 기법
+
+
+    using UnityEngine.Networking;
+
+
+    readonly string url = "http://www.naver.com";
+
+    protected override void OnTest1(InputAction.CallbackContext context)
+    {
+        StartCoroutine(GetData());
+    }
+
+
+    IEnumerator GetData()
+    {
+        UnityWebRequest www = UnityWebRequest.Get(url); // 웹페이지를 가져오는 요청만들기
+        yield return www.SendWebRequest();              // 위에서 만든 요청을 전송하고 경과 기다리기(전송결과 돌아올때까지 대기)
+
+        if (www.result != UnityWebRequest.Result.Success)
+        {
+            Debug.Log(www.error);
+        }
+        else
+        {
+            Debug.Log(www.downloadHandler.text);
+        }
+
+
+    }
