@@ -241,18 +241,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
---- !u!1 &681570580 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7469290305855613008, guid: eaf650e0cb3710f4bb44b822e2197602,
-    type: 3}
-  m_PrefabInstance: {fileID: 7807359488733935678}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &765604626 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4195906593285591121, guid: eaf650e0cb3710f4bb44b822e2197602,
-    type: 3}
-  m_PrefabInstance: {fileID: 7807359488733935678}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &889591757
 GameObject:
   m_ObjectHideFlags: 0
@@ -532,7 +520,7 @@ MonoBehaviour:
   cellVisualizer: {fileID: 899605582}
   backTracking: {fileID: 889591759}
   width: 5
-  height: 5
+  height: 10
 --- !u!4 &1731515819
 Transform:
   m_ObjectHideFlags: 0
@@ -548,18 +536,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1793184966 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4055283265593694964, guid: eaf650e0cb3710f4bb44b822e2197602,
-    type: 3}
-  m_PrefabInstance: {fileID: 7807359488733935678}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &1828334265 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5584689602052240700, guid: eaf650e0cb3710f4bb44b822e2197602,
-    type: 3}
-  m_PrefabInstance: {fileID: 7807359488733935678}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7807359488733935678
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -568,31 +544,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 4044998194976541458, guid: eaf650e0cb3710f4bb44b822e2197602,
-        type: 3}
-      propertyPath: walls.Array.size
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 4044998194976541458, guid: eaf650e0cb3710f4bb44b822e2197602,
-        type: 3}
-      propertyPath: walls.Array.data[0]
-      value: 
-      objectReference: {fileID: 1793184966}
-    - target: {fileID: 4044998194976541458, guid: eaf650e0cb3710f4bb44b822e2197602,
-        type: 3}
-      propertyPath: walls.Array.data[1]
-      value: 
-      objectReference: {fileID: 681570580}
-    - target: {fileID: 4044998194976541458, guid: eaf650e0cb3710f4bb44b822e2197602,
-        type: 3}
-      propertyPath: walls.Array.data[2]
-      value: 
-      objectReference: {fileID: 765604626}
-    - target: {fileID: 4044998194976541458, guid: eaf650e0cb3710f4bb44b822e2197602,
-        type: 3}
-      propertyPath: walls.Array.data[3]
-      value: 
-      objectReference: {fileID: 1828334265}
     - target: {fileID: 4126892432647342841, guid: eaf650e0cb3710f4bb44b822e2197602,
         type: 3}
       propertyPath: m_Name

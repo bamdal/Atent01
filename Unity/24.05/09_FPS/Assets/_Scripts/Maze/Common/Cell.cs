@@ -55,7 +55,7 @@ public class Cell
     /// <param name="pathDirection">새로 길을 만들 방향</param>
     public void MakePath(Direction pathDirection)
     {
-
+        path |= (byte)pathDirection;
     }
 
     /// <summary>
@@ -66,7 +66,7 @@ public class Cell
     public bool IsPath(Direction pathDirection)
     {
        
-        return false;
+        return (path & (byte)pathDirection) != 0;
     }
 
     /// <summary>
@@ -76,6 +76,6 @@ public class Cell
     /// <returns>true면 벽이고, false면 길</returns>
     public bool IsWall(Direction pathDirection)
     {
-        return false;
+        return (path & (byte)pathDirection) == 0;
     }
 }

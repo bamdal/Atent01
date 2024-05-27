@@ -36,4 +36,9 @@ public class Test_06_Maze : TestBase
         backTracking.Draw(maze);
 
     }
+
+    protected override void OnTest4(InputAction.CallbackContext context)
+    {
+        
+    }
 }

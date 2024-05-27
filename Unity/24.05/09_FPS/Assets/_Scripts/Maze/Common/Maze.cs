@@ -28,6 +28,8 @@ public class Maze
     protected Cell[] cells;
     public Cell[] Cells => cells;
 
+
+
     /// <summary>
     /// 미로를 생성하는 함수
     /// </summary>
@@ -67,32 +69,52 @@ public class Maze
     /// <param name="to">도착 셀</param>
     protected void ConnectPath(Cell from, Cell to)
     {
-        
+        Vector2Int dir; // from -> to 로 가는 방향
+        dir = new(to.X - from.X, to.Y - from.Y);
+        if (dir.x > 0)
+        {
+            // 동쪽
+            from.MakePath(Direction.East);
+            to.MakePath(Direction.West);
+        }
+        else if (dir.x < 0)
+        {
+            // 서쪽
+            from.MakePath(Direction.West);
+            to.MakePath(Direction.East);
+        }
+        else if (dir.y < 0)
+        {
+            // 북쪽
+            from.MakePath(Direction.North);
+            to.MakePath(Direction.South);
+        }
+        else if (dir.y > 0)
+        {
+            // 남쪽
+            from.MakePath(Direction.South);
+            to.MakePath(Direction.North);
+        }
     }
 
     protected bool IsInGrid(int x, int y)
     {
-     
-        
         return x >= 0 && x < width && y >= 0 && y < height;
     }
 
     protected bool IsInGrid(Vector2Int grid)
     {
-        
-        return IsInGrid(grid.x,grid.y);
+        return grid.x >= 0 && grid.x < width && grid.y >= 0 && grid.y < height;
     }
 
     protected Vector2Int IndexToGrid(int index)
     {
-        return new Vector2Int(index%width,index/height);
+        return new Vector2Int(index%width,index/ width);
     }
 
     protected int GridToIndex(int x, int y) 
     {
-        if(IsInGrid(x, y))
-            return x + y*height;
-        return -1;
+            return x + y*width;
     }
 
     protected int GridToIndex(Vector2Int grid)
