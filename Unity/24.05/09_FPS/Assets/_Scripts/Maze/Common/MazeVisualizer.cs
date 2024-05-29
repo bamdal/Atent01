@@ -26,6 +26,8 @@ public class MazeVisualizer : MonoBehaviour
             CellVisualizer cellVisualizer = obj.GetComponent<CellVisualizer>();
             cellVisualizer.RefreshWall(cell.Path);
         }
+
+        Debug.Log("미로 그리기 완료");
     }
 
     /// <summary>
@@ -39,6 +41,8 @@ public class MazeVisualizer : MonoBehaviour
             child.SetParent(null);
             Destroy(child.gameObject);
         }
+
+        Debug.Log("미로 지우기 완료");
     }
 
     /// <summary>

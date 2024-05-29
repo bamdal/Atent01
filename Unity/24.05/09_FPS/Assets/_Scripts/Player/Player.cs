@@ -16,6 +16,10 @@ public class Player : MonoBehaviour
     /// </summary>
     GameObject gunCamera;
 
+    /// <summary>
+    /// 총알이 발사될 카메라 기준점
+    /// </summary>
+    public Transform FireTransform => transform.GetChild(0);    // 카메라 루트
     private void Awake()
     {
         starterAssets = GetComponent<StarterAssetsInputs>();
