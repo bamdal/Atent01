@@ -80,6 +80,11 @@ namespace StarterAssets
 
 		}
 
+		public void OnWheel(InputAction.CallbackContext context)
+		{
+
+		}
+
 #if ENABLE_INPUT_SYSTEM
         public void OnMove(InputValue value)
 		{

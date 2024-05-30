@@ -4,15 +4,39 @@ using UnityEngine;
 
 public class Revolber : GunBase
 {
-    // Start is called before the first frame update
-    void Start()
+    float reloadDuration => fireRateSecond;
+    bool isReloading = false;
+
+    protected override void FireProcess(bool isFireStart = true)
     {
+        if(isFireStart)
+        {
+            base.FireProcess();
+            HitProcess();       // 명중처리 후
+            FireRecoil();       // 총기 반동 신호 보내기
+
+        }
         
+
     }
 
-    // Update is called once per frame
-    void Update()
+    public void Reload()
     {
-        
+        if (!isReloading && (BulletCount < clipSize))   // 리로딩 아닐때 실행, 탄이 소보되면 실행
+        {
+            isReloading = true;                         // 리로딩 중
+            isFireReady = false;                        // 총 발사 방지
+            Debug.Log("리볼버재장전중");
+            StartCoroutine(RelodingCoroutine());
+        }
+    }
+    
+    IEnumerator RelodingCoroutine()
+    {
+        yield return new WaitForSeconds(reloadDuration);    // 리로딩 시간만큼 대기
+        BulletCount = clipSize; // 탄창크기만큼 재장전
+        isReloading = false;    // 리로딩 끝남
+        isFireReady = true;     // 총 발사 가능
+        Debug.Log("리볼버장전완료");
     }
 }

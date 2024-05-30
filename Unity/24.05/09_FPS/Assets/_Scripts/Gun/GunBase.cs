@@ -70,10 +70,10 @@ public class GunBase : MonoBehaviour
     /// <summary>
     /// 총의 연사속도 나누기 연산 미리하는 용
     /// </summary>
-    float fireRateSecond;
+    protected float fireRateSecond;
 
     /// <summary>
-    /// 현재 발가가 가능한지 여부 판단
+    /// 현재 발사가 가능한지 여부 판단
     /// </summary>
     protected bool isFireReady = true;
 
@@ -115,7 +115,7 @@ public class GunBase : MonoBehaviour
     /// <summary>
     /// 총을 발사하는 함수
     /// </summary>
-    void Fire()
+    public void Fire(bool isFireStart = true)
     {
         if (isFireReady && BulletCount > 0) // 발사 가능하고 총알이 남아있으면
         {
@@ -127,7 +127,8 @@ public class GunBase : MonoBehaviour
     /// <summary>
     /// 발사가 성공했을 때 실행할 기능들
     /// </summary>
-    protected virtual void FireProcess()
+    /// <param name="isFireStart">발사 입력이 들어오묜 true, 끝나면 false</param>
+    protected virtual void FireProcess(bool isFireStart = true)
     {
         isFireReady = false;            // 계속 발사가 되지 않게 막기
         MuzzleEffectOn();               // 머즐 이펙트 보여주고
@@ -158,7 +159,12 @@ public class GunBase : MonoBehaviour
     /// </summary>
     protected void HitProcess()
     {
-
+        Ray ray = new Ray(fireTransform.position,GetFireDiretion());    // 레이 만들기
+        if (Physics.Raycast(ray,out RaycastHit hitInfo, range))         // 레이캐스트
+        {
+            Vector3 reflect = Vector3.Reflect(ray.direction, hitInfo.normal);   // 반사각 구하기
+            Factory.Instance.GetBulletHole(hitInfo.point, hitInfo.normal,reflect);  // 총알구멍 위치, 노멀, 반사각
+        }
     }
 
     /// <summary>
@@ -214,6 +220,15 @@ public class GunBase : MonoBehaviour
 
 
 #if UNITY_EDITOR
+
+    public void Test_Fire(bool isFireStart = true)
+    {
+        if (fireTransform == null)
+        {
+            Equip();
+        }
+        Fire(isFireStart);
+    }
     private void OnDrawGizmos()
     {
         if(fireTransform != null)
