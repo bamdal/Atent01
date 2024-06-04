@@ -36,6 +36,12 @@ namespace StarterAssets
 
 		public Action<bool> onZoom;
 
+		Player player;
+        private void Awake()
+        {
+            player = GetComponent<Player>();	
+        }
+
         private void Start()
         {
             followVCAM = GameManager.Instance.FollowCamara;
@@ -72,17 +78,40 @@ namespace StarterAssets
 
 		public void OnFire(InputAction.CallbackContext context)
 		{
-
+			player.GunFire(!context.canceled);
 		}
 
 		public void OnReload(InputAction.CallbackContext context)
 		{
-
+			if (context.performed)
+			{
+				player.RevolverReload();
+			}
 		}
+		int index = 0;
 
-		public void OnWheel(InputAction.CallbackContext context)
+        public void OnWheel(InputAction.CallbackContext context)
 		{
+			float wheel = context.ReadValue<float>();
+			int gunTypemax = Enum.GetValues(typeof(GunType)).Length;
+			
+			if (wheel > 0)
+			{
+				index++;
+				if(index > gunTypemax - 1)
+                    index = 0;
+                index = Mathf.Clamp(index, 0, gunTypemax-1);
+			}
+			if (wheel < 0)
+			{
+                index--;
+				if (index < 0)
+					index = gunTypemax - 1;
+                index = Mathf.Clamp(index, 0, gunTypemax-1);
+            }
 
+			player.GunChage((GunType)index);
+			
 		}
 
 #if ENABLE_INPUT_SYSTEM

@@ -24,6 +24,7 @@ public class Revolber : GunBase
     {
         if (!isReloading && (BulletCount < clipSize))   // 리로딩 아닐때 실행, 탄이 소보되면 실행
         {
+            StopAllCoroutines();                // FireProcess에서 실행시키는 코루틴으로 isFireReady가 true가 되는 것 방지
             isReloading = true;                         // 리로딩 중
             isFireReady = false;                        // 총 발사 방지
             Debug.Log("리볼버재장전중");

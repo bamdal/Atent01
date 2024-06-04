@@ -108,6 +108,54 @@ MonoBehaviour:
   CinemachineCameraTarget: {fileID: 8620233551050030386}
   TopClamp: 89
   BottomClamp: -89
+  fireUp:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  fireDown:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!114 &2785058360246880706
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -282,6 +330,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 9c8cf95e-af39-4852-b20d-7fc9d50fcf64
     m_ActionName: Player/Reload[/Keyboard/r]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 7729785470784474027}
+        m_TargetAssemblyTypeName: StarterAssets.StarterAssetsInputs, Assembly-CSharp
+        m_MethodName: OnWheel
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 4522d794-20ea-4405-aa0f-79827b77f976
+    m_ActionName: Player/Wheel[/Mouse/scroll/down,/Mouse/scroll/up]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -537,6 +601,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3953674287404596613, guid: bd839bd0c87f8e24b88e453778e57ef8,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5416593351436699231, guid: bd839bd0c87f8e24b88e453778e57ef8,
         type: 3}
       propertyPath: m_Name
@@ -546,6 +615,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Layer
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 5416593351436699231, guid: bd839bd0c87f8e24b88e453778e57ef8,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7776689944744089008, guid: bd839bd0c87f8e24b88e453778e57ef8,
         type: 3}
@@ -590,7 +664,7 @@ MonoBehaviour:
   damage: 10
   fireRate: 10
   spread: 2
-  recoil: 1
+  recoil: 3
 --- !u!1001 &940178190614935019
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -599,10 +673,55 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7746977133456032897}
     m_Modifications:
+    - target: {fileID: 854619400208689297, guid: 3f11a77294967054f887607c37b82d09,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6801414235844472211, guid: 3f11a77294967054f887607c37b82d09,
+        type: 3}
+      propertyPath: damage
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6801414235844472211, guid: 3f11a77294967054f887607c37b82d09,
+        type: 3}
+      propertyPath: recoil
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 6801414235844472211, guid: 3f11a77294967054f887607c37b82d09,
+        type: 3}
+      propertyPath: spread
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6801414235844472211, guid: 3f11a77294967054f887607c37b82d09,
+        type: 3}
+      propertyPath: clipSize
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6801414235844472211, guid: 3f11a77294967054f887607c37b82d09,
+        type: 3}
+      propertyPath: fireRate
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6965062349198795723, guid: 3f11a77294967054f887607c37b82d09,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7298486968679978253, guid: 3f11a77294967054f887607c37b82d09,
         type: 3}
       propertyPath: m_Name
       value: ShotGun
+      objectReference: {fileID: 0}
+    - target: {fileID: 7298486968679978253, guid: 3f11a77294967054f887607c37b82d09,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7298486968679978253, guid: 3f11a77294967054f887607c37b82d09,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8173678528588746466, guid: 3f11a77294967054f887607c37b82d09,
         type: 3}
@@ -673,6 +792,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6913844968652929976}
     m_Modifications:
+    - target: {fileID: 1141343886269278226, guid: a7e3b698e01ce7342b62b7af409b821c,
+        type: 3}
+      propertyPath: m_OcclusionCulling
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1141343886269278226, guid: a7e3b698e01ce7342b62b7af409b821c,
         type: 3}
       propertyPath: m_CullingMask.m_Bits
@@ -825,10 +949,45 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 374206701741214390, guid: 23d9094a5e0f42c4dbbdeeeff2d5e838,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1859655307930022524, guid: 23d9094a5e0f42c4dbbdeeeff2d5e838,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 3383820164092848042, guid: 23d9094a5e0f42c4dbbdeeeff2d5e838,
+        type: 3}
+      propertyPath: damage
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 3383820164092848042, guid: 23d9094a5e0f42c4dbbdeeeff2d5e838,
+        type: 3}
+      propertyPath: clipSize
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 3383820164092848042, guid: 23d9094a5e0f42c4dbbdeeeff2d5e838,
+        type: 3}
+      propertyPath: fireRate
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 8474220310537682437, guid: 23d9094a5e0f42c4dbbdeeeff2d5e838,
         type: 3}
       propertyPath: m_Name
       value: AssaultRifle
+      objectReference: {fileID: 0}
+    - target: {fileID: 8474220310537682437, guid: 23d9094a5e0f42c4dbbdeeeff2d5e838,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8474220310537682437, guid: 23d9094a5e0f42c4dbbdeeeff2d5e838,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

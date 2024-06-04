@@ -7,6 +7,14 @@ using UnityEngine.VFX;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
+
+public enum GunType : byte
+{
+    Revolver =0,
+    ShotGun,
+    AssaultRifle
+}
+
 public class GunBase : MonoBehaviour
 {
     // 사정 거리
@@ -119,7 +127,7 @@ public class GunBase : MonoBehaviour
     {
         if (isFireReady && BulletCount > 0) // 발사 가능하고 총알이 남아있으면
         {
-            FireProcess();                  // 발사 시작
+            FireProcess(isFireStart);                  // 발사 시작
 
         }
     }
@@ -173,14 +181,6 @@ public class GunBase : MonoBehaviour
     protected void FireRecoil()
     {
         onFire?.Invoke(recoil);
-    }
-
-    /// <summary>
-    /// 총 재장전
-    /// </summary>
-    void Reload()
-    {
-
     }
 
     /// <summary>
