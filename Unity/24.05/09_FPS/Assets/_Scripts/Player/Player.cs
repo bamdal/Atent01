@@ -34,10 +34,7 @@ public class Player : MonoBehaviour
     /// </summary>
     GunBase activeGun;
 
-    /// <summary>
-    /// 기본 설정 총(리볼버)
-    /// </summary>
-    GunBase defaultGun;
+
 
     /// <summary>
     /// 총이 변경되었음을 알리는 델리게이트
@@ -55,8 +52,7 @@ public class Player : MonoBehaviour
         guns = child.GetComponentsInChildren<GunBase>(true);
 
 
-        defaultGun = guns[0];       // 기본총 설정
-        activeGun = defaultGun;     // 기본총 활성화
+        activeGun = guns[0];       // 기본총 설정
 
     }
 
@@ -70,6 +66,7 @@ public class Player : MonoBehaviour
         {
             gun.onFire += controller.FireRecoil;
             gun.onFire += (expend) => { crosshair.Expend(expend * 10); };
+            gun.onAmmoDepleted += () => GunChage(GunType.Revolver);
         }
 
         activeGun.Equip();
@@ -126,11 +123,13 @@ public class Player : MonoBehaviour
     /// 총알개수가 변경될 때 실행되는 델리게이트 콜백 함수 추가
     /// </summary>
     /// <param name="callback">추가할 콜백함수</param>
-    public void AddBulletCountChangeDelegate(Action<int> callback)
+    public void AddAmmoCountChangeDelegate(Action<int> callback)
     {
         foreach(var gun in guns)
         {
-            gun.onBulletCountChange += callback;
+            gun.onAmmoCountChange += callback;
         }
     }
+
+        
 }

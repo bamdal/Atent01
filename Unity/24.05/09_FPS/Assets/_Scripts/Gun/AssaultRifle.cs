@@ -5,6 +5,9 @@ using UnityEngine;
 public class AssaultRifle : GunBase
 {
     float reloadDuration => fireRateSecond;
+
+
+
     protected override void FireProcess(bool isFireStart = true)
     {
         if (isFireStart)
