@@ -1,0 +1,86 @@
+게임 웹 프로그래밍
+
+웹서버 
+ - HTTP요청을 받아들이고 HTML문서와 같은 웹페이지를 반환하는 컴퓨터 프로그램이다
+ - 제공기능
+  - 공통 주요 기능 : HTTP처리, 데이터 로깅
+  - 기타 기능 : 인증, HTTPs 지원, 콘텐츠 압축, 대역폭 스로틀링 등등
+
+HTML
+ - Hypertext Markup Language 
+ - Markup Language : 데이터 구조를 정의하기 위한 언어
+ - 웹을 이루는 가장 기초적인 구성요소
+ - 태그를 통해 HTML 각 요소를 구분(<>로 묶어서 표현)
+
+웹브라우저
+ - 웹서버에서 이동하고 쌍방향으로 통신앟고 HTML문서나 파일을 출력하는 GUI기반의 소프트웨어
+
+반응형 웹 디자인 
+ - 하나의 웹사이트에서 웹 브라우저의 해상도에 따라 콘텐츠의 크기와 위치가 자동으로 변하도록 만든 웹페이지 접근 기법
+
+UNet -> 개발중지
+NedCode for GameObjecct
+
+C# 네임스페이스들
+ - System.Net.Http
+  - HttpClient
+ - System.Text.Json
+ - System.Security.Cryptography
+
+위협(Threat)
+ - 손실이나 손상의 원인이 될 가능성이 있는 환경
+ - Zero Day Attack(제로 데이 공격) : 소프트웨어의 취약점이 공개되기 전에 해당 취약점을 공격하는 위협
+
+취약점(Vulnerablility)
+ - 위협에 의해서 손실이 발생하게 되는 자신의 약점
+ - Buffer overflow(버퍼 오버 플로우) : 프로세스가 데이터를 버퍼에 저장할 때
+				버퍼의 영역 바깥부분까지 저장하여 각종 문제의 근간이 되는 취약점
+위험(Risk)
+ - 예상되는 위협에 의해 취약점을 공격당해 자산에 발생할 가능성이 있는 손실의 예상치
+
+자산(Asset)
+ - 보유하고 있는 경제적 가치가 있는 유,무형의 재산
+
+공격(Attack)
+ - 위협과 취약점을 통해 피해를 입히는 행위
+ - 브루트 포스(무차별 대입 공격)
+ - XSS(크로스 사이트 스티립팅)
+ - SQL Injection(SQL 삽입)
+
+공격 방어법
+ - 이단계 인증(Two-factor Authentication) : 두 종류 이상의 인증 매커니즘에 성공적으로 통과했을 때만
+					인증에 성공한 것으로 간주하는 접근제어 기법
+ - OTP(One Time Password) : 높은 수준의 보안 요구에 의해 한번의 인증 당 하나의 임시 비밀번호를 사용하는 방식
+
+
+
+
+
+
+    using UnityEngine.Networking;
+
+
+    readonly string url = "http://www.naver.com";
+
+    protected override void OnTest1(InputAction.CallbackContext context)
+    {
+        StartCoroutine(GetData());
+    }
+
+
+    IEnumerator GetData()
+    {
+        UnityWebRequest www = UnityWebRequest.Get(url); // 웹페이지를 가져오는 요청만들기
+        yield return www.SendWebRequest();              // 위에서 만든 요청을 전송하고 경과 기다리기(전송결과 돌아올때까지 대기)
+
+        if (www.result != UnityWebRequest.Result.Success)
+        {
+            Debug.Log(www.error);
+        }
+        else
+        {
+            Debug.Log(www.downloadHandler.text);
+        }
+
+
+    }
