@@ -51,11 +51,24 @@ public class MazeVisualizer : MonoBehaviour
     /// <param name="x">그리드좌표 x</param>
     /// <param name="y">그리드좌표 y</param>
     /// <returns>월드 좌표</returns>
-    public Vector3 GridToWorld(int x, int y)
+    public static Vector3 GridToWorld(int x, int y)
     {
         float size = CellVisualizer.CellSize;
         float sizeHalf = size * 0.5f;
 
         return new(size*x + sizeHalf, size*-y - sizeHalf);   
+    }
+
+    /// <summary>
+    /// 월드좌표를 그리드좌표로
+    /// </summary>
+    /// <param name="world">월드좌표</param>
+    /// <returns>그리드 좌표</returns>
+    public static Vector2Int WorldToGrid(Vector3 world)
+    {
+        float size = CellVisualizer.CellSize;
+        
+        Vector2Int result = new((int)(world.x / size), -(int)(world.z / size));
+        return result;
     }
 }
