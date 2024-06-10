@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UIElements;
 
 /// <summary>
 /// 적이 맞을 수 있는 부위
@@ -49,6 +50,7 @@ public class Enemy : MonoBehaviour
             {
                 OnStateExit(value);
                 state = value;
+                Debug.Log(state);
                 OnStateEnter(value);
             }
         }
@@ -163,6 +165,11 @@ public class Enemy : MonoBehaviour
     /// </summary>
     float findTimeElapsed = 0.0f;
 
+    /// <summary>
+    /// 추적 대상
+    /// </summary>
+    Transform chaseTarget = null;
+
     // 기타 ------------------------------------------------------------------------------------------------------------------------
 
     NavMeshAgent agent;
@@ -173,7 +180,13 @@ public class Enemy : MonoBehaviour
     private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
+        SphereCollider sc = GetComponent<SphereCollider>();
+        sc.radius = sightRange;
+
         hp = maxHp;
+
+        attackSenser = GetComponentInChildren<AttackSenser>();
+        attackSenser.onSensorTriggered += OnSensorTriggered;
     }
 
     private void OnEnable()
@@ -189,7 +202,12 @@ public class Enemy : MonoBehaviour
 
     void Update_Wander()
     {
-        if (agent.remainingDistance <= agent.stoppingDistance)
+        // 플레이어를 찾으면 Chase 상태로 변경하기
+        if (FindPlayer())
+        {
+            State = BehaviourState.Chase;
+        }
+        else if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
         {
 
             agent.SetDestination(GetRandomDestination());
@@ -198,17 +216,44 @@ public class Enemy : MonoBehaviour
     }
     void Update_Chase()
     {
-
+        // 마지막 목격 장소까지 이동하기
+        if (IsPlayerInSight(out Vector3 position))
+        {
+            agent.SetDestination(position); // 마지막 목격 장소를 목적지로 새로 설정
+        }
+        else if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
+        {
+            State = BehaviourState.Find;
+        }
     }
 
     void Update_Find()
     {
-
+        if (IsPlayerInSight(out Vector3 position))
+        {
+            StopCoroutine(goWander);
+            State = BehaviourState.Chase;
+        }
+        else if(!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
+        {
+            if(wait)
+                goWander = StartCoroutine(GoWander());
+            transform.Rotate(Time.deltaTime*360f * Vector3.up);
+        }
+    }
+    Coroutine goWander;
+    bool wait = true;
+    IEnumerator GoWander()
+    {
+        wait = false;
+        yield return new WaitForSeconds(3.0f);
+        State = BehaviourState.Wander;
+        wait = true;
     }
 
     void Update_Attack()
     {
-
+        Debug.Log("공격중");
     }
 
     void Update_Dead()
@@ -218,12 +263,19 @@ public class Enemy : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        
+        if (other.CompareTag("Player"))
+        {
+            chaseTarget = other.transform;
+        }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        
+        if (other.CompareTag("Player"))
+        {
+
+            chaseTarget = null;
+        }
     }
 
     /// <summary>
@@ -241,6 +293,7 @@ public class Enemy : MonoBehaviour
                 break;
             case BehaviourState.Chase:
                 onUpdate = Update_Chase;
+                agent.speed = runSpeed;
                 break;
             case BehaviourState.Find:
                 onUpdate = Update_Find;
@@ -262,16 +315,17 @@ public class Enemy : MonoBehaviour
     {
         switch (newState)
         {
-            case BehaviourState.Wander:
-                break;
-            case BehaviourState.Chase:
-                break;
+
             case BehaviourState.Find:
                 break;
             case BehaviourState.Attack:
                 break;
             case BehaviourState.Dead:
                 gameObject.SetActive(false);
+                break;
+            default:
+            //case BehaviourState.Wander:
+            //case BehaviourState.Chase:
                 break;
         }
     }
@@ -322,7 +376,12 @@ public class Enemy : MonoBehaviour
     /// <returns>true면 찾음, false면 못찾음</returns>
     bool FindPlayer()
     {
-        return false;
+        bool result = false;
+        if (chaseTarget != null)               // 추적 대상이 존재하고
+        {
+            result = IsPlayerInSight(out _);    // 시야 범위 안에있으면 플레이어를 찾은 것
+        }
+        return result;
     }
 
     /// <summary>
@@ -332,8 +391,28 @@ public class Enemy : MonoBehaviour
     /// <returns>true면 시야범위내에 있다, false면 없다</returns>
     bool IsPlayerInSight(out Vector3 position)
     {
+        bool result = false;
         position = Vector3.zero;
-        return false;
+        if(chaseTarget != null)
+        {
+            Vector3 dir = chaseTarget.position - transform.position;
+            Ray ray = new Ray(transform.position+Vector3.up*1.8f, dir); // 적 눈에서 나오는 ray
+            if (Physics.Raycast(ray, out RaycastHit hit, sightRange, LayerMask.GetMask("Player", "Wall")))
+            {
+                if (hit.transform == chaseTarget)   // 플레이어를 발견
+                {
+                    float angle = Vector3.Angle(transform.forward, dir);
+                    if (angle * 2 < sightAngle)
+                    {
+                        position = chaseTarget.position;
+                        result = true;
+                    }
+                }
+            }
+            
+        }
+
+        return result;
     }
 
     /// <summary>
@@ -374,8 +453,13 @@ public class Enemy : MonoBehaviour
     {
 
     }
-    private void OnSensorTriggered(GameObject _)
+    private void OnSensorTriggered(GameObject obj)
     {
+        Player player = obj.GetComponent<Player>();
+        if (player != null)
+        {
+            State = BehaviourState.Attack;
+        }
 
     }
 
@@ -385,7 +469,12 @@ public class Enemy : MonoBehaviour
         // 시야각 그리기(상태별로 시야각 다른 색으로 그리기)
         Color color = Color.red;
         Handles.color = color;
-        Handles.DrawLine(transform.position, transform.forward * sightRange);
+        if(chaseTarget != null)
+        {
+            Vector3 dir = chaseTarget.position - transform.position;
+            Handles.DrawLine(transform.position + Vector3.up * 1.8f, dir);
+        }
+
         color = Color.white;
         Handles.color = color;
         Handles.DrawWireDisc(transform.position, transform.up, sightRange);
@@ -410,7 +499,13 @@ public class Enemy : MonoBehaviour
         }
 
         Handles.color = color;
-        Handles.DrawWireArc(transform.position, transform.up, transform.forward*sightRange, sightAngle, sightRange,3.0f);
+        Handles.DrawWireArc(transform.position, transform.up, transform.forward*sightRange, sightAngle/2, sightRange,3.0f);
+        Handles.DrawWireArc(transform.position, transform.up, transform.forward*sightRange, -sightAngle/2, sightRange,3.0f);
+    }
+
+    public Vector3 Test_GetRandomPosition()
+    {
+        return GetRandomDestination();
     }
 
 #endif

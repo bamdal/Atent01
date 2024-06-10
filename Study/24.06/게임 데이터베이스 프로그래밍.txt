@@ -71,6 +71,49 @@ CSV (Comma Separated Values)
 문자 인코딩 
  - 사용자가 입력한 문자나 기호들을 컴퓨터가 이용할 수 있는 신호로 변경하는 것
 
-ASCII
-Unicode
+ASCII(American Standard Code for Information Interchange)
+ - 미국 표준 협회(ASA)에서 개발한 영문 알파벳을 사용하는 가장 기본적인 문자 인코딩 방식
+ - 문자를 표현하기 위해 7bit를 사용한다.
 
+Unicode
+ - 전 세계의 모든 문자를 컴퓨터에서 일관되게 표현하기 다룰 수 있도록 설계된 산업 표준
+ - UTF-8
+  - Unicode 인코딩 방식 중 하나
+  - 글자 하나를 표현하기 위해 1~4Byte의 가변 길이를 사용한다.
+  - ASCII 코드를 포함하고 있어 하위호환성이 보장된다
+  - 인코딩을 하는데 비트 연산만 사용되어 속도가 빠르다
+
+JSON
+ - 자바스크립트에서 파생된 포맷으로 구조화된 데이터를 표현하기 위한 문자기반의 경략 데이터 포멧
+
+Markup Language(마크업 언어)
+ - 문서나 데이터의 구조를 명기하는 언어
+
+XML(eXtenable Markup Language)
+ - 인터넷으로 연결된 서로 다른 종류의 시스템끼리 데이터를 쉽게 주고 받기 위해 만들어진 언어
+
+C# 파일 읽고 쓰기
+ - using System.IO : 파일을 읽거나 쓰기 위해 필요한 네임스페이스
+ - File : 단일 파일에 대한 만들기, 복사, 삭제, 이동 및 열기를 위한 정적 메서드를 제공하고 FileStream 개체 만들기를 지원하는 클래스
+ 	string read = File.ReadAllText(@"text.txt"); @ -> 이것 뒤에 있는 문자열은 폴더를 의미한다
+	File.WriteAllText("test.txt", "Hello World"); -> 파일이 없으면 프로젝트 위치에 생성
+- FileStream(파일 흐름) : 물리적으로 파일이 어디서 어디까지 움직이는지에 대한 정보
+  - StreamReader : 특정 인코딩의 바이트 스트림에서 문자를 읽는데 사용하는 클래스
+  - StreamWirter : 
+
+파싱(Parsing)
+ - 일련의 문자열에서 특정 패턴이나 순서를 파악해 의미있는 토큰(token)을 추출한 후 토큰에서 데이터를 받아오는 행동
+ - string 클래스의 파싱용 메서드
+
+string a = "   asdf . sadf   ";
+a.Trim(); // 앞 뒤의 모든 공백 제거
+a = a.Substring(5); // 5번째부터 문자열을 잘라 다시 저장
+a = a.Substring(a.IndexOf('.') + 1); // .다음부터 잘라내 저장
+a = a.ToUpper(); // 모두 대문자로 만들기
+a = a.ToLower(); // 모두 소문자로 만들기
+
+파서(Parser)
+ - 파싱작업을 하는 프로세서
+
+PlayerPrefs
+ - 플레이어의 기본적인 설정을 저장하고 불러오는데 사용한는 클래스
