@@ -11,6 +11,8 @@ public class Test_13_Enemy : TestBase
     public Enemy enemy;
     public Transform respawn;
 
+    public Enemy.BehaviourState state = Enemy.BehaviourState.Wander;
+
     private void Start()
     {
         if(enemy == null)
@@ -26,4 +28,14 @@ public class Test_13_Enemy : TestBase
         Debug.Log(pos);
     }
 
+    protected override void OnTest2(InputAction.CallbackContext context)
+    {
+        enemy.Test_StateChange(state);
+      
+    }
+
+    protected override void OnTest3(InputAction.CallbackContext context)
+    {
+        enemy.Test_EnemyStop();
+    }
 }

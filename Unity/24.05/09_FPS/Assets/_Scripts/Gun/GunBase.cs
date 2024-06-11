@@ -179,10 +179,41 @@ public class GunBase : MonoBehaviour
     protected void HitProcess()
     {
         Ray ray = new Ray(fireTransform.position,GetFireDiretion());    // 레이 만들기
-        if (Physics.Raycast(ray,out RaycastHit hitInfo, range))         // 레이캐스트
+        if (Physics.Raycast(ray,out RaycastHit hitInfo, range,~LayerMask.GetMask("Default")))         // 레이캐스트
         {
-            Vector3 reflect = Vector3.Reflect(ray.direction, hitInfo.normal);   // 반사각 구하기
-            Factory.Instance.GetBulletHole(hitInfo.point, hitInfo.normal,reflect);  // 총알구멍 위치, 노멀, 반사각
+            // int i = ~LayerMask.GetMask("Default"); // Default레이어만 제외
+            if (hitInfo.transform.gameObject.layer == LayerMask.NameToLayer("Enemy"))
+            {
+                Enemy target = hitInfo.collider.transform.root.GetComponent<Enemy>();
+                if (hitInfo.collider.CompareTag("Body"))
+                {
+                    target.OnAttacked(HitLocation.Body, damage);
+
+                }
+                else if (hitInfo.collider.CompareTag("Head"))
+                {
+                    target.OnAttacked(HitLocation.Head, damage);
+
+                }
+                else if (hitInfo.collider.CompareTag("Arm"))
+                {
+                    target.OnAttacked(HitLocation.Arm, damage);
+
+                }
+                else if (hitInfo.collider.CompareTag("Leg"))
+                {
+                    target.OnAttacked(HitLocation.Leg, damage);
+
+                }
+
+            }
+            else
+            {
+
+                Vector3 reflect = Vector3.Reflect(ray.direction, hitInfo.normal);   // 반사각 구하기
+                Factory.Instance.GetBulletHole(hitInfo.point, hitInfo.normal, reflect);  // 총알구멍 위치, 노멀, 반사각
+            }
+
         }
     }
 
@@ -249,5 +280,7 @@ public class GunBase : MonoBehaviour
         }
 
     }
+
+
 #endif
 }

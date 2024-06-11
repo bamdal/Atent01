@@ -39,8 +39,12 @@ public class Player : MonoBehaviour
     /// <summary>
     /// 총이 변경되었음을 알리는 델리게이트
     /// </summary>
-    public Action<GunBase> onClipSizeChange;
+    public Action<GunBase> onGunChange;
 
+    /// <summary>
+    /// 플레이어 사망 델리게이트
+    /// </summary>
+    public Action onDie;
     private void Awake()
     {
         starterAssets = GetComponent<StarterAssetsInputs>();
@@ -66,12 +70,16 @@ public class Player : MonoBehaviour
         {
             gun.onFire += controller.FireRecoil;
             gun.onFire += (expend) => { crosshair.Expend(expend * 10); };
-            gun.onAmmoDepleted += () => GunChage(GunType.Revolver);
+            gun.onAmmoDepleted += () => 
+            {
+                if (!(activeGun is Revolber))
+                    GunChage(GunType.Revolver);
+            };
         }
 
         activeGun.Equip();
         activeGun.gameObject.SetActive(true);
-        onClipSizeChange?.Invoke(activeGun);
+        onGunChange?.Invoke(activeGun);
     }
     /// <summary>
     /// 총표시하는 카메라 활성화 설정
@@ -95,7 +103,7 @@ public class Player : MonoBehaviour
         activeGun.Equip();                      // 총 장비
         activeGun.gameObject.SetActive(true);   // 총 보이기
 
-        onClipSizeChange?.Invoke(activeGun);
+        onGunChange?.Invoke(activeGun);
     }
 
     /// <summary>
@@ -131,5 +139,13 @@ public class Player : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 공격받는 함수
+    /// </summary>
+    /// <param name="enemy">공격하는 적</param>
+    public void OnAttacked(Enemy enemy)
+    {
+        Debug.Log(enemy + "가 공격함");
+    }
         
 }

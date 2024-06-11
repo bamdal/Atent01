@@ -15,7 +15,8 @@ GameObject:
   - component: {fileID: 2785058360246880706}
   - component: {fileID: 7729785470784474027}
   - component: {fileID: 7655890018247187124}
-  m_Layer: 8
+  - component: {fileID: 1624294848011016438}
+  m_Layer: 7
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -351,6 +352,29 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!136 &1624294848011016438
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5753929339597578172}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!1 &6115553383810148064
 GameObject:
   m_ObjectHideFlags: 0
@@ -360,7 +384,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7746977133456032897}
-  m_Layer: 8
+  m_Layer: 6
   m_Name: Guns
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -396,8 +420,7 @@ GameObject:
   - component: {fileID: 9056560307976598815}
   - component: {fileID: 6220652763286917223}
   - component: {fileID: 6160990363381947317}
-  - component: {fileID: 3371617028299934084}
-  m_Layer: 8
+  m_Layer: 7
   m_Name: Capsule
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -469,29 +492,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!136 &3371617028299934084
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6280629294107698411}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &8620233551050030386
 GameObject:
   m_ObjectHideFlags: 0
@@ -501,7 +501,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3488761742936501841}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: PlayerCameraRoot
   m_TagString: CinemachineTarget
   m_Icon: {fileID: 0}
@@ -674,6 +674,11 @@ PrefabInstance:
     m_TransformParent: {fileID: 7746977133456032897}
     m_Modifications:
     - target: {fileID: 854619400208689297, guid: 3f11a77294967054f887607c37b82d09,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6478651055913978669, guid: 3f11a77294967054f887607c37b82d09,
         type: 3}
       propertyPath: m_Layer
       value: 6
@@ -867,6 +872,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: StackCamera
       objectReference: {fileID: 0}
+    - target: {fileID: 5223828518762123582, guid: a7e3b698e01ce7342b62b7af409b821c,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6209529005416067233, guid: a7e3b698e01ce7342b62b7af409b821c,
         type: 3}
       propertyPath: m_IsActive
@@ -973,6 +983,11 @@ PrefabInstance:
         type: 3}
       propertyPath: fireRate
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 4355375021982245456, guid: 23d9094a5e0f42c4dbbdeeeff2d5e838,
+        type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 8474220310537682437, guid: 23d9094a5e0f42c4dbbdeeeff2d5e838,
         type: 3}

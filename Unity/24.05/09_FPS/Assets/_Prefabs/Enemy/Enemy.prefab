@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 7752492221492206595}
   - component: {fileID: 7028878907804258313}
   - component: {fileID: 2067909412011492022}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: Body
-  m_TagString: Untagged
+  m_TagString: Body
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -117,9 +117,9 @@ GameObject:
   - component: {fileID: 353360773963352542}
   - component: {fileID: 6720390865888134922}
   - component: {fileID: 6254444937575909878}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: Cube
-  m_TagString: Untagged
+  m_TagString: Arm
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -219,7 +219,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8445573815712212123}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: Arm_R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -255,7 +255,8 @@ GameObject:
   - component: {fileID: 1453084190643415567}
   - component: {fileID: 539124812766188809}
   - component: {fileID: 7910718543555904062}
-  m_Layer: 0
+  - component: {fileID: 3157540891417010375}
+  m_Layer: 9
   m_Name: Enemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -292,6 +293,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecdcddc6c3d441f469b71c43da3a0545, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  stateEyeColors:
+  - {r: 4.3463144, g: 11.97721, b: 0.87791026, a: 0}
+  - {r: 0.87791026, g: 1.7198267, b: 11.97721, a: 0}
+  - {r: 11.97721, g: 4.5384855, b: 0.87791026, a: 0}
+  - {r: 11.97721, g: 0.847444, b: 0.847444, a: 0}
+  - {r: 0.9051238, g: 0.9051238, b: 0.9051238, a: 0}
   maxHp: 30
   hp: 30
   walkSpeed: 2
@@ -371,6 +378,27 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 20
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!95 &3157540891417010375
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1754996637642502556}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 95f5e8f50ddca4542b7475d2bf92a673, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &2288245684475534079
 GameObject:
   m_ObjectHideFlags: 0
@@ -416,7 +444,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4876934910375532898}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: Spine
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -535,9 +563,9 @@ GameObject:
   - component: {fileID: 6622988562540391849}
   - component: {fileID: 441030125474085952}
   - component: {fileID: 7743446258811427642}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: Leg_R
-  m_TagString: Untagged
+  m_TagString: Leg
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -551,7 +579,7 @@ Transform:
   m_GameObject: {fileID: 3144291722402782536}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -0.2, z: 0}
   m_LocalScale: {x: 0.29999998, y: 1, z: 0.29999998}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -637,7 +665,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5296110093062818993}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: Arm_L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -671,7 +699,7 @@ GameObject:
   - component: {fileID: 969376504100849399}
   - component: {fileID: 3077461878582293302}
   - component: {fileID: 1153946359511791056}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Eye
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -752,7 +780,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 764971708882443029}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -768,7 +796,7 @@ Transform:
   m_GameObject: {fileID: 5045966406199386516}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.2, y: 0, z: 0}
+  m_LocalPosition: {x: -0.2, y: 0.25, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -787,9 +815,9 @@ GameObject:
   - component: {fileID: 7520674191648344939}
   - component: {fileID: 9146686788229171699}
   - component: {fileID: 3027217537626717943}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: Leg_R
-  m_TagString: Untagged
+  m_TagString: Leg
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -803,7 +831,7 @@ Transform:
   m_GameObject: {fileID: 6103347154981759228}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -0.2, z: 0}
   m_LocalScale: {x: 0.3, y: 1, z: 0.3}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -889,7 +917,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6809463154621341629}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: neck
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -924,9 +952,9 @@ GameObject:
   - component: {fileID: 1851749964028393361}
   - component: {fileID: 2161029425936072430}
   - component: {fileID: 4525361817391433071}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: Head
-  m_TagString: Untagged
+  m_TagString: Head
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1030,9 +1058,9 @@ GameObject:
   - component: {fileID: 7102602980731608212}
   - component: {fileID: 2040566713907984}
   - component: {fileID: 1800949123516234200}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: Cube
-  m_TagString: Untagged
+  m_TagString: Arm
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1132,7 +1160,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5817272033959731435}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1148,7 +1176,7 @@ Transform:
   m_GameObject: {fileID: 8393341749241024949}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.2, y: 0, z: 0}
+  m_LocalPosition: {x: 0.2, y: 0.25, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1182,7 +1210,7 @@ Transform:
   m_GameObject: {fileID: 8787123406111445932}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.27, z: 0.855}
+  m_LocalPosition: {x: 0, y: 1.27, z: 1.055}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1219,5 +1247,5 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.5
+  m_Radius: 0.7
   m_Center: {x: 0, y: 0, z: 0}

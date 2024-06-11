@@ -55,5 +55,26 @@ public class Factory : Singleton<Factory>
         return item;
     }
 
+
+    public ItemBase GetDropItem(Enemy.ItemTable table, Vector3 position)
+    {
+        ItemBase item = null;
+        switch (table)
+        {
+            case Enemy.ItemTable.Heal:
+                item = GetHealPack(position);
+                break;
+            case Enemy.ItemTable.AssaultRifle:
+                item = GetAssaultRifle(position);
+                break;
+            case Enemy.ItemTable.Shotgun:
+                item = GetShotGun(position);
+                break;
+                default:
+                item = GetHealPack(position);
+                break;
+        }
+        return item;
+    }
 }
 

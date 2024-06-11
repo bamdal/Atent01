@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.UIElements;
 
 /// <summary>
 /// 적이 맞을 수 있는 부위
@@ -48,13 +47,21 @@ public class Enemy : MonoBehaviour
         {
             if (state != value)
             {
-                OnStateExit(value);
+                OnStateExit(state);
                 state = value;
                 Debug.Log(state);
-                OnStateEnter(value);
+                OnStateEnter(state);
             }
         }
     }
+
+    /// <summary>
+    /// 상태별 눈색
+    /// </summary>
+    [ColorUsage(true,true)]
+    public Color[] stateEyeColors;
+
+   
 
     /// <summary>
     /// 각 상태가 되었을 때 상태별 업데이트함수를 저장하는 델리게이트
@@ -172,7 +179,25 @@ public class Enemy : MonoBehaviour
 
     // 기타 ------------------------------------------------------------------------------------------------------------------------
 
+    /// <summary>
+    /// Enenmy NavAgnent
+    /// </summary>
     NavMeshAgent agent;
+
+    /// <summary>
+    /// 눈의 랜더러
+    /// </summary>
+    MeshRenderer eyeRenderer;
+
+    /// <summary>
+    /// 눈의 머티리얼
+    /// </summary>
+    Material eyeMaterial;
+
+    /// <summary>
+    /// 눈 색의 ID
+    /// </summary>
+    readonly int EyeColorID = Shader.PropertyToID("_EyeColor");
 
     // ------------------------------------------------------------------------------------------------------------------------
 
@@ -183,11 +208,27 @@ public class Enemy : MonoBehaviour
         SphereCollider sc = GetComponent<SphereCollider>();
         sc.radius = sightRange;
 
-        hp = maxHp;
-
         attackSenser = GetComponentInChildren<AttackSenser>();
-        attackSenser.onSensorTriggered += OnSensorTriggered;
+        attackSenser.onSensorTriggered += (target) =>
+        {
+            if (attackTarget == null)   // attack 상태에서 한번만 실행
+            {
+                attackTarget = target.GetComponent<Player>();
+                attackTarget.onDie += ReturnWander;
+                State = BehaviourState.Attack;
+
+            }
+        };
+
+        Transform child = transform.GetChild(0);
+        child = child.GetChild(1);
+        child = child.GetChild(0);
+        child = child.GetChild(0);
+        eyeRenderer = child.GetComponent<MeshRenderer>();
+        eyeMaterial = eyeRenderer.material;
     }
+
+
 
     private void OnEnable()
     {
@@ -229,31 +270,27 @@ public class Enemy : MonoBehaviour
 
     void Update_Find()
     {
-        if (IsPlayerInSight(out Vector3 position))
+        findTimeElapsed += Time.deltaTime;
+        if (findTimeElapsed > findTime)
         {
-            StopCoroutine(goWander);
+            State = BehaviourState.Wander;  // 일정시간 동안 못찾으면 배회상태로 변경
+        }
+        else if (FindPlayer())
+        {
             State = BehaviourState.Chase;
         }
-        else if(!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
-        {
-            if(wait)
-                goWander = StartCoroutine(GoWander());
-            transform.Rotate(Time.deltaTime*360f * Vector3.up);
-        }
-    }
-    Coroutine goWander;
-    bool wait = true;
-    IEnumerator GoWander()
-    {
-        wait = false;
-        yield return new WaitForSeconds(3.0f);
-        State = BehaviourState.Wander;
-        wait = true;
     }
 
     void Update_Attack()
     {
-        Debug.Log("공격중");
+        agent.SetDestination(attackTarget.transform.position);
+
+        attackElapsed += Time.deltaTime;
+        if (attackElapsed > attackInterval)
+        {
+            Attack();
+            attackElapsed = 0;
+        }
     }
 
     void Update_Dead()
@@ -284,24 +321,35 @@ public class Enemy : MonoBehaviour
     /// <param name="newState">새 상태</param>
     void OnStateEnter(BehaviourState newState)
     {
+        eyeMaterial.SetColor(EyeColorID, stateEyeColors[(int)newState]);
         switch (newState)
         {
             case BehaviourState.Wander:
                 onUpdate = Update_Wander;
-                agent.speed = walkSpeed;
+                agent.speed = walkSpeed * (1-speedPenalty);
                 agent.SetDestination(GetRandomDestination());
                 break;
             case BehaviourState.Chase:
                 onUpdate = Update_Chase;
-                agent.speed = runSpeed;
+                agent.speed = runSpeed * (1 - speedPenalty);
+
                 break;
             case BehaviourState.Find:
                 onUpdate = Update_Find;
+                findTimeElapsed = 0.0f;
+                agent.speed = walkSpeed * (1 - speedPenalty);
+                agent.angularSpeed = 360.0f;
+                StartCoroutine(LookAround());
                 break;
             case BehaviourState.Attack:
                 onUpdate = Update_Attack;
                 break;
             case BehaviourState.Dead:
+                DropItem();
+                agent.speed = 0.0f;
+                agent.velocity = Vector3.zero;
+                onDie?.Invoke(this);            // 스포너에게 부활 요청용
+                gameObject.SetActive(false);
                 onUpdate = Update_Dead;
                 break;
         }
@@ -317,11 +365,18 @@ public class Enemy : MonoBehaviour
         {
 
             case BehaviourState.Find:
+                agent.angularSpeed = 120.0f;
+                StopAllCoroutines();
                 break;
             case BehaviourState.Attack:
+                attackTarget.onDie -= ReturnWander;
+                attackTarget = null;
                 break;
             case BehaviourState.Dead:
-                gameObject.SetActive(false);
+                gameObject.SetActive(true);
+                HP = maxHp;
+                speedPenalty = 0.0f;
+                attackPowerPenalty = 0.0f;  
                 break;
             default:
             //case BehaviourState.Wander:
@@ -343,7 +398,6 @@ public class Enemy : MonoBehaviour
             result = hit.position;
         }
 */
-        float size = CellVisualizer.CellSize;
         int range = 3;
 
 
@@ -357,7 +411,15 @@ public class Enemy : MonoBehaviour
     /// </summary>
     void Attack()
     {
+        attackTarget.OnAttacked(this);  // 피격 방향 표시를 위해 enemy 자체를 넘김
+    }
 
+    /// <summary>
+    /// 공격 상태에서 배회 상태로 되돌리는 함수
+    /// </summary>
+    void ReturnWander()
+    {
+        State = BehaviourState.Wander;
     }
 
     /// <summary>
@@ -365,8 +427,37 @@ public class Enemy : MonoBehaviour
     /// </summary>
     /// <param name="hitLocation">공격당한 위치</param>
     /// <param name="damage">데미지</param>
-    public void OnAttacked(HitLocation hitLocation, float damage)
+    public void OnAttacked(HitLocation hit, float damage)
     {
+        HP -= damage;
+        switch (hit)
+        {
+            case HitLocation.Body:
+                Debug.Log("몸통에 맞음");
+                break;
+            case HitLocation.Head:
+                HP -= damage;
+                Debug.Log("머리에 맞음");
+                break;
+            case HitLocation.Arm:
+                attackPowerPenalty += 0.1f;
+                Debug.Log("팔에 맞음");
+                break;
+            case HitLocation.Leg:
+                speedPenalty += 0.3f;
+                Debug.Log("다리 맞음");
+                break;
+        }
+
+        if (State == BehaviourState.Wander || State == BehaviourState.Find) 
+        {
+            State = BehaviourState.Chase;
+            agent.SetDestination(GameManager.Instance.Player.transform.position);
+        }
+        else if (State == BehaviourState.Chase)
+        {
+            agent.speed = runSpeed * (1 - speedPenalty);
+        }
 
     }
 
@@ -421,7 +512,29 @@ public class Enemy : MonoBehaviour
     /// <returns></returns>
     IEnumerator LookAround()
     {
-        yield return null;
+        Vector3[] positions =
+        {         
+            transform.position + transform.forward*1.5f, // 앞
+            transform.position - transform.forward*1.5f, // 뒤
+            transform.position + transform.right*1.5f,   // 오른쪽
+            transform.position - transform.right*1.5f    // 왼쪽
+        };
+
+        int current;
+        int prev = 0;
+        int length = positions.Length;
+        while (true)
+        {
+            do
+            {
+                current = UnityEngine.Random.Range(0, length);
+            } while (current == prev);
+            agent.SetDestination(positions[current]);
+            prev = current;
+            yield return new WaitForSeconds(1);
+            Debug.Log(positions[prev]);
+        }
+
     }
 
     /// <summary>
@@ -437,7 +550,7 @@ public class Enemy : MonoBehaviour
     /// <summary>
     /// 적이 드랍할 아이템의 종류를 나타내는 enum
     /// </summary>
-    enum ItemTable : byte
+    public enum ItemTable : byte
     {
         Heal,           // 힐 아이템
         AssaultRifle,   // 돌격소총
@@ -446,22 +559,34 @@ public class Enemy : MonoBehaviour
     }
 
     /// <summary>
-    /// 
+    /// 아이템을 드랍하는 함수
     /// </summary>
     /// <param name="table">드랍할 아이템</param>
     void DropItem(ItemTable table = ItemTable.Random)
     {
-
-    }
-    private void OnSensorTriggered(GameObject obj)
-    {
-        Player player = obj.GetComponent<Player>();
-        if (player != null)
+        ItemTable select = table;
+        if (table == ItemTable.Random)
         {
-            State = BehaviourState.Attack;
+            float random = UnityEngine.Random.value;
+            if (random < 0.8f)
+            {
+                select = ItemTable.Heal;
+            }
+            else if (random < 0.9f)
+            {
+                select = ItemTable.AssaultRifle;
+            }
+            else
+            {
+                select =ItemTable.Shotgun;
+            }
         }
+        Factory.Instance.GetDropItem(select, transform.position);
+    
 
+        
     }
+
 
 #if UNITY_EDITOR
     private void OnDrawGizmos()
@@ -471,8 +596,7 @@ public class Enemy : MonoBehaviour
         Handles.color = color;
         if(chaseTarget != null)
         {
-            Vector3 dir = chaseTarget.position - transform.position;
-            Handles.DrawLine(transform.position + Vector3.up * 1.8f, dir);
+            Handles.DrawLine(transform.position + Vector3.up * 1.8f, chaseTarget.position);
         }
 
         color = Color.white;
@@ -508,5 +632,17 @@ public class Enemy : MonoBehaviour
         return GetRandomDestination();
     }
 
+    public void Test_StateChange(BehaviourState state)
+    {
+        State = state;
+        agent.speed = 0;
+        agent.velocity = Vector3.zero;
+    }
+
+    public void Test_EnemyStop()
+    {
+        agent.speed = 0;
+        agent.velocity = Vector3.zero;
+    }
 #endif
 }

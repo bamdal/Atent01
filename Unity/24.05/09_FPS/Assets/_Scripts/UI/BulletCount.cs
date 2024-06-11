@@ -22,7 +22,7 @@ public class BulletCount : MonoBehaviour
     {
         Player player = GameManager.Instance.Player;
         player.AddAmmoCountChangeDelegate(OnAmmoCountChange);
-        player.onClipSizeChange += OnGunChange;
+        player.onGunChange += OnGunChange;
     }
 
     private void OnGunChange(GunBase activeGun)
