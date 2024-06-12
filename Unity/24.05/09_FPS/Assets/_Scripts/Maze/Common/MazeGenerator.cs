@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -25,6 +26,18 @@ public class MazeGenerator : MonoBehaviour
     NavMeshSurface navMeshSurface;
 
     AsyncOperation navAsync;
+
+    /// <summary>
+    /// 생성한 미로
+    /// </summary>
+    Maze maze = null;
+
+    public Maze Maze => maze;
+
+    /// <summary>
+    /// 미로 생성이 끝남을 알린 델리게이트
+    /// </summary>
+    public Action onMazeGenerated;
     private void Awake()
     {
         mazeVisualizer = GetComponent<MazeVisualizer>();
@@ -35,7 +48,7 @@ public class MazeGenerator : MonoBehaviour
 
     public void Generate(int width, int height)
     {
-        Maze maze = null;
+        maze = null;
         switch (mazeAlgorithm)
         {
             case MazeAlgorithm.RecursiveBackTracking:
@@ -66,5 +79,7 @@ public class MazeGenerator : MonoBehaviour
             yield return null;
         }
         Debug.Log("Nav Surface Updated");
+
+        onMazeGenerated?.Invoke();  
     }
 }

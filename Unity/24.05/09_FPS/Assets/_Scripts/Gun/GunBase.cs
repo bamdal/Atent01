@@ -182,7 +182,7 @@ public class GunBase : MonoBehaviour
         if (Physics.Raycast(ray,out RaycastHit hitInfo, range,~LayerMask.GetMask("Default")))         // 레이캐스트
         {
             // int i = ~LayerMask.GetMask("Default"); // Default레이어만 제외
-            if (hitInfo.transform.gameObject.layer == LayerMask.NameToLayer("Enemy"))
+            if (!hitInfo.collider.isTrigger && hitInfo.transform.gameObject.layer == LayerMask.NameToLayer("Enemy"))
             {
                 Enemy target = hitInfo.collider.transform.root.GetComponent<Enemy>();
                 if (hitInfo.collider.CompareTag("Body"))
@@ -207,7 +207,7 @@ public class GunBase : MonoBehaviour
                 }
 
             }
-            else
+            if(!hitInfo.collider.isTrigger)
             {
 
                 Vector3 reflect = Vector3.Reflect(ray.direction, hitInfo.normal);   // 반사각 구하기

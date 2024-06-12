@@ -204,7 +204,10 @@ public class Enemy : MonoBehaviour
 
     private void Awake()
     {
-        agent = GetComponent<NavMeshAgent>();
+        if (agent == null)
+        {
+            agent = GetComponent<NavMeshAgent>();
+        }
         SphereCollider sc = GetComponent<SphereCollider>();
         sc.radius = sightRange;
 
@@ -543,6 +546,10 @@ public class Enemy : MonoBehaviour
     /// <param name="spawnPosition"></param>
     public void Respawn(Vector3 spawnPosition)
     {
+        if (agent == null)
+        {
+            agent = GetComponent<NavMeshAgent>();
+        }
         agent.Warp(spawnPosition);
         State = BehaviourState.Wander;
     }

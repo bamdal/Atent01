@@ -34,6 +34,35 @@ public class Player : MonoBehaviour
     /// </summary>
     GunBase activeGun;
 
+    public float MaxHP = 100.0f;
+
+    float hp;
+
+    public float HP
+    {
+        get => hp;
+        set
+        {
+            hp = value;
+            if (hp <= 0)
+            {
+                Die();
+            }
+            hp = Mathf.Clamp(hp, 0, MaxHP);
+            onHPChange?.Invoke(hp);
+        }
+    }
+
+
+    /// <summary>
+    /// HP 변경됨을 알리는 델리게이트
+    /// </summary>
+    public Action<float> onHPChange;
+
+    /// <summary>
+    /// 공격 받았을 때 실행될 델리게이트(float: 공격받은 각도)
+    /// </summary>
+    public Action<float> onAttacked;
 
 
     /// <summary>
@@ -57,7 +86,7 @@ public class Player : MonoBehaviour
 
 
         activeGun = guns[0];       // 기본총 설정
-
+        
     }
 
 
@@ -80,6 +109,7 @@ public class Player : MonoBehaviour
         activeGun.Equip();
         activeGun.gameObject.SetActive(true);
         onGunChange?.Invoke(activeGun);
+        HP = MaxHP;
     }
     /// <summary>
     /// 총표시하는 카메라 활성화 설정
@@ -146,6 +176,23 @@ public class Player : MonoBehaviour
     public void OnAttacked(Enemy enemy)
     {
         Debug.Log(enemy + "가 공격함");
+        HP -= enemy.attackPower;
+        /*        float angle = Vector3.Angle(-transform.forward, enemy.transform.forward);    // 공격 당한 각도
+                if (Vector3.Cross(transform.forward, enemy.transform.forward).y < 0)
+                {
+                    angle *= -1;
+                }*/
+        float angle = Vector3.SignedAngle(-transform.forward, enemy.transform.forward, Vector3.down);
+        Debug.Log(angle);
+        onAttacked?.Invoke(angle);
     }
-        
+
+    /// <summary>
+    /// 플레이어 사망
+    /// </summary>
+    void Die()
+    {
+        onDie?.Invoke();                // 죽었음을 알림
+        gameObject.SetActive(false);    // 플레이어 오브젝트 비활성화
+    }
 }

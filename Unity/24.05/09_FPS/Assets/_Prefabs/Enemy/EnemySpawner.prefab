@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &776981527845658597
+--- !u!1 &6214416678071738085
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,42 +8,42 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 4811067460571774872}
-  - component: {fileID: 5221659867073042919}
+  - component: {fileID: 6748388202330124073}
+  - component: {fileID: 6922809686217270762}
   m_Layer: 0
-  m_Name: ItemAssaultRiflePool
+  m_Name: EnemySpawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4811067460571774872
+--- !u!4 &6748388202330124073
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 776981527845658597}
+  m_GameObject: {fileID: 6214416678071738085}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.91004974, y: -0.14304113, z: 8.739678}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5221659867073042919
+--- !u!114 &6922809686217270762
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 776981527845658597}
+  m_GameObject: {fileID: 6214416678071738085}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fbda86b053bb34c4aa04175194f0af22, type: 3}
+  m_Script: {fileID: 11500000, guid: cace325e4df19be40b39335d21125f5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  originalPrefeb: {fileID: 5704842336724937321, guid: 7f3994951670ee84093bc212f3c17d49,
+  enenmyCount: 50
+  enenmyPrefab: {fileID: 1754996637642502556, guid: 71b446a92e907874bb977f5a3c3cf93b,
     type: 3}
-  poolSize: 64
