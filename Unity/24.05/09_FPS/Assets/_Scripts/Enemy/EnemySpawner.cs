@@ -30,6 +30,7 @@ public class EnemySpawner : MonoBehaviour
             enemy.onDie += (target) =>
             {
                 StartCoroutine(Respawn(target));
+                GameManager.Instance.IncreaseKillCount();
             };
 
             enemy.Respawn(GetRandomSpawnPosition());
@@ -59,14 +60,20 @@ public class EnemySpawner : MonoBehaviour
 
         int x;
         int y;
-
+        int limit = 100;
         do
         {
             // 플레이어의 위치에서 +-5 범위 안
             int index = Random.Range(0, mazeHeight * mazeWidth);
             x = index / mazeWidth;
             y = index % mazeHeight;
-        }while(x<playerPosition.x +5 && x<playerPosition.x-5 && y<playerPosition.y +5 && y > playerPosition.y-5);
+
+            limit--;
+            if (limit < 1)
+            {
+                break;
+            }
+        }while(!(x<playerPosition.x +5 && x>playerPosition.x-5 && y<playerPosition.y +5 && y > playerPosition.y-5));
 
         Vector3 world = MazeVisualizer.GridToWorld(x, y);
         return world;
