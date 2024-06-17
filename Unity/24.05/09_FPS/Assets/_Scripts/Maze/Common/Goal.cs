@@ -7,7 +7,6 @@ public class Goal : MonoBehaviour
 {
     Player player;
 
-    public Action onGameClear;
     private void Start()
     {
         player = GameManager.Instance.Player;
@@ -21,7 +20,7 @@ public class Goal : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            onGameClear?.Invoke();
+            GameManager.Instance.GameClear();
         }
     }
 

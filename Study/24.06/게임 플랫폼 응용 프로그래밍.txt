@@ -1,0 +1,13 @@
+게임 플랫폼 응용 프로그래밍
+
+플랫폼
+ - 소프트웨어가 구동 가능한 하드웨어 아키텍처나 소프트웨어 프레임워크의 종류
+
+게임용 플랫폼
+ - Steam, Epic Games, PlayStore, AppStore
+ - XBox, PlayStation, Nintendo Switch
+ - Windows, Mac, Android, IOS
+
+멀티 플랫폼 or 크로스 플랫폼
+ - 하나의 게임이 여러 플랫폼에서 동작할 수 있게 하는 것
+ - 유니티와 언리얼 같은 현세대 대부분의 엔진은 지원함

@@ -48,6 +48,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cellPrefab: {fileID: 4126892432647342841, guid: eaf650e0cb3710f4bb44b822e2197602,
     type: 3}
+  goalPrefab: {fileID: 8973232509809544756, guid: 809fb612e1878204581219b26d4bbc90,
+    type: 3}
 --- !u!114 &6426473504259933777
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -91,5 +93,5 @@ MonoBehaviour:
   m_OverrideVoxelSize: 0
   m_VoxelSize: 0.16666667
   m_MinRegionArea: 2
-  m_NavMeshData: {fileID: 23800000, guid: 0d8949f263b733f4b918f96aaf409e58, type: 2}
+  m_NavMeshData: {fileID: 23800000, guid: d64d2e1e85f109b44aca80935ecafedf, type: 2}
   m_BuildHeightMesh: 0

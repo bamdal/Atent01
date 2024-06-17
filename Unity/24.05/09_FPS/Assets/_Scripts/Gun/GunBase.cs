@@ -184,7 +184,7 @@ public class GunBase : MonoBehaviour
             // int i = ~LayerMask.GetMask("Default"); // Default레이어만 제외
             if (!hitInfo.collider.isTrigger && hitInfo.transform.gameObject.layer == LayerMask.NameToLayer("Enemy"))
             {
-                Enemy target = hitInfo.collider.transform.root.GetComponent<Enemy>();
+                Enemy target = hitInfo.collider.transform.GetComponentInParent<Enemy>();
                 if (hitInfo.collider.CompareTag("Body"))
                 {
                     target.OnAttacked(HitLocation.Body, damage);

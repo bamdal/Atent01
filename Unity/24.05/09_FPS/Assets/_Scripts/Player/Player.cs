@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
@@ -12,7 +13,15 @@ public class Player : MonoBehaviour
     /// </summary>
     StarterAssetsInputs starterAssets;
 
+    /// <summary>
+    /// 유니티가 제공한 입력처리용 코드
+    /// </summary>
     FirstPersonController controller;
+
+    /// <summary>
+    /// 플레이어 인풋 컨트롤러
+    /// </summary>
+    PlayerInput playerInput;
 
     /// <summary>
     /// 총만 촬영하는 카메라가 있는 게임 오브젝트
@@ -78,6 +87,8 @@ public class Player : MonoBehaviour
     {
         starterAssets = GetComponent<StarterAssetsInputs>();
         controller = GetComponent<FirstPersonController>();
+        playerInput = GetComponent<PlayerInput>();
+
 
         gunCamera = transform.GetChild(2).gameObject;
 
@@ -110,6 +121,8 @@ public class Player : MonoBehaviour
         activeGun.gameObject.SetActive(true);
         onGunChange?.Invoke(activeGun);
         HP = MaxHP;
+
+        GameManager.Instance.onGameEnd += (_) =>InputDisable();
     }
     /// <summary>
     /// 총표시하는 카메라 활성화 설정
@@ -199,9 +212,14 @@ public class Player : MonoBehaviour
     /// <summary>
     /// 입력을 막는 함수
     /// </summary>
-    public void InputDisable()
+    private void InputDisable()
     {
-        controller.enabled = false;
-        starterAssets.enabled = false;
+        playerInput.actions.actionMaps[0].Disable();    // 액션맵이 1개만 있기 때문에 적용
+        /*    controller.enabled = false;
+            starterAssets.enabled = false;
+        */
+
+    /*     InputActionMap playerActionMap = playerInput.actions.FindActionMap("Player");
+        playerActionMap.Disable();*/
     }
 }

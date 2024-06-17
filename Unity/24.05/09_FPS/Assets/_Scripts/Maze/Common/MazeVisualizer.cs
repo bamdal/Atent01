@@ -10,6 +10,8 @@ public class MazeVisualizer : MonoBehaviour
     /// </summary>
     public GameObject cellPrefab;
 
+    public GameObject goalPrefab;
+
     /// <summary>
     /// 파라메터로 받은 미로를 그리는 함수
     /// </summary>
@@ -26,6 +28,10 @@ public class MazeVisualizer : MonoBehaviour
             CellVisualizer cellVisualizer = obj.GetComponent<CellVisualizer>();
             cellVisualizer.RefreshWall(cell.Path);
         }
+
+        GameObject goalObj =  Instantiate(goalPrefab, transform);
+        Goal goal = goalObj.GetComponent<Goal>();
+        goal.SetRandomPosition(maze.Width,maze.Height);
 
         Debug.Log("미로 그리기 완료");
     }

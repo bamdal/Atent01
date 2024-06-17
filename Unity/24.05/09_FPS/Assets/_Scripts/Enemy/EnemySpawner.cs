@@ -13,6 +13,13 @@ public class EnemySpawner : MonoBehaviour
     int mazeWidth;
     int mazeHeight;
 
+    Enemy[] enemies;
+
+    private void Awake()
+    {
+        enemies = new Enemy[enenmyCount];
+
+    }
     private void Start()
     {
 
@@ -21,23 +28,15 @@ public class EnemySpawner : MonoBehaviour
 
         player = GameManager.Instance.Player;
 
-        // 적 생성
-        for (int i = 0;i < enenmyCount; i++)
-        {
-            GameObject obj = Instantiate(enenmyPrefab, transform);
-            obj.name = $"Enemy_{i}";
-            Enemy enemy = obj.GetComponent<Enemy>();
-            enemy.onDie += (target) =>
-            {
-                StartCoroutine(Respawn(target));
-                GameManager.Instance.IncreaseKillCount();
-            };
+        GameManager.Instance.onGameStart += EnemyAll_Play;
+        GameManager.Instance.onGameEnd += (_) => EnemyAll_Stop();
 
-            enemy.Respawn(GetRandomSpawnPosition());
-        }
+        
 
-  
+        
     }
+
+
 
     /// <summary>
     /// 랜덤한 스폰 위치를 구하는 함수
@@ -88,5 +87,45 @@ public class EnemySpawner : MonoBehaviour
     {
         yield return new WaitForSeconds(3);
         target.Respawn(GetRandomSpawnPosition());
+    }
+
+    public void EnemyAll_Spawn()
+    {
+        // 적 생성
+        for (int i = 0; i < enenmyCount; i++)
+        {
+            GameObject obj = Instantiate(enenmyPrefab, transform);
+            obj.name = $"Enemy_{i}";
+            enemies[i] = obj.GetComponent<Enemy>();
+            enemies[i].onDie += (target) =>
+            {
+                StartCoroutine(Respawn(target));
+                GameManager.Instance.IncreaseKillCount();
+            };
+
+            enemies[i].Respawn(GetRandomSpawnPosition(),true);
+        }
+    }
+
+    /// <summary>
+    /// 모든 적을 움직이게 만들기
+    /// </summary>
+    void EnemyAll_Play()
+    {
+        foreach (var enemy in enemies)
+        {
+            enemy.Play();   // Wander상태로 변경
+        }
+    }
+
+    /// <summary>
+    /// 모든 적을 일시정지
+    /// </summary>
+    private void EnemyAll_Stop()
+    {
+        foreach (var enemy in enemies)
+        {
+            enemy.Stop();   // Idle 상태로 변경
+        }
     }
 }

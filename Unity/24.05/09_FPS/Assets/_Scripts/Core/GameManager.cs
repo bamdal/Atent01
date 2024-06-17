@@ -1,4 +1,5 @@
 using Cinemachine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -9,6 +10,12 @@ public class GameManager : Singleton<GameManager>
     CinemachineVirtualCamera followCamara;
 
     public CinemachineVirtualCamera FollowCamara => followCamara;
+
+    /// <summary>
+    /// 적 스포너
+    /// </summary>
+    EnemySpawner enemySpawner;
+    public EnemySpawner Spawner => enemySpawner;
 
     Player player;
 
@@ -44,39 +51,66 @@ public class GameManager : Singleton<GameManager>
 
     public Maze Maze => mazeGenerator.Maze;
 
+    /// <summary>
+    /// 킬카운트
+    /// </summary>
     int killCount = 0;
+
+    /// <summary>
+    /// 플레이 타임
+    /// </summary>
     float playTime = 0.0f;
+
+    /// <summary>
+    /// 게임시작을 알리는 델리게이트
+    /// </summary>
+    public Action onGameStart;
+
+    /// <summary>
+    /// 게임 종료를 알리는 델리게이트(true면 게임 클리어 false면 게임오버)
+    /// </summary>
+    public Action<bool> onGameEnd;
 
     protected override void OnInitialize()
     {
         player = FindAnyObjectByType<Player>();
+        player.onDie += GameOver;
+        Vector3 centerPos = MazeVisualizer.GridToWorld(MazeWidth / 2, MazeHeight / 2);
+        player.transform.position = centerPos;
+
         followCamara = GameObject.FindWithTag("FollowCamera").GetComponent<CinemachineVirtualCamera>();
 
+        enemySpawner = FindAnyObjectByType<EnemySpawner>();
+
         mazeGenerator = FindAnyObjectByType<MazeGenerator>();
+
+
         if(mazeGenerator != null)
         {
 
             mazeGenerator.Generate(MazeWidth, MazeHeight);
             mazeGenerator.onMazeGenerated += () =>
             {
-                Vector3 centerPos = MazeVisualizer.GridToWorld(mazeWidth / 2, mazeHeight / 2);
-                player.transform.position = centerPos;
+                // 적 스폰
+                Spawner?.EnemyAll_Spawn();
+
 
                 playTime = 0;   // 플레이 시간 초기화
                 killCount = 0;
             };
         }
 
-        Goal goal = FindAnyObjectByType<Goal>();
         ResultPanel resultPanel = FindAnyObjectByType<ResultPanel>();
         resultPanel.gameObject.SetActive(false);
         Crosshair crosshair = FindAnyObjectByType<Crosshair>();
         // Time.timeSinceLevelLoad 씬이 로딩되고 지난 시간
-        goal.onGameClear += () => 
+        onGameEnd += (isClear) => 
         {
+            
             crosshair.gameObject.SetActive(false);
-            resultPanel.Open(true, killCount, playTime);
-            player.InputDisable();
+            resultPanel.Open(isClear, killCount, playTime);
+         
+            
 
         };
 
@@ -91,5 +125,29 @@ public class GameManager : Singleton<GameManager>
     private void Update()
     {
         playTime += Time.deltaTime;
+    }
+
+    /// <summary>
+    /// 게임 시작시 실행될 함수
+    /// </summary>
+    public void GameStart()
+    {
+        onGameStart?.Invoke();
+    }
+
+    /// <summary>
+    /// 게임클리어시 호출 될 함수
+    /// </summary>
+    public void GameClear()
+    {
+        onGameEnd?.Invoke(true);
+    }
+
+    /// <summary>
+    /// 게임 오버함수
+    /// </summary>
+    public void GameOver()
+    {
+        onGameEnd?.Invoke(false);
     }
 }

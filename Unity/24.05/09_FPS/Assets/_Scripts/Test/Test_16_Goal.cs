@@ -7,6 +7,8 @@ public class Test_16_Goal : TestBase
 {
     public Goal goal;
     // Start is called before the first frame update
+
+
     void Start()
     {
         
@@ -23,32 +25,38 @@ public class Test_16_Goal : TestBase
     protected override void OnTest2(InputAction.CallbackContext context)
     {
         goal.SetRandomPosition(GameManager.Instance.MazeWidth, GameManager.Instance.MazeHeight);
-        goal.onGameClear += () => { Debug.Log("OnGameClear"); };
+        GameManager.Instance.onGameEnd += (isClear) => { Debug.Log($"GameClear : {isClear}"); };
     }
 
     protected override void OnTest3(InputAction.CallbackContext context)
     {
-        int size = GameManager.Instance.MazeHeight * GameManager.Instance.MazeWidth;
-        int[] count = new int[10000];
+        /*        int size = GameManager.Instance.MazeHeight * GameManager.Instance.MazeWidth;
+                int[] count = new int[10000];
 
-        for (int i = 0; i < 10000; i++)
-        {
-            Vector2Int result = goal.TestSetRandomPosition(GameManager.Instance.MazeWidth, GameManager.Instance.MazeHeight);
-            if (result.x == 1 && result.y == 1)
-            {
-                Debug.LogError("Not Valid");
-            }
+                for (int i = 0; i < 10000; i++)
+                {
+                    Vector2Int result = goal.TestSetRandomPosition(GameManager.Instance.MazeWidth, GameManager.Instance.MazeHeight);
+                    if (result.x == 1 && result.y == 1)
+                    {
+                        Debug.LogError("Not Valid");
+                    }
 
-            count[i]++;
+                    count[i]++;
 
-        }
-        Debug.Log("Check complete");
+                }
+                Debug.Log("Check complete");
 
-        for (int i = 0; i < size; i++)
-        {
-            
-            Debug.Log($"{i} : {count[i]}");
-        }
+                for (int i = 0; i < size; i++)
+                {
+
+                    Debug.Log($"{i} : {count[i]}");
+                }*/
+        GameManager.Instance.GameStart();
+    }
+
+    protected override void OnTest4(InputAction.CallbackContext context)
+    {
+        GameManager.Instance.GameClear();
     }
 
 }
