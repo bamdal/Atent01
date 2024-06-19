@@ -121,4 +121,16 @@ public class Maze
     {
         return GridToIndex(grid.x,grid.y);
     }
+
+    /// <summary>
+    /// 그리드값으로 셀 가져오는 함수
+    /// </summary>
+    /// <param name="x">그리드 x</param>
+    /// <param name="y">그리드 y</param>
+    /// <returns>셀</returns>
+    public Cell GetCell(int x, int y)
+    {
+        int index = GridToIndex(x, y);
+        return cells[index];
+    }
 }

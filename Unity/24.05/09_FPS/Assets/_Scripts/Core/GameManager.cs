@@ -75,8 +75,8 @@ public class GameManager : Singleton<GameManager>
     {
         player = FindAnyObjectByType<Player>();
         player.onDie += GameOver;
-        Vector3 centerPos = MazeVisualizer.GridToWorld(MazeWidth / 2, MazeHeight / 2);
-        player.transform.position = centerPos;
+/*        Vector3 centerPos = MazeVisualizer.GridToWorld(MazeWidth / 2, MazeHeight / 2);
+        player.transform.position = centerPos;*/
 
         followCamara = GameObject.FindWithTag("FollowCamera").GetComponent<CinemachineVirtualCamera>();
 

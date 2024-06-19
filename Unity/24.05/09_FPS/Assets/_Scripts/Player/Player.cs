@@ -62,6 +62,10 @@ public class Player : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 플레이어가 맵의 가운데 배치되었을 때 실행될 델리게이트
+    /// </summary>
+    public Action onSpawn;
 
     /// <summary>
     /// HP 변경됨을 알리는 델리게이트
@@ -123,6 +127,8 @@ public class Player : MonoBehaviour
         HP = MaxHP;
 
         GameManager.Instance.onGameEnd += (_) =>InputDisable();
+
+        Spawn();
     }
     /// <summary>
     /// 총표시하는 카메라 활성화 설정
@@ -198,6 +204,17 @@ public class Player : MonoBehaviour
         float angle = Vector3.SignedAngle(-transform.forward, enemy.transform.forward, Vector3.down);
         Debug.Log(angle);
         onAttacked?.Invoke(angle);
+    }
+
+    /// <summary>
+    /// 플레이어를 맵에 배치시키는 함수
+    /// </summary>
+    public void Spawn()
+    {
+        GameManager gameManager = GameManager.Instance;
+        Vector3 centerPos = MazeVisualizer.GridToWorld(gameManager.MazeWidth / 2, gameManager.MazeHeight / 2);
+        transform.position = centerPos;  // 플레이어를 미로의 가운데 위치로 옮기기
+        onSpawn?.Invoke();
     }
 
     /// <summary>
