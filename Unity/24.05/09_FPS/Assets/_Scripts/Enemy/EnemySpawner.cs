@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,6 +16,7 @@ public class EnemySpawner : MonoBehaviour
 
     Enemy[] enemies;
 
+    public Action onSpawnCompleted;
     private void Awake()
     {
         enemies = new Enemy[enenmyCount];
@@ -60,10 +62,11 @@ public class EnemySpawner : MonoBehaviour
         int x;
         int y;
         int limit = 100;
+        float halfSize = Mathf.Min(mazeWidth, mazeHeight) * 0.5f;
         do
         {
             // 플레이어의 위치에서 +-5 범위 안
-            int index = Random.Range(0, mazeHeight * mazeWidth);
+            int index = UnityEngine.Random.Range(0, mazeHeight * mazeWidth);
             x = index / mazeWidth;
             y = index % mazeHeight;
 
@@ -72,7 +75,7 @@ public class EnemySpawner : MonoBehaviour
             {
                 break;
             }
-        }while(!(x<playerPosition.x +5 && x>playerPosition.x-5 && y<playerPosition.y +5 && y > playerPosition.y-5));
+        }while(!(x<playerPosition.x + halfSize && x>playerPosition.x- halfSize && y<playerPosition.y + halfSize && y > playerPosition.y- halfSize));
 
         Vector3 world = MazeVisualizer.GridToWorld(x, y);
         return world;
@@ -89,6 +92,9 @@ public class EnemySpawner : MonoBehaviour
         target.Respawn(GetRandomSpawnPosition());
     }
 
+    /// <summary>
+    /// 적 모두 생성 (맵생성후 호출)
+    /// </summary>
     public void EnemyAll_Spawn()
     {
         // 적 생성
@@ -103,8 +109,10 @@ public class EnemySpawner : MonoBehaviour
                 GameManager.Instance.IncreaseKillCount();
             };
 
-            enemies[i].Respawn(GetRandomSpawnPosition(),true);
+            enemies[i].Respawn(GetRandomSpawnPosition(true),true);
         }
+
+        onSpawnCompleted?.Invoke();// 스폰이 완료되면알림
     }
 
     /// <summary>

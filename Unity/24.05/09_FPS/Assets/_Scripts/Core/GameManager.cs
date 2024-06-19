@@ -49,6 +49,7 @@ public class GameManager : Singleton<GameManager>
     /// </summary>
     MazeGenerator mazeGenerator;
 
+
     public Maze Maze => mazeGenerator.Maze;
 
     /// <summary>
@@ -78,9 +79,14 @@ public class GameManager : Singleton<GameManager>
 /*        Vector3 centerPos = MazeVisualizer.GridToWorld(MazeWidth / 2, MazeHeight / 2);
         player.transform.position = centerPos;*/
 
+        LoadingScreen loadingScreen = FindAnyObjectByType<LoadingScreen>();
+        loadingScreen.Initialized();
+
+
         followCamara = GameObject.FindWithTag("FollowCamera").GetComponent<CinemachineVirtualCamera>();
 
         enemySpawner = FindAnyObjectByType<EnemySpawner>();
+        enemySpawner.onSpawnCompleted += () => loadingScreen.OnLoadingProgress(1.0f);
 
         mazeGenerator = FindAnyObjectByType<MazeGenerator>();
 
@@ -91,6 +97,8 @@ public class GameManager : Singleton<GameManager>
             mazeGenerator.Generate(MazeWidth, MazeHeight);
             mazeGenerator.onMazeGenerated += () =>
             {
+                loadingScreen.OnLoadingProgress(0.7f);
+
                 // 적 스폰
                 Spawner?.EnemyAll_Spawn();
 
