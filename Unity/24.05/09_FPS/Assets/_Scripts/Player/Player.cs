@@ -128,7 +128,7 @@ public class Player : MonoBehaviour
 
         GameManager.Instance.onGameEnd += (_) =>InputDisable();
 
-        Spawn();
+     
     }
     /// <summary>
     /// 총표시하는 카메라 활성화 설정

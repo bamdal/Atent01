@@ -74,10 +74,15 @@ public class GameManager : Singleton<GameManager>
 
     protected override void OnInitialize()
     {
+        onGameStart = null;
+        onGameEnd = null;
         player = FindAnyObjectByType<Player>();
         player.onDie += GameOver;
 /*        Vector3 centerPos = MazeVisualizer.GridToWorld(MazeWidth / 2, MazeHeight / 2);
         player.transform.position = centerPos;*/
+
+        MinimapCamera minimapCamera = FindAnyObjectByType<MinimapCamera>();
+        minimapCamera.Initialize(player);
 
         LoadingScreen loadingScreen = FindAnyObjectByType<LoadingScreen>();
         loadingScreen.Initialized();
@@ -86,7 +91,12 @@ public class GameManager : Singleton<GameManager>
         followCamara = GameObject.FindWithTag("FollowCamera").GetComponent<CinemachineVirtualCamera>();
 
         enemySpawner = FindAnyObjectByType<EnemySpawner>();
-        enemySpawner.onSpawnCompleted += () => loadingScreen.OnLoadingProgress(1.0f);
+        enemySpawner.onSpawnCompleted += () =>
+        {
+            loadingScreen.OnLoadingProgress(1.0f);
+            player.Spawn();
+        };
+
 
         mazeGenerator = FindAnyObjectByType<MazeGenerator>();
 

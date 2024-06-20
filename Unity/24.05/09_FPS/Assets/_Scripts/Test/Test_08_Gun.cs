@@ -11,6 +11,7 @@ public class Test_08_Gun : TestBase
 
     public AssaultRifle AssaultRifle;
 
+#if UNITY_EDITOR
 
 
     protected override void OnTest1(InputAction.CallbackContext context)
@@ -32,4 +33,5 @@ public class Test_08_Gun : TestBase
     {
         revolber.Reload();
     }
+    #endif
 }

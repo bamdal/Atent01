@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3043272744710917383}
   - component: {fileID: 1801640344160039810}
   - component: {fileID: 280997378739953582}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: SouthWest
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -117,7 +117,7 @@ GameObject:
   - component: {fileID: 8829537457535436199}
   - component: {fileID: 8437926772869582750}
   - component: {fileID: 2098332979709178435}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: NorthWest
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -619,7 +619,7 @@ GameObject:
   - component: {fileID: 8132960799107880563}
   - component: {fileID: 5288801836364073331}
   - component: {fileID: 4004398615510307036}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: NorthEast
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -724,7 +724,7 @@ GameObject:
   - component: {fileID: 1818825339159802595}
   - component: {fileID: 6623743725808095757}
   - component: {fileID: 7199383727808815535}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: SouthEast
   m_TagString: Untagged
   m_Icon: {fileID: 0}

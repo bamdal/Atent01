@@ -7,6 +7,7 @@ public class Test_15_PlayerHP : TestBase
 {
     public Enemy enemy;
     public Player player;
+#if UNITY_EDITOR
 
     private void Start()
     {
@@ -30,6 +31,7 @@ public class Test_15_PlayerHP : TestBase
         enemy.Respawn(transform.position);
         enemy.Test_EnemyStop();
     }
+    #endif
 }
 
 // HealthPoint 완성하기

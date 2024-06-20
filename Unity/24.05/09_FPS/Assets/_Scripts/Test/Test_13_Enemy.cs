@@ -12,6 +12,7 @@ public class Test_13_Enemy : TestBase
     public Transform respawn;
 
     public Enemy.BehaviourState state = Enemy.BehaviourState.Wander;
+#if UNITY_EDITOR
 
     private void Start()
     {
@@ -38,4 +39,5 @@ public class Test_13_Enemy : TestBase
     {
         enemy.Test_EnemyStop();
     }
+    #endif
 }

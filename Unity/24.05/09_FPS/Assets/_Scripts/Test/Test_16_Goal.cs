@@ -8,6 +8,7 @@ public class Test_16_Goal : TestBase
     public Goal goal;
     // Start is called before the first frame update
 
+#if UNITY_EDITOR
 
     void Start()
     {
@@ -58,5 +59,5 @@ public class Test_16_Goal : TestBase
     {
         GameManager.Instance.GameClear();
     }
-
+#endif
 }

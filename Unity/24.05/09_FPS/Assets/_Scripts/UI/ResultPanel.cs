@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class ResultPanel : MonoBehaviour
@@ -22,7 +23,7 @@ public class ResultPanel : MonoBehaviour
         time = child.GetComponent<TextMeshProUGUI>();
         child = transform.GetChild(5);
         resetButton = child.GetComponent<Button>();
-        resetButton.onClick.AddListener( () => { });
+        resetButton.onClick.AddListener( () => { SceneManager.LoadScene(0); });
     }
 
 
