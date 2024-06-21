@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fusion.Unity", "Fusion.Unit
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.Fusion.CodeGen", "Unity.Fusion.CodeGen.csproj", "{D2090FE1-DF66-E2D8-66FC-140970760AF1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Assembly-CSharp.csproj", "{727E7F3E-53B6-E01B-E8FA-C4E04B5D7F7C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +27,10 @@ Global
 		{D2090FE1-DF66-E2D8-66FC-140970760AF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D2090FE1-DF66-E2D8-66FC-140970760AF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D2090FE1-DF66-E2D8-66FC-140970760AF1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{727E7F3E-53B6-E01B-E8FA-C4E04B5D7F7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{727E7F3E-53B6-E01B-E8FA-C4E04B5D7F7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{727E7F3E-53B6-E01B-E8FA-C4E04B5D7F7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{727E7F3E-53B6-E01B-E8FA-C4E04B5D7F7C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

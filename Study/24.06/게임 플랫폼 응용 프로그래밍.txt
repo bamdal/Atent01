@@ -57,12 +57,34 @@ C#
   - 언박싱(UnBoxing)
    - 박싱의 반대, 참조 형식을 값형식으로 캐스팅 할 때 발생
 
+Unity
+ - 씬(Scene), 게임 오브젝트(GameObject), 컴포넌트(Component)
+
+입력
+ - InputManager -> update에서 매번검사
+ - InputSystem -> 이벤트 드리븐
+
+출력
+ - Renderer -> 객체를 화면에 그리기
+
+충돌 처리
+ - Rigidbody -> 물리기능추가
+ - Collider -> 충돌체크
 
 
+이벤트 함수의 타이밍
+ - Awake -> 오브젝트 생성 직후 실행
+ - Start -> Update직전에 실행
+ - Update -> 매 프레임마다 계산
+ - FixedUpdate -> 일정한 시간마다 계산
+ - LateUpdate -> 모든 업데이트 실행뒤 실행 그후 랜더링 실행
 
+게임 오브젝트의 트랜스폼(변환) 4x4Matrix
+ - 위치(Position)
+ - 회전(Rotation)
+ - 스케일(Scale)
 
-
-
-
-
+배칭(Batching)
+ - 동적 배칭 : Mesh가 작고 유사한 경우 합쳐서 한번에 처리한다
+ - 정적 배칭 : static 게임 오브젝트를 큰 mesh로 함치고 한번에 처리한다.
 
