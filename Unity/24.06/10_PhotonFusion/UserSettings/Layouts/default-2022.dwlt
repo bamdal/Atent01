@@ -120,7 +120,7 @@ MonoBehaviour:
   m_MinSize: {x: 400, y: 100}
   m_MaxSize: {x: 32384, y: 16192}
   vertical: 0
-  controlID: 124
+  controlID: 70
 --- !u!114 &6
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -171,7 +171,7 @@ MonoBehaviour:
   m_MinSize: {x: 100, y: 100}
   m_MaxSize: {x: 8096, y: 16192}
   vertical: 1
-  controlID: 67
+  controlID: 47
 --- !u!114 &8
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -251,7 +251,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 100}
   m_MaxSize: {x: 16192, y: 16192}
   vertical: 0
-  controlID: 125
+  controlID: 71
 --- !u!114 &11
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -302,7 +302,7 @@ MonoBehaviour:
   m_MinSize: {x: 100, y: 100}
   m_MaxSize: {x: 8096, y: 16192}
   vertical: 1
-  controlID: 126
+  controlID: 114
 --- !u!114 &13
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -462,23 +462,23 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: 9e5e0000
+      m_SelectedIDs: a25e0000
       m_LastClickedID: 0
-      m_ExpandedIDs: e2e3ffff06fbffff
+      m_ExpandedIDs: 3827ffff8e27ffff6c29ffff123cffff3261ffff4061ffff728fffff12fbfffff4ffffff
       m_RenameOverlay:
         m_UserAcceptedRename: 0
-        m_Name: 
-        m_OriginalName: 
+        m_Name: PlayerPrefab(Clone)
+        m_OriginalName: PlayerPrefab(Clone)
         m_EditFieldRect:
           serializedVersion: 2
           x: 0
           y: 0
           width: 0
           height: 0
-        m_UserData: 0
+        m_UserData: -56712
         m_IsWaitingForDelay: 0
         m_IsRenaming: 0
-        m_OriginalEventType: 11
+        m_OriginalEventType: 0
         m_IsRenamingFilename: 0
         m_ClientGUIView: {fileID: 6}
       m_SearchString: 
@@ -948,9 +948,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: -0.102839686, y: 0.08968729, z: -0.070466414}
+    m_Target: {x: 6.763841, y: 1.3389428, z: -4.804536}
     speed: 2
-    m_Value: {x: -0.102839686, y: 0.08968729, z: -0.070466414}
+    m_Value: {x: 6.7638025, y: 1.3359836, z: -4.791607}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -988,7 +988,7 @@ MonoBehaviour:
       m_Fade:
         m_Target: 0
         speed: 2
-        m_Value: 0
+        m_Value: 1
       m_Color: {r: 0.5, g: 0.5, b: 0.5, a: 0.4}
       m_Pivot: {x: 0, y: 0, z: 0}
       m_Size: {x: 0.5, y: 0.5}
@@ -996,13 +996,13 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
-    m_Target: {x: 0.066794716, y: 0.32888386, z: -0.02332682, w: 0.94171923}
+    m_Target: {x: 0.11226272, y: -0.0014905173, z: 0.0001683942, w: 0.9936774}
     speed: 2
-    m_Value: {x: 0.06679454, y: 0.328883, z: -0.023326758, w: 0.9417168}
+    m_Value: {x: 0.11077208, y: -0.0014907682, z: 0.00016615824, w: 0.9938447}
   m_Size:
-    m_Target: 0.17320508
+    m_Target: 1.7322935
     speed: 2
-    m_Value: 0.17320508
+    m_Value: 1.5892601
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -1265,7 +1265,7 @@ MonoBehaviour:
     m_OverlaysVisible: 1
   m_LockTracker:
     m_IsLocked: 0
-  m_LastSelectedObjectID: -2206
+  m_LastSelectedObjectID: 25616
 --- !u!114 &23
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -1311,7 +1311,7 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Input
+    - Assets/Scenes
     m_Globs: []
     m_OriginalText: 
     m_ImportLogFlags: 0
@@ -1327,7 +1327,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 197}
     m_SelectedIDs: 7e820000
     m_LastClickedID: 33406
-    m_ExpandedIDs: 00000000105e0000125e0000145e0000165e0000185e00001a5e00001c5e00001e5e0000205e0000225e0000245e0000265e0000285e0000
+    m_ExpandedIDs: 000000001e5e0000205e0000225e0000245e0000265e0000285e00002a5e00002c5e00002e5e0000305e0000325e0000345e0000365e0000385e0000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1355,7 +1355,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: ffffffff00000000105e0000125e0000145e0000165e0000185e00001a5e00001c5e00001e5e0000205e0000225e0000245e0000265e0000285e0000985e0000
+    m_ExpandedIDs: ffffffff000000001e5e0000205e0000225e0000245e0000265e0000285e00002a5e00002c5e0000325e0000345e0000365e0000385e0000a05e00008a600000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 

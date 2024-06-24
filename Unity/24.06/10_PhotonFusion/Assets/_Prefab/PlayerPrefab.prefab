@@ -49,6 +49,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 5
+  prefabBall: {fileID: 6893798619021359413, guid: 86be63e7394b4a140921d00dae251bcc, type: 3}
+  prefabPhysicBall: {fileID: 6578948851919487233, guid: 6c8e3d3210398b847b2fb8fa034f2273, type: 3}
 --- !u!114 &7969829783671955747
 MonoBehaviour:
   m_ObjectHideFlags: 0

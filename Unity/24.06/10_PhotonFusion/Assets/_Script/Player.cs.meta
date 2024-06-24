@@ -3,7 +3,9 @@ guid: e46743a3715a39a44a5dd270c4a09adf
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - prefabBall: {fileID: 6893798619021359413, guid: 86be63e7394b4a140921d00dae251bcc, type: 3}
+  - prefabPhysicBall: {fileID: 6578948851919487233, guid: 6c8e3d3210398b847b2fb8fa034f2273, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

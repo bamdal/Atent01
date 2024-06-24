@@ -339,6 +339,8 @@
 -r:"Library/PackageCache/com.unity.nuget.mono-cecil@1.10.2/Mono.Cecil.dll"
 -r:"Library/PackageCache/com.unity.testtools.codecoverage@1.2.4/lib/ReportGenerator/ReportGeneratorMerged.dll"
 -r:"Library/PackageCache/com.unity.visualscripting@1.9.1/Runtime/VisualScripting.Flow/Dependencies/NCalc/Unity.VisualScripting.Antlr3.Runtime.dll"
+-r:"Library/Bee/artifacts/1900b0aEDbg.dag/Fusion.Addons.Physics.Editor.ref.dll"
+-r:"Library/Bee/artifacts/1900b0aEDbg.dag/Fusion.Addons.Physics.ref.dll"
 -r:"Library/Bee/artifacts/1900b0aEDbg.dag/Fusion.Unity.Editor.ref.dll"
 -r:"Library/Bee/artifacts/1900b0aEDbg.dag/Fusion.Unity.ref.dll"
 -r:"Library/Bee/artifacts/1900b0aEDbg.dag/Unity.EditorCoroutines.Editor.ref.dll"
@@ -372,6 +374,7 @@
 "Assets/_Script/Ball.cs"
 "Assets/_Script/BasicSpawner.cs"
 "Assets/_Script/NetworkInputData.cs"
+"Assets/_Script/PhysicBall.cs"
 "Assets/_Script/Player.cs"
 -langversion:9.0
 /unsafe+

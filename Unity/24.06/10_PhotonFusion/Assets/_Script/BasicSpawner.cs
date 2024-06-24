@@ -6,6 +6,7 @@ using Fusion.Sockets;
 using System;
 using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
+using Fusion.Addons.Physics;
 
 public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
 {
@@ -36,7 +37,15 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
     /// </summary>
     Vector3 inputDirection = Vector3.zero;
 
+    /// <summary>
+    /// 왼클릭 유무
+    /// </summary>
     bool isShootPress = false;
+
+    /// <summary>
+    /// 우클릭 유무
+    /// </summary>
+    bool isPhysicPress = false;
     
     private void Awake()
     {
@@ -49,8 +58,10 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
     /// <param name="mode">게임에 접속하는 방식(Host or Client)</param>
     async void StartGame(GameMode mode) // async : 비동기 메서드임을 알림(내부에 await가 있음)
     {
-        myRunner = this.gameObject.AddComponent<NetworkRunner>(); // 네트워크 러너 컴포넌트 추가
-        myRunner.ProvideInput = true;                             // 유저 입력을 제공할 것이라고 설정
+        myRunner = this.gameObject.AddComponent<NetworkRunner>();   // 네트워크 러너 컴포넌트 추가
+        this.gameObject.AddComponent<RunnerSimulatePhysics3D>();    // 물리 시뮬레이션 처리용 컴포넌트 추가
+
+        myRunner.ProvideInput = true;                               // 유저 입력을 제공할 것이라고 설정
 
         SceneRef scene = SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex);
         NetworkSceneInfo sceneInfo = new NetworkSceneInfo();
@@ -81,12 +92,17 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
         inputActions.Player.Move.canceled += OnMove;
         inputActions.Player.Shoot.performed += OnShootPress;
         inputActions.Player.Shoot.canceled += OnShootRelease;
+        inputActions.Player.PhysicShoot.performed += OnPhysicPress;
+        inputActions.Player.PhysicShoot.canceled += OnPhysicRelease;
     }
+
 
 
 
     void InputDisable()
     {
+        inputActions.Player.PhysicShoot.canceled -= OnPhysicRelease;
+        inputActions.Player.PhysicShoot.performed -= OnPhysicPress;
         inputActions.Player.Shoot.canceled -= OnShootRelease;
         inputActions.Player.Shoot.performed -= OnShootPress;
         inputActions.Player.Move.canceled-= OnMove;
@@ -111,6 +127,14 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
         isShootPress = false;
     }
 
+    private void OnPhysicPress(InputAction.CallbackContext context)
+    {
+        isPhysicPress = true;
+    }
+    private void OnPhysicRelease(InputAction.CallbackContext context)
+    {
+        isPhysicPress = false;
+    }
 
     /// <summary>
     /// GUI를 그리는 함수
@@ -219,7 +243,7 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
 
         data.direction = inputDirection;
         data.buttons.Set(NetworkInputData.MouseButtonLeft, isShootPress);
-
+        data.buttons.Set(NetworkInputData.MouseButtonRight, isPhysicPress);
 
         input.Set(data);    // 결정된 입력을 서버쪽으로 전달
 

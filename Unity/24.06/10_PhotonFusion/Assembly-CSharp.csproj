@@ -63,33 +63,35 @@
     <Compile Include="Assets\_Script\BasicSpawner.cs" />
     <Compile Include="Assets\_Script\Player.cs" />
     <Compile Include="Assets\Input\PlayerInputActions.cs" />
+    <Compile Include="Assets\_Script\PhysicBall.cs" />
     <Compile Include="Assets\_Script\NetworkInputData.cs" />
     <Compile Include="Assets\_Script\Ball.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
     <None Include="Assets\Photon\PhotonLibs\netstandard2.0\Photon3Unity3D.xml" />
-    <None Include="Assets\Photon\Fusion\Assemblies\Fusion.Common.dll" />
-    <None Include="Assets\Photon\Fusion\Assemblies\Fusion.Runtime.xml" />
-    <None Include="Assets\Photon\Fusion\Plugins\NanoSockets\NanoSockets\Static\NanoSockets.dll" />
-    <None Include="Assets\Photon\Fusion\Assemblies\Fusion.Sockets.dll" />
-    <None Include="Assets\Photon\Fusion\release_history.txt" />
-    <None Include="Assets\Photon\Fusion\Assemblies\Fusion.Common.xml" />
-    <None Include="Assets\Photon\Fusion\Plugins\NanoSockets\NanoSockets\Dynamic\NanoSockets.dll" />
-    <None Include="Assets\Photon\Fusion\Assemblies\Fusion.Runtime.dll" />
-    <None Include="Assets\Photon\Fusion\Plugins\NanoSockets\Metro\NanoSockets.dll" />
+    <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
+    <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />
+    <None Include="Assets\TextMesh Pro\Shaders\TMPro_Mobile.cginc" />
+    <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF SSD.shader" />
+    <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface-Mobile.shader" />
+    <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface.shader" />
+    <None Include="Assets\TextMesh Pro\Sprites\EmojiOne Attribution.txt" />
+    <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap-Custom-Atlas.shader" />
+    <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF.shader" />
+    <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile SSD.shader" />
     <None Include="Assets\Photon\PhotonLibs\changes-library.txt" />
-    <None Include="Assets\Photon\Fusion\Plugins\NanoSockets\Metro\x64\libnanosockets.dll" />
-    <None Include="Assets\Photon\Fusion\Plugins\NanoSockets\Metro\x86\libnanosockets.dll" />
-    <None Include="Assets\Photon\Fusion\Assemblies\Fusion.Realtime.xml" />
+    <None Include="Assets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
+    <None Include="Assets\TextMesh Pro\Shaders\TMPro_Properties.cginc" />
+    <None Include="Assets\TextMesh Pro\Shaders\TMPro_Surface.cginc" />
     <None Include="Assets\Photon\PhotonLibs\netstandard2.0\Photon3Unity3D.dll" />
-    <None Include="Assets\Photon\Fusion\Plugins\NanoSockets\Windows\nanosockets.dll" />
-    <None Include="Assets\Photon\Fusion\build_info.txt" />
-    <None Include="Assets\Photon\Fusion\Assemblies\Fusion.Realtime.dll" />
-    <None Include="Assets\Photon\Fusion\Plugins\NanoSockets\Metro\ARM64\libnanosockets.dll" />
-    <None Include="Assets\Photon\Fusion\Plugins\NanoSockets\WebGL\NanoSockets.dll" />
-    <None Include="Assets\Photon\Fusion\Assemblies\Fusion.Log.dll" />
-    <None Include="Assets\Photon\Fusion\Assemblies\Fusion.Sockets.xml" />
-    <None Include="Assets\Photon\Fusion\Plugins\NanoSockets\Metro\ARM\libnanosockets.dll" />
+    <None Include="Assets\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
+    <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Masking.shader" />
+    <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF Overlay.shader" />
+    <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap-Mobile.shader" />
+    <None Include="Assets\TextMesh Pro\Fonts\LiberationSans - OFL.txt" />
+    <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile.shader" />
+    <None Include="Assets\TextMesh Pro\Shaders\TMP_Sprite.shader" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
@@ -1058,9 +1060,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="Fusion.Addons.Physics.csproj">
+      <Project>{42F55752-5E19-3862-7869-7EFE898ED881}</Project>
+      <Name>Fusion.Addons.Physics</Name>
+    </ProjectReference>
     <ProjectReference Include="Fusion.Unity.csproj">
       <Project>{651BA965-47B1-590A-C537-A025B102D365}</Project>
       <Name>Fusion.Unity</Name>
+    </ProjectReference>
+    <ProjectReference Include="Fusion.Addons.Physics.Editor.csproj">
+      <Project>{11C63144-CD69-88DC-9724-3F106B999AB4}</Project>
+      <Name>Fusion.Addons.Physics.Editor</Name>
     </ProjectReference>
     <ProjectReference Include="Fusion.Unity.Editor.csproj">
       <Project>{BBF3D27F-16F5-F021-70E4-0BDDAF2A8F89}</Project>
