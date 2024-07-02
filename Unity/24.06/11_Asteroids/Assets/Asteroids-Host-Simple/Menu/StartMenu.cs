@@ -8,88 +8,98 @@ using UnityEngine.SceneManagement;
 
 namespace Asteroids.HostSimple
 {
-    // ¸Ş´º Ã³¸®¿ë À¯Æ¿¸®Æ¼ Å¬·¡½º(¸Ş´º¾À¿¡¼­ È®ÀÎ °¡´É)
+    // ë©”ë‰´ ì²˜ë¦¬ìš© ìœ í‹¸ë¦¬í‹° í´ë˜ìŠ¤(ë©”ë‰´ì”¬ì—ì„œ í™•ì¸ ê°€ëŠ¥)
     public class StartMenu : MonoBehaviour
     {
-        // ³×Æ®¿öÅ© ·¯³Ê ÇÁ¸®Æé
+        // ë„¤íŠ¸ì›Œí¬ ëŸ¬ë„ˆ í”„ë¦¬íŒ¹
         [SerializeField] private NetworkRunner _networkRunnerPrefab = null;
 
-        // ÇÃ·¹ÀÌ¾î µ¥ÀÌÅÍ ÇÁ¸®Æé(ÀÌ¸§°ü·Ã)
+        // í”Œë ˆì´ì–´ ë°ì´í„° í”„ë¦¬íŒ¹(ì´ë¦„ ê´€ë ¨)
         [SerializeField] private PlayerData _playerDataPrefab = null;
 
-        // ÇÃ·¹ÀÌ¾î ÀÌ¸§¿ë ÀÎÇ² ÇÊµå
+        // í”Œë ˆì´ì–´ ì´ë¦„ìš© ì¸í’‹í•„ë“œ
         [SerializeField] private TMP_InputField _nickName = null;
 
-        // The Placeholder Text is not accessible through the TMP_InputField component so need a direct reference
+        // í”Œë ˆì´ì–´ ì´ë¦„ìš© ì¸í’‹í•„ë“œì˜ í”Œë ˆì´ìŠ¤ í™€ë”(ëœë¤ ì´ë¦„ ì„¤ì •ìš©)
         [SerializeField] private TextMeshProUGUI _nickNamePlaceholder = null;
 
-
+        // ë°© ì´ë¦„ìš© ì¸í’‹í•„ë“œ
         [SerializeField] private TMP_InputField _roomName = null;
 
-        // °ÔÀÓ ¾ÀÀÇ ÀÌ¸§
+        // ê²Œì„ ì”¬ì˜ ì´ë¦„
         [SerializeField] private string _gameSceneName = null;
 
-        // ³×Æ®¿öÅ© ·¯³Ê
+        // ë„¤íŠ¸ì›Œí¬ ëŸ¬ë„ˆ
         private NetworkRunner _runnerInstance = null;
 
-        // È£½ºÆ®(or Å¬¶óÀÌ¾ğÆ®)·Î ¼¼¼ÇÀ» ½ÃÀÛÇÏ´Â ÇÔ¼ö
+        // í˜¸ìŠ¤íŠ¸(or í´ë¼ì´ì–¸íŠ¸)ë¡œ ì„¸ì…˜ì„ ì‹œì‘í•˜ëŠ” í•¨ìˆ˜
         public void StartHost()
         {
-            SetPlayerData();    // ÀÌ¸§ ¼³Á¤
+            SetPlayerData();        // ì´ë¦„ ì„¤ì •
             StartGame(GameMode.AutoHostOrClient, _roomName.text, _gameSceneName);
         }
 
-        // Å¬¶óÀÌ¾ğÆ®·Î ¼¼¼ÇÀ» ½ÃÀÛÇÏ´Â ÇÔ¼ö
+        // í´ë¼ì´ì–¸íŠ¸ë¡œ ì„¸ì…˜ì„ ì‹œì‘í•˜ëŠ” í•¨ìˆ˜
         public void StartClient()
         {
-            SetPlayerData();    // ÀÌ¸§ ¼³Á¤
+            SetPlayerData();
             StartGame(GameMode.Client, _roomName.text, _gameSceneName);
         }
 
-        // ÇÃ·¹ÀÌ¾î µ¥ÀÌÅÍ¸¦ ¼³Á¤ÇÏ´Â ÇÔ¼ö
+        /// <summary>
+        /// í”Œë ˆì´ì–´ ë°ì´í„°ë¥¼ ì„¤ì •í•˜ëŠ” í•¨ìˆ˜
+        /// </summary>
         private void SetPlayerData()
         {
-            var playerData = FindObjectOfType<PlayerData>();    // ???Ã£´Â ÀÌÀ¯¸¦ ¾Ë ¼ö ¾øÀ½
+            var playerData = FindObjectOfType<PlayerData>();    // ???ì°¾ëŠ” ì´ìœ ëŠ” ì•Œìˆ˜ ì—†ìŒ
             if (playerData == null)
             {
-                playerData = Instantiate(_playerDataPrefab);    // ÇÃ·¹ÀÌ¾îµ¥Æ¼¾î°¡ ¾øÀ¸¸é »õ·Î »ı¼º
+                playerData = Instantiate(_playerDataPrefab);    // í”Œë ˆì´ì–´ ë°ì´í„°ê°€ ì—†ìœ¼ë©´ ìƒˆë¡œ ìƒì„±(ì‹±ê¸€í†¤ìœ¼ë¡œ ë§Œë“¤ì–´ì ¸ì„œ ê³„ì† ìœ ì§€)
             }
 
-            if (string.IsNullOrWhiteSpace(_nickName.text))          // ÇÃ·¹ÀÌ¾î ÀÌ¸§ÀÌ ¼³Á¤µÇ¾î ÀÖÁö ¾ÊÀ¸¸é
-            {   
-                playerData.SetNickName(_nickNamePlaceholder.text);  // ÇÃ·¹ÀÌ½º È¦´õ¿¡ ÀÖ´Â ÀÌ¸§À» ¼³Á¤ÇØ¶ó
-            }
-            else                                                    // ÇÃ·¹ÀÌ¾î ÀÌ¸§ÀÌ ¼³Á¤µÇ¾îÀÖÀ¸¸é
+            if (string.IsNullOrWhiteSpace(_nickName.text))          
             {
-                playerData.SetNickName(_nickName.text);             // ¼³Á¤µÈ ÇÃ·¹ÀÌ¾î ÀÌ¸§À» »ç¿ë
+                // í”Œë ˆì´ì–´ ì´ë¦„ì´ ì„¤ì •ë˜ì–´ ìˆì§€ ì•Šìœ¼ë©´
+                playerData.SetNickName(_nickNamePlaceholder.text);  // í”Œë ˆì´ìŠ¤ í™€ë”ì— ìˆëŠ” ì´ë¦„ì„ ì‚¬ìš©
+            }
+            else
+            {
+                // í”Œë ˆì´ì–´ ì´ë¦„ì´ ì„¤ì •ë˜ì–´ ìˆìœ¼ë©´
+                playerData.SetNickName(_nickName.text);             // ì„¤ì •ëœ í”Œë ˆì´ì–´ ì´ë¦„ì„ ì‚¬ìš©
             }
         }
 
+        /// <summary>
+        /// ê²Œì„ ì„¸ì…˜ì„ ì‹œì‘í•˜ëŠ” í•¨ìˆ˜
+        /// </summary>
+        /// <param name="mode">í˜¸ìŠ¤íŠ¸ or í´ë¼ì´ì–¸íŠ¸</param>
+        /// <param name="roomName">ì„¸ì…˜ ì´ë¦„</param>
+        /// <param name="sceneName">ê²Œì„ ì”¬ ì´ë¦„</param>
         private async void StartGame(GameMode mode, string roomName, string sceneName)
         {
-            _runnerInstance = FindObjectOfType<NetworkRunner>();
+            _runnerInstance = FindObjectOfType<NetworkRunner>();    // ë„¤íŠ¸ì›Œí¬ ëŸ¬ë„ˆ ì°¾ê¸°
             if (_runnerInstance == null)
             {
-                _runnerInstance = Instantiate(_networkRunnerPrefab);
+                _runnerInstance = Instantiate(_networkRunnerPrefab);    // ì—†ìœ¼ë©´ ë§Œë“¤ê¸°
             }
 
-            // Let the Fusion Runner know that we will be providing user input
-            _runnerInstance.ProvideInput = true;
+            _runnerInstance.ProvideInput = true;        // ìœ ì €ì˜ ì…ë ¥ì„ ë°›ëŠ”ë‹¤ê³  ì„¤ì •
 
             var startGameArgs = new StartGameArgs()
             {
-                GameMode = mode,
-                SessionName = roomName,
-                ObjectProvider = _runnerInstance.GetComponent<NetworkObjectPoolDefault>(),
+                GameMode = mode,                // ëª¨ë“œ ì„¤ì •
+                SessionName = roomName,         // ì„¸ì…˜ ì´ë¦„ ì„¤ì •
+                ObjectProvider = _runnerInstance.GetComponent<NetworkObjectPoolDefault>(),  // ì˜¤ë¸Œì íŠ¸ í’€ ì„¤ì •
             };
 
-            // GameMode.Host = Start a session with a specific name
-            // GameMode.Client = Join a session with a specific name
-            await _runnerInstance.StartGame(startGameArgs);
+            // GameMode.Host = ì§€ì •ëœ ì´ë¦„ìœ¼ë¡œ ì„¸ì…˜ ì‹œì‘
+            // GameMode.Client = ì§€ì •ëœ ì´ë¦„ì˜ ì„¸ì…˜ì— ì ‘ì†
+            await _runnerInstance.StartGame(startGameArgs); // ë¹„ë™ê¸°ë¡œ ë„¤íŠ¸ì›Œí¬ ëŸ¬ë„ˆ ì‹œì‘(ëë‚ ë•Œê¹Œì§€ ëŒ€ê¸°)
 
-            if (_runnerInstance.IsServer)
+            // ë„¤íŠ¸ì›Œí¬ ëŸ¬ë„ˆì˜ ì‹œì‘ì´ ì™„ë£Œë˜ì—ˆìŒ
+            if (_runnerInstance.IsServer)   // ëŸ¬ë„ˆê°€ ì„œë²„ë¼ë©´
             {
-                _runnerInstance.LoadScene(sceneName);
+                _runnerInstance.LoadScene(sceneName);   // ë‹¤ìŒ ì”¬ ë¶ˆëŸ¬ì˜¤ê¸°
             }
         }
     }
